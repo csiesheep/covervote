@@ -28,3 +28,32 @@ check('validate() 抓得到缺欄位、壞 race、壞候選人、長度不符', 
     .filter(([, bad]) => validate({ ...data, passages: [bad] }).length === 0).map(([k]) => k);
   return missed.length ? `沒抓到：${missed.join('、')}` : ok(true, `${Object.keys(cases).length} 種壞資料都被抓到`);
 });
+
+// #1 加的規則（orchestrator 裁決：姓名是前端的鍵；號次抽籤前 null；議題顯示名只有一份）。
+// 每一種壞資料都要被抓到，而且合法的變化（number null、正整數號次）不能被誤抓。
+check('validate() 抓得到號次、姓名重複、議題表的錯，且不誤抓合法號次', () => {
+  // 每個壞案例只改一個地方、其他照原樣：只要基準資料本身合法，「有錯」就只能是這一處造成的。
+  const base = validate(data);
+  if (base.length) return `基準資料本身不合法，下面的案例分不出是誰造成的：${base[0]}`;
+  const c = data.candidates[0], p = data.passages[0];
+  if (!c || !p) return '母體是空的：沒有候選人或段落';
+  const twin = { ...c, id: c.id + '-twin', name: c.name + '甲', number: null };
+  const withCand = (fn) => ({ ...data, candidates: data.candidates.map((x, i) => i === 0 ? fn(x) : x) });
+  const bad = {
+    '缺 number': withCand(({ number, ...rest }) => rest),
+    'number 1.5': withCand(x => ({ ...x, number: 1.5 })),
+    'number "1"': withCand(x => ({ ...x, number: '1' })),
+    'number 0': withCand(x => ({ ...x, number: 0 })),
+    '同選區號次重複': { ...data, candidates: [...data.candidates.map((x, i) => i === 0 ? { ...x, number: 1 } : x), { ...twin, number: 1 }] },
+    '同選區姓名重複': { ...data, candidates: [...data.candidates, { ...twin, name: c.name }] },
+    'issueId 不在議題表': { ...data, passages: data.passages.map((x, i) => i === 0 ? { ...x, issueId: 'no-such-issue' } : x) },
+    '議題表 id 重複': { ...data, issues: [...data.issues, data.issues[0]] },
+    '議題沒有 label': { ...data, issues: [{ ...data.issues[0], label: '' }, ...data.issues.slice(1)] },
+  };
+  const missed = Object.entries(bad).filter(([, d]) => validate(d).length === 0).map(([k]) => k);
+  const good = { ...data, candidates: data.candidates.map((x, i) => ({ ...x, number: i + 1 })) };
+  const falsePos = validate(good);
+  if (missed.length) return `沒抓到：${missed.join('、')}`;
+  if (falsePos.length) return `合法的正整數號次被誤抓：${falsePos.slice(0, 3).join('；')}`;
+  return ok(true, `${Object.keys(bad).length} 種壞資料都被抓到，合法號次沒被誤抓`);
+});

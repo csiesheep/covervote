@@ -125,6 +125,8 @@ check('捨入對稱：±12.5 → ±13，翻號結果剛好翻號', () => {
 
 check('分數超出 −2..2 或不是整數會丟錯', () => {
   const t = need(); if (t) return t;
+  // 先證明合法分數不丟錯：一個永遠丟錯的實作，否則這條也會是綠的（BE #1 回報）。
+  for (const v of [-2, -1, 0, 1, 2, null]){ try { run({ p1: v }); } catch (e){ return `合法分數 ${JSON.stringify(v)} 也丟錯：${e.message}`; } }
   const bad = [3, -3, 1.5, '2'];
   const missed = bad.filter(v => { try { run({ p1: v }); return true; } catch { return false; } });
   return missed.length ? `沒有丟錯：${missed.map(v => JSON.stringify(v)).join('、')}` : ok(true, `${bad.length} 種壞分數都丟錯`);

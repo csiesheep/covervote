@@ -102,7 +102,7 @@ check('payload 原文裡找不到 original 原文與 sourceUrl', () => {
 // reveal/<raceId>.json  { race, passages: [{ id, candidate: { number, name }, original, sourceUrl, sourceDate, sourceType }] }
 //                       開票時才 fetch。檔案本身公開可抓（orchestrator 裁決：v1 接受，猜作者匯總只收開票前送出的猜測）。
 // STRICT 在 #1 land 時翻成 true。
-const STRICT_1 = false;
+const STRICT_1 = true;   // #1 land（2026-10-21）時翻：之後檔案消失要紅，不是退回 TODO
 const todo1 = what => STRICT_1 ? what : 'TODO: ' + what;
 const readDir = d => { const p = path.join(out, 'covervote', d); return fs.existsSync(p)
   ? Object.fromEntries(fs.readdirSync(p).filter(f => f.endsWith('.json')).map(f => [f, fs.readFileSync(path.join(p, f), 'utf8')])) : null; };
