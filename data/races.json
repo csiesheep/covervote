@@ -26,5 +26,19 @@
     "office": "mayor",
     "district": "taichung",
     "label": "臺中市長"
+  },
+  {
+    "id": "2026-local.mayor.tainan",
+    "electionId": "2026-local",
+    "office": "mayor",
+    "district": "tainan",
+    "label": "臺南市長"
+  },
+  {
+    "id": "2026-local.mayor.kaohsiung",
+    "electionId": "2026-local",
+    "office": "mayor",
+    "district": "kaohsiung",
+    "label": "高雄市長"
   }
 ]

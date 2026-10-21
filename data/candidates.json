@@ -12,5 +12,14 @@
   {"id":"c-taoyuan-2","raceId":"2026-local.mayor.taoyuan","name":"黃世杰","number":null},
   {"id":"c-taichung-1","raceId":"2026-local.mayor.taichung","name":"何欣純","number":null},
   {"id":"c-taichung-2","raceId":"2026-local.mayor.taichung","name":"江啟臣","number":null},
-  {"id":"c-taichung-3","raceId":"2026-local.mayor.taichung","name":"洪麗華","number":null}
+  {"id":"c-taichung-3","raceId":"2026-local.mayor.taichung","name":"洪麗華","number":null},
+  {"id":"c-tainan-1","raceId":"2026-local.mayor.tainan","name":"謝龍介","number":null},
+  {"id":"c-tainan-2","raceId":"2026-local.mayor.tainan","name":"陳亭妃","number":null},
+  {"id":"c-tainan-3","raceId":"2026-local.mayor.tainan","name":"蕭燐洪","number":null},
+  {"id":"c-tainan-4","raceId":"2026-local.mayor.tainan","name":"葉人文","number":null},
+  {"id":"c-kaohsiung-1","raceId":"2026-local.mayor.kaohsiung","name":"賴瑞隆","number":null},
+  {"id":"c-kaohsiung-2","raceId":"2026-local.mayor.kaohsiung","name":"柯志恩","number":null},
+  {"id":"c-kaohsiung-3","raceId":"2026-local.mayor.kaohsiung","name":"張靜","number":null},
+  {"id":"c-kaohsiung-4","raceId":"2026-local.mayor.kaohsiung","name":"王肇民","number":null},
+  {"id":"c-kaohsiung-5","raceId":"2026-local.mayor.kaohsiung","name":"洪方隆","number":null}
 ]
