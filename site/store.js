@@ -65,6 +65,23 @@ export const hasProgress = s => s.lean !== null || Object.keys(s.ratings).length
 // ?embed=1：嵌入模式（媒體把一局放進 iframe）。只看網址；不影響任何資料請求，也不改變 internal 旗標。
 export const isEmbed = () => { try { return new URLSearchParams(location.search).get("embed") === "1"; } catch { return false; } };
 
+// ---- 長輩模式（#15）----
+// ?elder=1 開、?elder=0 關；頁首的「大字」開關也寫同一個鍵。記在 localStorage（getItem/setItem 已包 try/catch，讀不到走記憶體）。
+// 只影響字級、版面與一次一段；不改資料流（開票前不 fetch reveal/、guess 先於 reveal、internal=1 都照舊）。
+const ELDER_KEY = 'covervote:elder';
+export const isElder = () => getItem(ELDER_KEY) === '1';
+export function initElder(){
+  try {
+    const v = new URLSearchParams(location.search).get('elder');
+    if (v === '1' || v === '0') setItem(ELDER_KEY, v);
+  } catch {}
+  document.documentElement.classList.toggle('elder', isElder());
+}
+export function setElder(on){
+  setItem(ELDER_KEY, on ? '1' : '0');
+  document.documentElement.classList.toggle('elder', !!on);
+}
+
 // ---- 班級（課堂版，#11）----
 // ?class=<code>：6 碼，A–Z 去掉 I、O，加 2–9。格式對才收，存 sessionStorage；格式不對的忽略（不覆蓋、不顯示）。
 // 學生端唯一多送的東西就是這個代碼；沒有座號、姓名、任何能辨認學生的欄位。
