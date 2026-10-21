@@ -5,5 +5,12 @@
     "office": "mayor",
     "district": "taipei",
     "label": "臺北市長"
+  },
+  {
+    "id": "2026-local.mayor.newtaipei",
+    "electionId": "2026-local",
+    "office": "mayor",
+    "district": "newtaipei",
+    "label": "新北市長"
   }
 ]

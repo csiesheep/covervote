@@ -12,7 +12,7 @@
 // 都能直接或間接指出作者，只能在開票後出現。
 
 export const OFFICES = ['mayor', 'county-magistrate', 'president', 'legislator', 'councilor'];
-export const SOURCE_TYPES = ['gazette', 'campaign', 'facebook', 'press-rewritten'];
+export const SOURCE_TYPES = ['gazette', 'campaign', 'facebook', 'press-rewritten', 'social'];
 export const LENGTH_MIN = 60;   // plan 第一節：段落長度統一在 60–120 字
 export const LENGTH_MAX = 120;
 
