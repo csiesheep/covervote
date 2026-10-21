@@ -5,13 +5,14 @@
 //  - 傾向、分數、猜作者只存本機（store.js）。不載入任何分析或錄製腳本。
 //  - 分數一律呼叫 engine/score.mjs，FE 不自己算。候選人的鍵是姓名。
 import { t, initLang, lang, has } from './i18n.js';
-import { TILES, METRO_KEYS, METRO_ETA, CEC_URL, FULL_URL } from './config.js';
-import { initInternal, isEmbed, loadState, saveState, freshState, hasProgress } from './store.js';
+import { raceIdOf, MIN_CLASS, TILES, METRO_KEYS, METRO_ETA, CEC_URL, FULL_URL } from './config.js';
+import { initInternal, initClass, classCode, newClassCode, loadClasses, saveClasses, CLASS_RE, isEmbed, loadState, saveState, freshState, hasProgress } from './store.js';
 import { initSound, isSoundOn, setSound, sfx } from './sound.js';
-import { postGuess, postPlay, getHealth, getStats } from './api.js';
+import { postGuess, postPlay, getHealth, getStats, getClass } from './api.js';
 import { loadRace, loadIssues, fetchReveal, buildPlan, menuOrder, mulberry32, NotFound, initVersion } from './data.js';
 
 initInternal();
+initClass();
 initLang();
 initSound();
 // 嵌入模式（?embed=1）：沒有品牌列與頁尾連結，只留一行「完整版 ↗」；聲音維持預設關（initSound 不看這個旗標）。
@@ -37,8 +38,10 @@ function bar(left, meta){
 }
 const footer = healthKey => EMBED
   ? `<footer class="foot embed-foot"><a href="${FULL_URL}" target="_blank" rel="noopener">${esc(t('embed.full'))}</a></footer>`
-  : `<footer class="foot">${healthKey !== undefined ? `<a id="healthlink" href="#/${esc(healthKey || '')}/health"${healthKey ? '' : ' hidden'}>${esc(t('foot.health'))}</a>` : ''}<a href="#/info/method">${esc(t('foot.method'))}</a><a href="#/info/sources">${esc(t('foot.sources'))}</a><a href="#/info/privacy">${esc(t('foot.privacy'))}</a><a href="#/info/about">${esc(t('foot.about'))}</a><a href="#/embed">${esc(t('foot.media'))}</a></footer>`;
-const page = (barHtml, body, foot = '') => `${barHtml}<main id="main" tabindex="-1"><div class="pad">${body}</div>${foot || (EMBED ? footer() : '')}</main>`;
+  : `<footer class="foot">${healthKey !== undefined ? `<a id="healthlink" href="#/${esc(healthKey || '')}/health"${healthKey ? '' : ' hidden'}>${esc(t('foot.health'))}</a>` : ''}<a href="#/info/method">${esc(t('foot.method'))}</a><a href="#/info/sources">${esc(t('foot.sources'))}</a><a href="#/info/privacy">${esc(t('foot.privacy'))}</a><a href="#/info/about">${esc(t('foot.about'))}</a><a href="#/embed">${esc(t('foot.media'))}</a><a href="#/class">${esc(t('foot.class'))}</a></footer>`;
+// 學生帶了格式正確的 ?class= 才有這一行；老師頁（#/class…）不顯示。
+const classLine = () => { const c = classCode(); return c && parse()[0] !== 'class' ? `<div class="classline num" id="classline">${esc(t('class.line', { code: c }))}</div>` : ''; };
+const page = (barHtml, body, foot = '') => `${barHtml}${classLine()}<main id="main" tabindex="-1"><div class="pad">${body}</div>${foot || (EMBED ? footer() : '')}</main>`;
 const spinner = () => `<div class="spin" role="status">${esc(t('loading'))}</div>`;
 const errorBox = (msg, retryAct = 'reload') => `<div class="errbox" role="alert"><span>${esc(msg)}</span><button class="btn ghost" data-act="${retryAct}">${esc(t('err.retry'))}</button></div>`;
 
@@ -115,6 +118,7 @@ async function route(seg){
   if (seg.length === 0) return viewHome();
   if (seg[0] === 'info') return viewInfo(seg[1] || 'method');
   if (seg[0] === 'embed') return viewMedia();
+  if (seg[0] === 'class') return viewClass(seg[1] || '', seg[2] || '');
   const key = seg[0], sub = seg[1] || '';
   let c;
   try { c = await getCtx(key); }
@@ -662,6 +666,104 @@ async function viewHealth(c){
   return { html: page(barHtml, body, footer(c.key)) };
 }
 
+// ---------------- 課堂版（#11）：老師頁 #/class、#/class/<code>、儀表板 #/class/<code>/<city> ----------------
+// 沒有帳號：代碼在老師的瀏覽器產生、存在老師的 localStorage。儀表板只讀後端匯總（class/<code>/<race>），
+// 不自己算門檻、不自己算禁止期（只認回應裡有沒有 verdicts／blackout）。
+const classUrl = code => location.origin + location.pathname + '?class=' + code;
+const CLASS_POLL_MS = 20000;
+async function viewClass(code, city){
+  const barHtml = bar(t('brand'), t('class.meta'));
+  const home = `<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`;
+  if (!code){
+    const list = loadClasses();
+    const rows = list.map(x => `<div class="clsrow"><a class="clscode num" href="#/class/${x.code}">${x.code}</a><span class="muted">${esc(t('class.made', { d: new Date(x.at || Date.now()).toLocaleDateString(lang() === 'en' ? 'en-US' : 'zh-TW') }))}</span><button class="linkbtn" data-act="class-del" data-code="${x.code}">${esc(t('class.remove'))}</button></div>`).join('');
+    const body = `
+      <h1 class="mid">${esc(t('class.title'))}</h1>
+      <p>${esc(t('class.lead'))}</p>
+      <p class="muted">${esc(t('class.promise'))}</p>
+      <button class="btn" data-act="class-new">${esc(t('class.new'))}</button>
+      ${list.length ? `<div class="eyebrow">${esc(t('class.yours'))}</div><div class="stack">${rows}</div><p class="muted">${esc(t('class.yoursNote'))}</p>` : ''}
+      ${home}`;
+    return { html: page(barHtml, body, footer()) };
+  }
+  if (!CLASS_RE.test(code)){
+    return { html: page(barHtml, `<h1 class="mid">${esc(t('class.title'))}</h1><p class="muted">${esc(t('class.bad'))}</p><a class="btn ghost" href="#/class">${esc(t('common.back'))}</a>`, footer()) };
+  }
+  if (!city){
+    const ready = await readyMetros();
+    const chips = [...ready.keys()].map(k => `<a class="chip" href="#/class/${code}/${k}">${esc(t('city.' + k))}</a>`).join('');
+    const body = `
+      <div class="eyebrow">${esc(t('class.codeLabel'))}</div>
+      <div class="clsbig num" id="clscode" aria-label="${esc(code.split('').join(' '))}">${code}</div>
+      <div class="eyebrow">${esc(t('class.linkLabel'))}</div>
+      <pre class="code" tabindex="0"><code>${esc(classUrl(code))}</code></pre>
+      <div class="btns"><button class="btn ghost" data-act="class-copy" data-v="${esc(classUrl(code))}">${esc(t('class.copyLink'))}</button><button class="btn ghost" data-act="class-copy" data-v="${code}">${esc(t('class.copyCode'))}</button></div>
+      <p class="muted">${esc(t('class.linkNote'))}</p>
+      <div class="eyebrow">${esc(t('class.pickRace'))}</div>
+      <div class="row">${chips || `<span class="muted">${esc(t('class.noRace'))}</span>`}</div>
+      <a class="btn ghost" href="#/class">${esc(t('common.back'))}</a>`;
+    return { html: page(barHtml, body, footer()) };
+  }
+  // 儀表板
+  let rd = null;
+  try { rd = await loadRace(city); } catch {}
+  const raceId = raceIdOf(city);
+  const nCand = rd ? rd.candidates.length : 0;
+  const random = nCand >= 2 ? 1 / nCand : null;
+  const body = `
+    <div class="row between" style="align-items:baseline"><span class="eyebrow">${esc(t('class.boardEyebrow', { city: t('city.' + city) }))}</span><span class="num clscode-s">${code}</span></div>
+    <div id="clsboard" aria-live="polite">${spinner()}</div>
+    <div class="eyebrow">${esc(t('class.discuss'))}</div>
+    <ol class="qs"><li>${esc(t('class.q1'))}</li><li>${esc(t('class.q2'))}</li><li>${esc(t('class.q3'))}</li></ol>
+    <p class="muted" id="clsupd"></p>
+    <a class="btn ghost" href="#/class/${code}">${esc(t('common.back'))}</a>`;
+  return {
+    html: page(barHtml, body, footer()),
+    mount(){
+      let dead = false, timer = 0, shown = false;
+      const pct = v => Math.round(v * 100);
+      const paint = j => {
+        const box = document.getElementById('clsboard'); if (!box || dead) return;
+        const g = j.guesses || { answers: 0, correct: 0 };
+        const plays = Number.isFinite(j.plays) ? j.plays : 0;
+        const guessHtml = g.answers > 0
+          ? `<div class="guessbox" style="border:0;padding:0"><div class="n num">${pct(g.correct / g.answers)}<small>%</small></div><div><b>${esc(t('class.guessLine', { x: pct(g.correct / g.answers), c: g.correct, a: g.answers }))}</b>${random !== null ? `<p class="muted">${esc(t('class.guessRandom', { y: pct(random) }))}</p>` : ''}</div></div>`
+            + `<div class="htrack" role="img" aria-label="${esc(t('health.rowAlt', { x: pct(g.correct / g.answers), y: random !== null ? pct(random) : 0 }))}"><i style="width:${Math.min(100, g.correct / g.answers * 100)}%"></i>${random !== null ? `<u style="left:${random * 100}%"></u>` : ''}</div><p class="muted">${esc(t('class.guessNote'))}</p>`
+          : `<p class="muted">${esc(t('class.guessNone'))}</p>`;
+        let vHtml;
+        const v = j.verdicts;
+        if (v){
+          const tot = (v.same || 0) + (v.different || 0) + (v.none || 0);
+          const row = (k, n) => `<div class="hbar"><span>${esc(t('class.v.' + k))}</span><div class="htrack"><i style="width:${tot ? n / tot * 100 : 0}%"></i></div><span class="num">${tot ? pct(n / tot) : 0}%</span></div>`;
+          vHtml = `<div class="stack" style="gap:10px">${row('same', v.same || 0)}${row('different', v.different || 0)}${row('none', v.none || 0)}</div><p class="muted">${esc(t('class.vNote', { n: tot }))}</p>`;
+        } else if (j.blackout || plays >= MIN_CLASS){
+          // 有 ≥ 5 局卻沒有 verdicts = 靜默期（選罷法第 53 條）；日期由後端決定，這裡不算
+          vHtml = `<div class="banner"><b>${esc(t('blackout.title'))}</b><span>${esc(t('class.blackoutBody'))}</span></div>`;
+        } else {
+          vHtml = `<p class="muted">${esc(t('class.few', { n: plays, min: MIN_CLASS }))}</p>`;
+        }
+        box.innerHTML = `
+          <div class="verdict"><div class="eyebrow">${esc(t('class.playsLabel'))}</div><div class="clsbig num" style="letter-spacing:0">${plays}<small> ${esc(t('class.playsUnit'))}</small></div></div>
+          <div class="verdict"><div class="eyebrow">${esc(t('class.guessTitle'))}</div>${guessHtml}</div>
+          <div class="verdict"><div class="eyebrow">${esc(t('class.vTitle'))}</div>${vHtml}</div>`;
+        shown = true;
+        const u = document.getElementById('clsupd'); if (u) u.textContent = t('class.updated', { s: CLASS_POLL_MS / 1000, time: new Date().toLocaleTimeString(lang() === 'en' ? 'en-US' : 'zh-TW', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) });
+      };
+      const tick = async () => {
+        let j = null;
+        try { j = await getClass(code, raceId); } catch {}
+        if (dead) return;
+        if (j) paint(j);
+        else if (!shown){ const box = document.getElementById('clsboard'); if (box) box.innerHTML = errorBox(t('class.err')); }
+        else { const u = document.getElementById('clsupd'); if (u) u.textContent = t('class.updFail'); }
+        timer = setTimeout(tick, CLASS_POLL_MS);
+      };
+      tick();
+      return () => { dead = true; clearTimeout(timer); };
+    },
+  };
+}
+
 // ---------------- C4 分享 ----------------
 // 圖卡在瀏覽器用 canvas 畫成 1200×630 PNG：預覽就是會下載的那張。預設不放姓名（owner 裁決 2026-10-21），勾選才放。
 let shareNames = false;
@@ -856,6 +958,24 @@ root.addEventListener('click', async e => {
       break;
     }
     case 'start': if (!homePick) e.preventDefault(); break;
+    case 'class-new': {
+      const list = loadClasses();
+      let code; do { code = newClassCode(); } while (list.some(x => x.code === code));
+      list.unshift({ code, at: Date.now() }); saveClasses(list); sfx('stamp'); go(`#/class/${code}`); break;
+    }
+    case 'class-del': {
+      if (!confirm(t('class.removeAsk', { code: el.dataset.code }))) break;
+      saveClasses(loadClasses().filter(x => x.code !== el.dataset.code)); render(); break;
+    }
+    case 'class-copy': {
+      const v = el.dataset.v;
+      try { await navigator.clipboard.writeText(v); toast(t('media.copied')); }
+      catch {
+        try { const ta = document.createElement('textarea'); ta.value = v; document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); toast(t(ok ? 'media.copied' : 'media.copyFail')); }
+        catch { toast(t('media.copyFail')); }
+      }
+      break;
+    }
     case 'mask': toast(t('play.maskInfo', { n: el.dataset.n })); break;
     case 'reload': e.preventDefault(); render(); break;
     case 'restart': if (c){ const keep = c.st.menuOrder; Object.assign(c.st, freshState()); c.st.menuOrder = keep; save(c); rebuild(c); go(`#/${c.key}/lean`); } break;
