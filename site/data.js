@@ -80,12 +80,13 @@ export function shuffled(list, seed){
 export function buildPlan(passages, seed){
   const by = new Map();
   for (const p of passages){ if (!by.has(p.issueId)) by.set(p.issueId, []); by.get(p.issueId).push(p); }
-  const rounds = [], single = [];
+  let rounds = []; const single = [];
   for (const [issueId, list] of by){
     if (list.length >= 2) rounds.push({ issueId, cards: shuffled(list, seed ^ hash(issueId)) });
     else single.push(list[0]);
   }
   const bonus = shuffled(single, seed ^ hash('bonus'));
+  rounds = shuffled(rounds, seed ^ hash('rounds')); // 議題順序每局隨機（owner：議題每次隨機）；同 seed 穩定
   return { rounds, bonus, steps: rounds.length + (bonus.length ? 1 : 0) };
 }
 
