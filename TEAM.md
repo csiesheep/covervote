@@ -129,6 +129,7 @@ cwd 就是它。每個 `_wt/` 工作樹有 `__MARKER_ORCH.txt`(name + 現在的 
 
 - **一張 issue 一個 session**,land 即結束。子 agent + 自己的 worktree 是預設;常駐 session 是例外(人要中途看才開)。
 - **任何 session 的 cwd 都不可以是主 checkout。** 常駐 session 在主 checkout 裡跑 `git checkout <tree> -- .` 之類的動作,會把 owner 的工作樹改成別的樣子,而 owner 不會收到任何通知。每個 session 開在自己的 `_wt/<name>`。
+- **`wrangler dev`、靜態伺服器、headless Chrome 一律從你自己的 worktree 起，收工前用 PID 連整棵程序樹收掉。** 2026-10-21 主 checkout 裡留下兩組 `wrangler dev`（8799、56285）跑了五個小時，還因為主 checkout 被 `git pull` 而自動重載——佔埠、佔 D1 本機狀態，下一個 peer 只能換埠。（orchestrator 裁決）
 - orchestrator **讀判決不讀全文**:harness 讀摘要那一行與 FAIL 列,不讀整份輸出;peer 的 transcript 不進 orchestrator 的 context。
 - 原始輸出先落檔,再取你要的那一行;`cmd > log; echo $?`,不要 pipe 到 tail。
 - 驗收條件:**一個冷 session 能不能只靠 issue 留言 + SHA 接手?** 不能就是交付格式漏了東西。
