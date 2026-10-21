@@ -30,7 +30,7 @@
     {
       "binding": "DB",
       "database_name": "covervote",
-      "database_id": "TBD-orchestrator-creates",
+      "database_id": "bec24308-3642-4731-aa66-19910e3c2c76",
       "migrations_dir": "migrations"
     }
   ]
