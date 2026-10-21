@@ -113,22 +113,16 @@ export default {
   'rate.-2': '很不認同', 'rate.-1': '不太認同', 'rate.0': '沒意見', 'rate.1': '還算認同', 'rate.2': '很認同',
   seats: '甲乙丙丁戊己庚辛壬癸',
 
-  // 長輩模式（#15）：大字、一次一段、白話打分鈕、唸給你聽、傳給爸媽
-  'elder.toggle': '大字',
-  'elder.toggleLabel': '大字版（長輩模式）',
-  'elder.rate.-2': '很不贊成', 'elder.rate.-1': '不太贊成', 'elder.rate.0': '沒意見', 'elder.rate.1': '還算贊成', 'elder.rate.2': '很贊成',
-  'elder.leanSub': '選一個就好，也可以不選。',
-  'elder.hint': '先打分，才會出現下一段。',
-  'elder.impSub': '勾起來的議題算兩倍。可以不勾。',
-  'elder.guess': '猜是誰寫的？（可以不猜）',
-  'elder.guessNote': '開票才知道',
+  // 字體大小（#18）：頁首「字」按鈕輪流 小→中→大
+  'font.btn': '字',
+  'font.s': '小', 'font.m': '中', 'font.l': '大',
+  'font.label': '字體大小：{size}（按一下換下一段）',
   'speak.btn': '🔊 唸給我聽',
   'speak.stop': '■ 停止',
   'speak.result': '🔊 唸結果給我聽',
   'speak.resSame': '你傾向{lean}，最契合的是{top}。{msg}',
   'speak.resTop': '最契合的是{top}。{msg}',
   'speak.resNone': '{msg}',
-  'parents.share': '傳給爸媽（大字版）',
 
   // B3 加分題
   'bonus.eyebrow': '加分題 · 不算進契合度',
@@ -217,6 +211,7 @@ export default {
   'type.campaign': '競選來源',
   'type.facebook': '臉書',
   'type.press-rewritten': '新聞改寫',
+  'type.social': '社群影音',
 
   // C4 分享
   'share.meta': '分享',

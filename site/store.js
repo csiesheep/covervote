@@ -65,21 +65,20 @@ export const hasProgress = s => s.lean !== null || Object.keys(s.ratings).length
 // ?embed=1：嵌入模式（媒體把一局放進 iframe）。只看網址；不影響任何資料請求，也不改變 internal 旗標。
 export const isEmbed = () => { try { return new URLSearchParams(location.search).get("embed") === "1"; } catch { return false; } };
 
-// ---- 長輩模式（#15）----
-// ?elder=1 開、?elder=0 關；頁首的「大字」開關也寫同一個鍵。記在 localStorage（getItem/setItem 已包 try/catch，讀不到走記憶體）。
-// 只影響字級、版面與一次一段；不改資料流（開票前不 fetch reveal/、guess 先於 reveal、internal=1 都照舊）。
-const ELDER_KEY = 'covervote:elder';
-export const isElder = () => getItem(ELDER_KEY) === '1';
-export function initElder(){
-  try {
-    const v = new URLSearchParams(location.search).get('elder');
-    if (v === '1' || v === '0') setItem(ELDER_KEY, v);
-  } catch {}
-  document.documentElement.classList.toggle('elder', isElder());
+// ---- 字體大小（#18）----
+// 小／中／大 = 內文約 15／17／20px，預設中；頁首的「字」按鈕輪流切換，記在 localStorage（getItem/setItem 已包 try/catch，讀不到走記憶體）。
+// 只影響字級與按鈕高度（app.css 的 --fs）；不改資料流。#15 的長輩模式已移除：網址上的舊參數一律忽略，舊的 localStorage 鍵清掉。
+const FS_KEY = 'covervote:fs';
+export const FS_SIZES = ['s', 'm', 'l'];
+export const fontSize = () => { const v = getItem(FS_KEY); return FS_SIZES.includes(v) ? v : 'm'; };
+export function initFontSize(){
+  removeItem('covervote:elder');
+  document.documentElement.dataset.fs = fontSize();
 }
-export function setElder(on){
-  setItem(ELDER_KEY, on ? '1' : '0');
-  document.documentElement.classList.toggle('elder', !!on);
+export function setFontSize(v){
+  if (!FS_SIZES.includes(v)) v = 'm';
+  setItem(FS_KEY, v);
+  document.documentElement.dataset.fs = v;
 }
 
 // ---- 班級（課堂版，#11）----

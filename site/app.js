@@ -6,7 +6,7 @@
 //  - 分數一律呼叫 engine/score.mjs，FE 不自己算。候選人的鍵是姓名。
 import { t, initLang, lang, has } from './i18n.js';
 import { raceIdOf, MIN_CLASS, TILES, METRO_KEYS, METRO_ETA, CEC_URL, FULL_URL } from './config.js';
-import { initInternal, initClass, initElder, isElder, setElder, classCode, newClassCode, loadClasses, saveClasses, CLASS_RE, isEmbed, loadState, saveState, freshState, hasProgress } from './store.js';
+import { initInternal, initClass, initFontSize, fontSize, setFontSize, FS_SIZES, classCode, newClassCode, loadClasses, saveClasses, CLASS_RE, isEmbed, loadState, saveState, freshState, hasProgress } from './store.js';
 import { initSound, isSoundOn, setSound, sfx } from './sound.js';
 import { hasVoice, syncSpeak, toggleSpeak, stopSpeaking } from './speech.js';
 import { postGuess, postPlay, getHealth, getStats, getClass } from './api.js';
@@ -14,7 +14,7 @@ import { loadRace, loadIssues, fetchReveal, buildPlan, menuOrder, mulberry32, No
 
 initInternal();
 initClass();
-initElder();
+initFontSize();
 initLang();
 initSound();
 // 嵌入模式（?embed=1）：沒有品牌列與頁尾連結，只留一行「完整版 ↗」；聲音維持預設關（initSound 不看這個旗標）。
@@ -36,12 +36,12 @@ function bar(left, meta){
   if (EMBED) return '';
   const on = isSoundOn();
   return `<header class="bar"><a class="brand" href="#/"><i></i>${esc(left)}</a><span class="bar-r">${meta ? `<span class="meta num" id="barmeta">${esc(meta)}</span>` : '<span class="meta num" id="barmeta"></span>'}`
-    + `<button class="eld" data-act="elder" aria-pressed="${isElder()}" aria-label="${esc(t('elder.toggleLabel'))}">${esc(t('elder.toggle'))}</button>`
+    + `<button class="fsz" data-act="fontsize" aria-label="${esc(t('font.label', { size: t('font.' + fontSize()) }))}">${esc(t('font.btn'))}<small>${esc(t('font.' + fontSize()))}</small></button>`
     + `<button class="snd" data-act="sound" aria-pressed="${on}" aria-label="${esc(t(on ? 'sound.on' : 'sound.off'))}" title="${esc(t(on ? 'sound.on' : 'sound.off'))}">${on ? ICON_ON : ICON_OFF}</button></span></header>`;
 }
-const footer = (healthKey, parentsKey) => EMBED
+const footer = healthKey => EMBED
   ? `<footer class="foot embed-foot"><a href="${FULL_URL}" target="_blank" rel="noopener">${esc(t('embed.full'))}</a></footer>`
-  : `<footer class="foot">${parentsKey !== undefined ? `<a id="parentslink" href="${esc(lineShare(elderUrl(parentsKey)))}" target="_blank" rel="noopener noreferrer">${esc(t('parents.share'))}</a>` : ''}${healthKey !== undefined ? `<a id="healthlink" href="#/${esc(healthKey || '')}/health"${healthKey ? '' : ' hidden'}>${esc(t('foot.health'))}</a>` : ''}<a href="#/info/method">${esc(t('foot.method'))}</a><a href="#/info/sources">${esc(t('foot.sources'))}</a><a href="#/info/privacy">${esc(t('foot.privacy'))}</a><a href="#/info/about">${esc(t('foot.about'))}</a><a href="#/embed">${esc(t('foot.media'))}</a><a href="#/class">${esc(t('foot.class'))}</a></footer>`;
+  : `<footer class="foot">${healthKey !== undefined ? `<a id="healthlink" href="#/${esc(healthKey || '')}/health"${healthKey ? '' : ' hidden'}>${esc(t('foot.health'))}</a>` : ''}<a href="#/info/method">${esc(t('foot.method'))}</a><a href="#/info/sources">${esc(t('foot.sources'))}</a><a href="#/info/privacy">${esc(t('foot.privacy'))}</a><a href="#/info/about">${esc(t('foot.about'))}</a><a href="#/embed">${esc(t('foot.media'))}</a><a href="#/class">${esc(t('foot.class'))}</a></footer>`;
 // 學生帶了格式正確的 ?class= 才有這一行；老師頁（#/class…）不顯示。
 const classLine = () => { const c = classCode(); return c && parse()[0] !== 'class' ? `<div class="classline num" id="classline">${esc(t('class.line', { code: c }))}</div>` : ''; };
 const page = (barHtml, body, foot = '') => `${barHtml}${classLine()}<main id="main" tabindex="-1"><div class="pad">${body}</div>${foot || (EMBED ? footer() : '')}</main>`;
@@ -84,7 +84,7 @@ const save = c => saveState(c.data.raceId, c.st);
 const issueLabel = (c, id) => c.issues.get(id) || id;
 const raceLabel = c => c.data.meta.label || c.key;
 const hasNumbers = c => c.data.candidates.every(x => Number.isInteger(x.number));
-const textMode = () => { if (isElder()) return 'plain'; try { return localStorage.getItem('covervote:text') === 'masked' ? 'masked' : 'plain'; } catch { return 'plain'; } };
+const textMode = () => { try { return localStorage.getItem('covervote:text') === 'masked' ? 'masked' : 'plain'; } catch { return 'plain'; } };
 function setTextMode(m){ try { localStorage.setItem('covervote:text', m); } catch {} }
 
 // 把連續的 ▇ 畫成墨條（點一下說遮了幾個字）
@@ -185,7 +185,7 @@ async function viewHome(){
     <p class="muted num" id="plays" hidden></p>
     <a class="btn" id="startbtn" href="${homePick ? '#/' + homePick : '#/'}" data-act="start" ${homePick ? '' : 'aria-disabled="true"'}>${esc(startLabel())}</a>
     <p class="muted">${esc(t('home.promise'))}</p>`;
-  return { html: page(bar(t('brand'), ''), body, footer(homePick || [...ready.keys()][0] || '', homePick || '')), mount: () => { fillCountdown(ready); fillPlays(ready); } };
+  return { html: page(bar(t('brand'), ''), body, footer(homePick || [...ready.keys()][0] || '')), mount: () => { fillCountdown(ready); fillPlays(ready); } };
 }
 // 「已有 N 局」：局數照常（靜默期也不受影響）；取不到或 0 就不顯示。
 const playsCache = new Map();
@@ -286,7 +286,7 @@ function viewLean(c){
   const rest = names.length - 3;
   const body = `
     <h1 class="mid">${esc(t('lean.q'))}</h1>
-    <p class="muted">${esc(t(isElder() ? 'elder.leanSub' : 'lean.sub'))}</p>
+    <p class="muted">${esc(t('lean.sub'))}</p>
     <div class="stack" role="radiogroup" aria-label="${esc(t('lean.group'))}">
       ${names.map(optHtml).join('')}
       ${collapsed ? `<button class="opt" data-act="more" aria-expanded="false"><span class="ava">…</span><span>${esc(t('lean.more', { n: rest }))}<small>${esc(t('lean.expand'))}</small></span></button>` : ''}
@@ -305,13 +305,11 @@ function roundSteps(c, cur){
 function rateButtons(c, p, label){
   const cur = c.st.ratings[p.id];
   return `<div class="rate" role="radiogroup" aria-label="${esc(label)}">${[-2, -1, 0, 1, 2].map(v =>
-    `<button type="button" role="radio" aria-checked="${cur === v}" class="${cur === v ? 'on' : ''}" data-act="rate" data-pid="${esc(p.id)}" data-v="${v}"><b>${sgn(v)}</b>${esc(t((isElder() ? 'elder.rate.' : 'rate.') + v))}</button>`).join('')}</div>`;
+    `<button type="button" role="radio" aria-checked="${cur === v}" class="${cur === v ? 'on' : ''}" data-act="rate" data-pid="${esc(p.id)}" data-v="${v}"><b>${sgn(v)}</b>${esc(t('rate.' + v))}</button>`).join('')}</div>`;
 }
 // 唸給你聽：只唸這一段的白話版（plain）——開票前 payload 裡本來就沒有作者；遮蔽記號 ▇ 換成停頓。
 // 沒有 zh-TW 聲音（或沒有 speechSynthesis）就先 hidden，syncSpeak 在聲音出現時才顯示。
 const speakBtn = (label, extra) => `<button type="button" class="chip speak" data-act="speak" data-speak${hasVoice() ? '' : ' hidden'} aria-pressed="false" data-label-idle="${esc(label)}" data-label-stop="${esc(t('speak.stop'))}" ${extra}>${esc(label)}</button>`;
-// 長輩模式一次一段：這一組裡，第一段還沒打分之後的段落先藏起來（打完分才出現）。
-const elderVisible = (c, cards) => { let seen = true; return cards.map(p => { const show = seen; if (c.st.ratings[p.id] === undefined) seen = false; return show; }); };
 // 猜作者的選項：只放這一都「有段落」的人（cands/ 的 inPlay === true；orchestrator 裁決 #6）。
 // 放進沒有段落的人會稀釋猜測、壓低猜中率，遮蔽健康度就失真。cands/ 還沒有 inPlay 欄位（或全是 false）→ 退回全部。
 // 傾向選單照舊放全部候選人（viewLean 用 c.order）。
@@ -323,12 +321,12 @@ function guessBlock(c, p){
   const g = c.st.guesses[p.id];
   const chips = guessNames(c).map(n => `<button type="button" class="chip${g === n ? ' on' : ''}" aria-pressed="${g === n}" data-act="guess" data-pid="${esc(p.id)}" data-v="${esc(n)}">${esc(n)}</button>`).join('')
     + `<button type="button" class="chip${g === 'unknown' ? ' on' : ''}" aria-pressed="${g === 'unknown'}" data-act="guess" data-pid="${esc(p.id)}" data-v="unknown">${esc(t('play.unknown'))}</button>`;
-  return `<details class="guess"${g ? ' open' : ''}><summary><span class="sl">${esc(t(isElder() ? 'elder.guess' : 'play.guess'))}</span><span class="num">${esc(t(isElder() ? 'elder.guessNote' : 'play.guessNote'))}</span></summary><div class="row">${chips}</div></details>`;
+  return `<details class="guess"${g ? ' open' : ''}><summary><span class="sl">${esc(t('play.guess'))}</span><span class="num">${esc(t('play.guessNote'))}</span></summary><div class="row">${chips}</div></details>`;
 }
-function cardHtml(c, p, i, { guess, tag, hide }) {
+function cardHtml(c, p, i, { guess, tag }) {
   const mode = textMode();
   const text = mode === 'masked' ? p.masked : p.plain;
-  return `<div class="pcard" data-pid="${esc(p.id)}" tabindex="-1"${hide ? ' hidden' : ''}>
+  return `<div class="pcard" data-pid="${esc(p.id)}" >
     <div class="pcard-head"><span class="seat" aria-label="${esc(seatOf(i))}">${esc(seatOf(i))}</span>${tag ? `<span class="tag">${esc(tag)}</span>` : ''}<span class="muted num" data-len>${esc(t('play.chars', { n: [...text].length }))}</span></div>
     <div class="pcard-body" data-body>${renderText(text)}</div>
     <div class="speakrow">${speakBtn(t('speak.btn'), `data-pid="${esc(p.id)}" aria-label="${esc(t('speak.btn') + ' · ' + seatOf(i))}"`)}</div>
@@ -337,7 +335,6 @@ function cardHtml(c, p, i, { guess, tag, hide }) {
   </div>`;
 }
 function toggleHtml(){
-  if (isElder()) return '';   // 長輩模式只給白話版（唸的也是白話版）
   const m = textMode();
   return `<div class="toggle" role="group" aria-label="${esc(t('play.textVersion'))}"><button type="button" data-act="textmode" data-v="plain" class="${m === 'plain' ? 'on' : ''}" aria-pressed="${m === 'plain'}">${esc(t('play.plain'))}</button><button type="button" data-act="textmode" data-v="masked" class="${m === 'masked' ? 'on' : ''}" aria-pressed="${m === 'masked'}">${esc(t('play.masked'))}</button></div>`;
 }
@@ -353,12 +350,11 @@ function viewRound(c, n){
     ${roundSteps(c, n - 1)}
     <div class="row between"><div class="eyebrow">${esc(t('play.issue'))}</div>${toggleHtml()}</div>
     <h1 class="mid">${esc(issueLabel(c, r.issueId))}</h1>
-    ${(() => { const vis = isElder() ? elderVisible(c, r.cards) : null; return r.cards.map((p, i) => cardHtml(c, p, i, { guess: true, hide: vis && !vis[i] })).join(''); })()}
+    ${r.cards.map((p, i) => cardHtml(c, p, i, { guess: true })).join('')}
     <div class="btns"><a class="btn ghost" href="${n > 1 ? `#/${c.key}/play/${n - 1}` : `#/${c.key}/lean`}" style="flex:0 0 38%">${esc(t('play.back'))}</a><a class="btn" id="nextbtn" data-act="next-round" data-n="${n}" href="${nextHash(c, n)}" ${roundDone(c, r) ? '' : 'aria-disabled="true"'}>${esc(last ? t('play.nextLast') : t('play.next'))}</a></div>
-    <p class="muted" style="text-align:center" id="roundhint">${roundDone(c, r) ? '' : esc(hintText()) + ' · '}<button class="linkbtn" data-act="skip-round" data-n="${n}">${esc(t('play.skip'))}</button></p>`;
+    <p class="muted" style="text-align:center" id="roundhint">${roundDone(c, r) ? '' : esc(t('play.hint')) + ' · '}<button class="linkbtn" data-act="skip-round" data-n="${n}">${esc(t('play.skip'))}</button></p>`;
   return { html: page(bar(raceLabel(c), `${n} / ${c.plan.steps}`), body), mount: () => { sfx('card_deal'); } };
 }
-const hintText = () => t(isElder() ? 'elder.hint' : 'play.hint');
 const roundDone = (c, r) => r.cards.every(p => c.st.ratings[p.id] !== undefined);
 const nextHash = (c, n) => n < c.plan.rounds.length ? `#/${c.key}/play/${n + 1}` : c.plan.bonus.length ? `#/${c.key}/bonus` : `#/${c.key}/important`;
 
@@ -371,7 +367,7 @@ function viewBonus(c){
     <div class="row between"><div class="eyebrow">${esc(t('bonus.eyebrow'))}</div>${toggleHtml()}</div>
     <h1 class="mid">${esc(t('bonus.title'))}</h1>
     <p class="muted">${esc(t('bonus.sub'))}</p>
-    ${(() => { const vis = isElder() ? elderVisible(c, c.plan.bonus) : null; return c.plan.bonus.map((p, i) => cardHtml(c, p, c.plan.rounds.length ? i + off : i, { guess: false, tag: issueLabel(c, p.issueId), hide: vis && !vis[i] })).join(''); })()}
+    ${c.plan.bonus.map((p, i) => cardHtml(c, p, c.plan.rounds.length ? i + off : i, { guess: false, tag: issueLabel(c, p.issueId) })).join('')}
     <div class="btns"><a class="btn ghost" href="#/${c.key}/play/${Math.max(1, c.plan.rounds.length)}" style="flex:0 0 38%">${esc(t('play.back'))}</a><a class="btn" href="#/${c.key}/important">${esc(t('play.nextLast'))}</a></div>`;
   return { html: page(bar(raceLabel(c), `${c.plan.steps} / ${c.plan.steps}`), body), mount: () => { sfx('card_deal'); } };
 }
@@ -386,7 +382,7 @@ function impRows(c){
 function viewImportant(c){
   const body = `
     <h1 class="mid">${esc(t('imp.title'))}</h1>
-    <p class="muted">${esc(t(isElder() ? 'elder.impSub' : 'imp.sub'))}</p>
+    <p class="muted">${esc(t('imp.sub'))}</p>
     <div id="imps">${impRows(c) || `<p class="muted">${esc(t('imp.none'))}</p>`}</div>
     <div id="revealerr"></div>
     <button class="btn" id="revealbtn" data-act="reveal">${esc(t('imp.reveal'))}</button>
@@ -788,9 +784,6 @@ let shareNames = false;
 const OG_W = 1200, OG_H = 630;
 const gameUrl = c => location.origin + location.pathname + '#/' + c.key;
 const shareUrl = gameUrl;
-// 傳給爸媽：LINE 分享連結指向 …/covervote/?elder=1#/<city>（只帶 elder=1，不帶 internal、class 等其他參數）。
-const elderUrl = key => location.origin + location.pathname + '?elder=1#/' + (key || '');
-const lineShare = u => 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(u);
 const siteLabel = () => location.host + location.pathname.replace(/index\.html$/, '').replace(/\/$/, '');
 const loadImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
 
@@ -839,7 +832,6 @@ async function viewShare(c){
     <label class="opt" style="cursor:pointer"><input type="checkbox" id="showNames" ${shareNames ? 'checked' : ''}> <span>${esc(t('share.names'))}<small>${esc(t('share.namesSub'))}</small></span></label>
     <a class="btn" data-act="download" id="dlbtn" download="covervote.png" href="#/${c.key}/share" aria-disabled="true">${esc(t('share.download'))}</a>
     <div class="btns"><a class="btn ghost" data-act="line" id="linebtn" href="#/${c.key}/share" target="_blank" rel="noopener noreferrer">${esc(t('share.line'))}</a><button class="btn ghost" data-act="copy">${esc(t('share.copy'))}</button></div>
-    <a class="btn" id="parentsbtn" href="${esc(lineShare(elderUrl(c.key)))}" target="_blank" rel="noopener noreferrer">${esc(t('parents.share'))}</a>
     <a class="btn line" href="#/${c.key}/result">${esc(t('det.back'))}</a>`;
   return {
     html: page(bar(raceLabel(c), t('share.meta')), body),
@@ -955,7 +947,7 @@ function refreshRound(c){
   const nb = document.getElementById('nextbtn');
   if (nb){ if (done) nb.removeAttribute('aria-disabled'); else nb.setAttribute('aria-disabled', 'true'); }
   const h = document.getElementById('roundhint');
-  if (h){ const first = h.firstChild; if (first && first.nodeType === 3) first.textContent = done ? '' : hintText() + ' · '; }
+  if (h){ const first = h.firstChild; if (first && first.nodeType === 3) first.textContent = done ? '' : t('play.hint') + ' · '; }
 }
 
 root.addEventListener('click', async e => {
@@ -971,7 +963,7 @@ root.addEventListener('click', async e => {
       if (on) sfx('tap');
       break;
     }
-    case 'elder': { setElder(!isElder()); sfx('tap'); render(); break; }
+    case 'fontsize': { setFontSize(FS_SIZES[(FS_SIZES.indexOf(fontSize()) + 1) % FS_SIZES.length]); sfx('tap'); render(); break; }
     case 'speak': {
       const txt = el.dataset.text !== undefined ? el.dataset.text
         : (c && c.data.passages.find(x => x.id === el.dataset.pid)?.plain) || '';
@@ -984,7 +976,6 @@ root.addEventListener('click', async e => {
       const sb = document.getElementById('startbtn'); sb.textContent = startLabel(); sb.removeAttribute('aria-disabled'); sb.href = '#/' + homePick;
       showPlays();
       const hl = document.getElementById('healthlink'); if (hl){ hl.href = `#/${homePick}/health`; hl.hidden = false; }
-      const pl = document.getElementById('parentslink'); if (pl) pl.href = lineShare(elderUrl(homePick));
       break;
     }
     case 'start': if (!homePick) e.preventDefault(); break;
@@ -1034,14 +1025,6 @@ root.addEventListener('click', async e => {
       if (!c) break;
       c.st.ratings[el.dataset.pid] = parseInt(el.dataset.v, 10); save(c); sfx('stamp');
       setPressed([...el.parentElement.querySelectorAll('button')], b => b === el);
-      if (isElder()){   // 一次一段：這一段打完分，下一段才出現
-        const nx = el.closest('.pcard')?.nextElementSibling;
-        if (nx && nx.classList.contains('pcard') && nx.hidden){
-          nx.hidden = false;
-          nx.scrollIntoView({ behavior: reduceMotion() ? 'auto' : 'smooth', block: 'start' });
-          nx.focus({ preventScroll: true });
-        }
-      }
       refreshRound(c);
       if (c.st.done && document.getElementById('resbody')) refreshResult(c);
       break;
