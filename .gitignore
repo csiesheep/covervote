@@ -1,0 +1,10 @@
+node_modules/
+public/
+.wrangler/
+.DS_Store
+Thumbs.db
+
+# agent-team-delivery
+__MARKER_ORCH.txt
+__orch_*
+.claude/worktrees/

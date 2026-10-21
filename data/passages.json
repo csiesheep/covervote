@@ -1,0 +1,30 @@
+[
+  {
+    "id": "p-0001",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "transport",
+    "candidateId": "c-test-a",
+    "original": "測試甲承諾：上任四年內把市區公車路線重新規劃一次，尖峰時段班距縮短到十分鐘以內，並且每一站都裝上即時到站看板，讓通勤的人不用再站在路邊猜車什麼時候來。",
+    "masked": "上任四年內把市區公車路線重新規劃一次，尖峰時段班距縮短到十分鐘以內，並且每一站都裝上即時到站看板，讓通勤的人不用再站在路邊猜車什麼時候來。",
+    "plain": "重新規劃公車路線，尖峰十分鐘一班，每站都有到站看板。",
+    "sourceUrl": "https://example.invalid/fake-a",
+    "sourceDate": "2026-10-01",
+    "sourceType": "campaign",
+    "length": 69,
+    "guessStats": { "answers": 0, "correct": 0 }
+  },
+  {
+    "id": "p-0002",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "transport",
+    "candidateId": "c-test-b",
+    "original": "測試乙主張：在每個行政區設置至少兩處 YouBike 大型轉乘站，並和捷運站出口直接相連，同時把自行車道補成連續的路網，讓騎車上班成為比開車更快的選項。",
+    "masked": "在每個行政區設置至少兩處公共自行車大型轉乘站，並和捷運站出口直接相連，同時把自行車道補成連續的路網，讓騎車上班成為比開車更快的選項。",
+    "plain": "每區至少兩處自行車轉乘站，接捷運出口，補齊車道路網。",
+    "sourceUrl": "https://example.invalid/fake-b",
+    "sourceDate": "2026-10-02",
+    "sourceType": "campaign",
+    "length": 66,
+    "guessStats": { "answers": 0, "correct": 0 }
+  }
+]

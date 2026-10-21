@@ -1,0 +1,15 @@
+{
+  "name": "covervote",
+  "private": true,
+  "type": "module",
+  "description": "蓋牌投票：遮住名字給政見打分的盲測遊戲",
+  "scripts": {
+    "build": "node tools/build_public.mjs && node tools/check_public_imports.mjs",
+    "deploy": "node tools/build_public.mjs && node tools/check_public_imports.mjs && wrangler deploy",
+    "test": "node tests/run_node.mjs",
+    "serve": "bash tools/orch.sh serve ."
+  },
+  "devDependencies": {
+    "wrangler": "^4.131.0"
+  }
+}

@@ -1,0 +1,73 @@
+// data/schema.mjs — 資料欄位的唯一定義與驗證。BE 所有。
+//
+// 一場「選舉」(elections.json) 有多個「選區」(races.json)，每個選區有候選人(candidates.json)
+// 與政見段落(passages.json)。race id = `<electionId>.<office>.<district>`，所以 2028 總統、立委
+// 或任何一場補選都只是多加幾列，不用改結構。
+//
+// 段落欄位照 plan 第四節：id, race, issueId, candidateId, original, masked, plain,
+// sourceUrl, sourceDate, sourceType, length, guessStats。
+// 只有 PUBLIC_PASSAGE_FIELDS 可以進開票前的前端 payload（tools/build_public.mjs）；
+// 其他欄位（candidateId、original、sourceUrl、sourceDate、sourceType、guessStats）
+// 都能直接或間接指出作者，只能在開票後出現。
+
+export const OFFICES = ['mayor', 'county-magistrate', 'president', 'legislator', 'councilor'];
+export const SOURCE_TYPES = ['gazette', 'campaign', 'facebook', 'press-rewritten'];
+export const LENGTH_MIN = 60;   // plan 第一節：段落長度統一在 60–120 字
+export const LENGTH_MAX = 120;
+
+export const PASSAGE_FIELDS = ['id', 'race', 'issueId', 'candidateId', 'original', 'masked', 'plain',
+  'sourceUrl', 'sourceDate', 'sourceType', 'length', 'guessStats'];
+export const PUBLIC_PASSAGE_FIELDS = ['id', 'issueId', 'masked', 'plain', 'length'];
+
+// 長度以 masked 的字數算（Unicode code point），不含空白。
+export const textLength = s => [...String(s).replace(/\s/g, '')].length;
+
+const DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+export function validate({ elections, races, candidates, passages }){
+  const errs = [];
+  const ids = new Map();
+  const uniq = (table, id) => {
+    const key = table + ':' + id;
+    if (ids.has(key)) errs.push(`${table} id 重複：${id}`);
+    ids.set(key, true);
+  };
+  const electionIds = new Set(elections.map(e => e.id));
+  for (const e of elections){
+    uniq('election', e.id);
+    if (!DATE.test(e.voteDate || '')) errs.push(`election ${e.id}: voteDate 不是 YYYY-MM-DD`);
+  }
+  const raceIds = new Set(races.map(r => r.id));
+  for (const r of races){
+    uniq('race', r.id);
+    if (!electionIds.has(r.electionId)) errs.push(`race ${r.id}: electionId ${r.electionId} 不存在`);
+    if (!OFFICES.includes(r.office)) errs.push(`race ${r.id}: office ${r.office} 不在 ${OFFICES.join('/')}`);
+    if (r.id !== `${r.electionId}.${r.office}.${r.district}`) errs.push(`race ${r.id}: id 應為 electionId.office.district`);
+  }
+  const candById = new Map(candidates.map(c => [c.id, c]));
+  for (const c of candidates){
+    uniq('candidate', c.id);
+    if (!raceIds.has(c.raceId)) errs.push(`candidate ${c.id}: raceId ${c.raceId} 不存在`);
+    if (!c.name) errs.push(`candidate ${c.id}: 沒有 name`);
+  }
+  for (const p of passages){
+    uniq('passage', p.id);
+    const missing = PASSAGE_FIELDS.filter(f => !(f in p));
+    if (missing.length) errs.push(`passage ${p.id}: 缺欄位 ${missing.join(', ')}`);
+    const extra = Object.keys(p).filter(f => !PASSAGE_FIELDS.includes(f));
+    if (extra.length) errs.push(`passage ${p.id}: 多出欄位 ${extra.join(', ')}`);
+    if (!raceIds.has(p.race)) errs.push(`passage ${p.id}: race ${p.race} 不存在`);
+    const c = candById.get(p.candidateId);
+    if (!c) errs.push(`passage ${p.id}: candidateId ${p.candidateId} 不存在`);
+    else if (c.raceId !== p.race) errs.push(`passage ${p.id}: 候選人 ${p.candidateId} 不在 ${p.race}`);
+    if (!SOURCE_TYPES.includes(p.sourceType)) errs.push(`passage ${p.id}: sourceType ${p.sourceType} 不在 ${SOURCE_TYPES.join('/')}`);
+    if (!DATE.test(p.sourceDate || '')) errs.push(`passage ${p.id}: sourceDate 不是 YYYY-MM-DD`);
+    const n = textLength(p.masked);
+    if (p.length !== n) errs.push(`passage ${p.id}: length 寫 ${p.length}，masked 實際 ${n} 字`);
+    if (n < LENGTH_MIN || n > LENGTH_MAX) errs.push(`passage ${p.id}: masked ${n} 字，不在 ${LENGTH_MIN}–${LENGTH_MAX}`);
+    const g = p.guessStats;
+    if (!g || !Number.isInteger(g.answers) || !Number.isInteger(g.correct) || g.correct > g.answers)
+      errs.push(`passage ${p.id}: guessStats 應為 { answers, correct } 且 correct ≤ answers`);
+  }
+  return errs;
+}
