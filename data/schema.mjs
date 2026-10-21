@@ -45,10 +45,21 @@ export function validate({ elections, races, candidates, passages }){
     if (r.id !== `${r.electionId}.${r.office}.${r.district}`) errs.push(`race ${r.id}: id 應為 electionId.office.district`);
   }
   const candById = new Map(candidates.map(c => [c.id, c]));
+  const numberSeen = new Map();   // `${raceId}#${number}` → candidate id
   for (const c of candidates){
     uniq('candidate', c.id);
     if (!raceIds.has(c.raceId)) errs.push(`candidate ${c.id}: raceId ${c.raceId} 不存在`);
     if (!c.name) errs.push(`candidate ${c.id}: 沒有 name`);
+    // number：抽籤後的號次（正整數），抽籤前 null。欄位一定要在：缺欄位和「還沒抽籤」分不出來。
+    if (!('number' in c)) errs.push(`candidate ${c.id}: 缺 number（未抽籤寫 null）`);
+    else if (c.number !== null){
+      if (!Number.isInteger(c.number) || c.number < 1) errs.push(`candidate ${c.id}: number ${JSON.stringify(c.number)} 應為正整數或 null`);
+      else {
+        const k = c.raceId + '#' + c.number;
+        if (numberSeen.has(k)) errs.push(`candidate ${c.id}: number ${c.number} 與 ${numberSeen.get(k)} 在 ${c.raceId} 重複`);
+        else numberSeen.set(k, c.id);
+      }
+    }
   }
   for (const p of passages){
     uniq('passage', p.id);
