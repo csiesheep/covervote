@@ -44,6 +44,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .pad{padding:18px 16px 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:14px;flex:1}
 .eyebrow{font-size:calc(12px*var(--fs));letter-spacing:.12em;color:var(--ink-2)}
 .big{font-family:var(--f-display);font-size:calc(30px*var(--fs));line-height:1.2;font-weight:700}
+.tagline{white-space:nowrap;font-size:min(calc(30px*var(--fs)),calc((min(100vw,480px) - 32px)/var(--tl,12.3)))}   /* 標語一行（#26）：字級跟寬度走，--tl＝標語字寬（em）；一行優先於字級設定 */
 .mid{font-family:var(--f-display);font-size:calc(21px*var(--fs));line-height:1.3;font-weight:700}
 .muted{color:var(--ink-2);font-size:calc(13px*var(--fs))}
 .num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
@@ -190,6 +191,7 @@ html.embed .app{min-height:0;max-width:560px;border-inline:0}
 html.embed .pad{padding-top:14px;padding-bottom:14px}
 html.embed .foot.embed-foot{justify-content:center;padding:8px 16px 10px}
 html.embed .big{font-size:calc(26px*var(--fs))}
+html.embed .tagline{font-size:min(calc(26px*var(--fs)),calc((min(100vw,560px) - 32px)/var(--tl,12.3)))}   /* #26：嵌入也一行，優先於字級設定 */
 html.embed img,html.embed canvas{max-width:100%}
 /* 給媒體頁 */
 .code{margin:0;padding:12px;border:1px solid var(--rule);border-radius:10px;background:var(--ground);font-family:var(--f-num);font-size:calc(12px*var(--fs));line-height:1.5;overflow-x:auto;white-space:pre}

@@ -182,7 +182,7 @@ async function viewHome(){
   }).join('');
   const body = `
     <img class="illo" src="assets/hero.webp" alt="${esc(t('home.heroAlt'))}" width="1152" height="648" fetchpriority="high" decoding="async" style="margin:-6px 0 -4px;object-fit:cover;object-position:right;aspect-ratio:16/7">
-    <h1 class="big">${lines(t('home.title'))}</h1>
+    <h1 class="big tagline" style="--tl:${lang() === 'en' ? 24.2 : 12.3}">${esc(t('home.title'))}</h1>
     <p class="muted">${esc(t('home.sub'))}</p>
     <div class="tiles" role="group" aria-label="${esc(t('home.mapLabel'))}">${tiles}</div>
     <div class="legend"><span><i class="sw"></i>${esc(t('home.legendOn'))}</span><span><i class="sw d"></i>${esc(t('home.legendOff'))}</span></div>

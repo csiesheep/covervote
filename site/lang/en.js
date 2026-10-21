@@ -12,7 +12,7 @@ export default {
   'common.home': 'Home',
   'common.back': 'Back',
 
-  'home.title': 'With the names covered,\nwho would you vote for?',
+  'home.title': 'With the names covered, who would you vote for?',
   'home.sub': 'One topic per round: rate the platform lines with names hidden. Then flip the cards and see who fits you.',
   'home.heroAlt': 'Face-down cards on a voting desk, a hand flipping one over',
   'home.mapLabel': 'City map',
