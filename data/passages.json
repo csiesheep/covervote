@@ -260,12 +260,12 @@
     "issueId": "economy",
     "candidateId": "c-taichung-1",
     "original": "商圈輔導獎勵補助經費提高 3 倍；定期舉辦大型活動，或結合熱門手機遊戲行銷，吸引觀光人潮，活絡商圈經濟。\n鼓勵傳統產業及中小微企業智慧升級，成立產業創新中心，導入 AI 科技與智慧管理，打造創新產業鏈。",
-    "masked": "將商圈輔導獎勵補助經費提高3倍，並定期舉辦大型活動、結合熱門手機遊戲行銷；另鼓勵傳統產業及中小微企業智慧升級，成立產業創新中心，導入AI科技與智慧管理。",
-    "plain": "商圈輔導的獎勵補助經費提高到原來的3倍，定期辦大型活動、和熱門手機遊戲合作宣傳；另鼓勵傳統產業和中小微企業做智慧升級，設立產業創新中心，導入AI與智慧管理。",
+    "masked": "在北區，將商圈輔導獎勵補助經費提高3倍，並定期舉辦大型活動、結合熱門手機遊戲行銷；在豐原與后里，鼓勵傳統產業及中小微企業智慧升級，成立產業創新中心，導入AI科技與智慧管理。",
+    "plain": "在北區，商圈輔導的獎勵補助經費提高到原來的3倍，定期辦大型活動、和熱門手機遊戲合作宣傳；在豐原與后里，鼓勵傳統產業和中小微企業做智慧升級，設立產業創新中心，導入AI與智慧管理。",
     "sourceUrl": "https://a-chun.tw/future",
     "sourceDate": "2026-08-20",
     "sourceType": "campaign",
-    "length": 76,
+    "length": 86,
     "guessStats": {
       "answers": 0,
       "correct": 0
@@ -367,74 +367,6 @@
     "sourceUrl": "https://a-chun.tw/future",
     "sourceDate": "2026-08-20",
     "sourceType": "campaign",
-    "length": 65,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taoyuan-001",
-    "race": "2026-local.mayor.taoyuan",
-    "issueId": "eldercare",
-    "candidateId": "c-taoyuan-2",
-    "original": "敬老卡每月點數從 800 點直接加碼到 1200 點！當月沒用完還能彈性累積到年底不浪費！更讚的是：使用通路全面擴大到超商超市、農漁會產銷中心、健保藥局及特約醫院。",
-    "masked": "將長者福利卡每月點數從800點提高到1200點，當月沒用完的點數可累積到年底；使用範圍擴大到超商超市、農漁會產銷中心、健保藥局與特約醫院。",
-    "plain": "長輩福利卡每月點數從800點加到1200點，這個月沒用完可以留到年底；超商、超市、農漁會產銷中心、健保藥局和特約醫院都能使用。",
-    "sourceUrl": "https://www.youtube.com/watch?v=zc86dxHW0eU",
-    "sourceDate": "2026-10-14",
-    "sourceType": "social",
-    "length": 69,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taoyuan-002",
-    "race": "2026-local.mayor.taoyuan",
-    "issueId": "eldercare",
-    "candidateId": "c-taoyuan-1",
-    "original": "敬老愛心卡將於116年1月1日起推出全新升級方案，本次升級最大亮點為每月開放200點折抵農會消費，以及100點折抵醫療補助，同時將愛心計程車補助提升至每趟90點，並新增銀髮肌力課程及預立醫療照護諮商等多項服務。",
-    "masked": "長者福利卡每月開放200點折抵農會消費、100點折抵醫療補助，愛心計程車每趟補助90點，並提供銀髮肌力課程及預立醫療照護諮商等服務。",
-    "plain": "長輩福利卡每個月有200點可以在農會消費、100點可以抵醫療費用；愛心計程車每趟補助90點；另外也有銀髮肌力課程和預立醫療照護諮商可以用。",
-    "sourceUrl": "https://www.tycg.gov.tw/NewsPage_Content.aspx?n=10&s=1779036",
-    "sourceDate": "2026-08-04",
-    "sourceType": "press-rewritten",
-    "length": 66,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taoyuan-003",
-    "race": "2026-local.mayor.taoyuan",
-    "issueId": "transit",
-    "candidateId": "c-taoyuan-2",
-    "original": "👉重新布局公車總站與轉運節點 路線不再班班繞進市區\n✅將目前放射型路網調整為「幹線＋生活圈＋接駁」三級路網\n✅發展貫穿型、環狀型路線\n👉公車服務跟著需求走\n✅熱門通勤廊道提高班次與運能\n✅偏鄉依需求導入預約式公車 發展彈性接駁",
-    "masked": "將放射型的公車路網調整為幹線、生活圈、接駁三級，發展貫穿型與環狀型路線，讓路線不再班班繞進市區；熱門通勤廊道提高班次與運能，偏鄉依需求導入預約式公車。",
-    "plain": "公車路網從放射狀改成幹線、生活圈、接駁三層，多開貫穿和環狀路線，不要每班車都繞進市區；人多的通勤路線增加班次，偏鄉依需求用預約式公車接駁。",
-    "sourceUrl": "https://www.threads.com/@schuanglawyer/post/DeHNmOGiX1D",
-    "sourceDate": "2026-10-05",
-    "sourceType": "social",
-    "length": 75,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taoyuan-004",
-    "race": "2026-local.mayor.taoyuan",
-    "issueId": "transit",
-    "candidateId": "c-taoyuan-1",
-    "original": "考量龜山人口密集、產業蓬勃發展及通勤需求，市府特別規劃長約2公里的「銀線支線」，深入服務長樂、長庚及樂善等里，強化在地公共運輸量能，進一步緊密串聯桃園與林口生活圈。",
-    "masked": "規劃一條長約2公里的捷運支線，深入服務人口密集、產業蓬勃且通勤需求高的地區，強化在地公共運輸量能，進一步緊密串聯相鄰城市的生活圈。",
-    "plain": "規劃一條約2公里的捷運支線，開進人口多、產業多、通勤需求大的地區，讓當地的大眾運輸更充足，也和鄰近城市的生活圈連得更緊。",
-    "sourceUrl": "https://www.tycg.gov.tw/NewsPage_Content.aspx?n=10&s=1911802",
-    "sourceDate": "2026-10-20",
-    "sourceType": "press-rewritten",
     "length": 65,
     "guessStats": {
       "answers": 0,
