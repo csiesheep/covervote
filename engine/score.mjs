@@ -1,6 +1,8 @@
 // engine/score.mjs — 契合分數。BE 所有（orchestrator 裁決 #1：engine/ 歸 BE，FE 只呼叫、不自己算）。
 //
-// 純 ES module：不 import 任何東西（不碰 node:、不碰 DOM），瀏覽器直接 `import './engine/score.mjs'`。
+// 純 ES module：不 import 任何東西（不碰 node:、不碰 DOM）。build 把 engine/ 複製到 covervote/engine/，
+// 頁面直接載入 covervote/engine/score.mjs。
+// （註解裡不要寫出「import 加引號路徑」的字樣：tools/check_public_imports.mjs 用正規式掃，會把註解當成 import。）
 // 規格（issue #1；驗收 tests/acc_score.mjs 檔頭的 8 條，設計稿 D4「契合分數怎麼算」）：
 //   1. 每段分數是 −2..+2 的整數；沒有分數（跳過）的段落不算，不是當 0 算。
 //   2. 一個議題要有 ≥ 2 位候選人提出段落才計分；只有一人提出的是「加分題」，不計分。
