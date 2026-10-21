@@ -125,7 +125,7 @@ async function render(){
 
 async function route(seg){
   if (seg.length === 0) return viewHome();
-  if (seg[0] === 'info') return viewInfo(seg[1] || 'method');
+  if (seg[0] === 'info') return viewInfo(seg[1] || 'method', seg[2] || '');
   if (seg[0] === 'embed') return viewMedia();
   if (seg[0] === 'class') return viewClass(seg[1] || '', seg[2] || '');
   const key = seg[0], sub = seg[1] || '';
@@ -263,7 +263,7 @@ function viewEntry(c){
     <h1 class="big">${esc(raceLabel(c))}</h1>
     <div class="deck" aria-hidden="true"><div class="cardback"></div><div class="cardback"></div><div class="cardback"></div></div>
     <table>
-      <tr><th>${esc(t('entry.candidates'))}</th><td class="num">${esc(t('entry.nCands', { n: c.data.candidates.length }))}</td></tr>
+      <tr><th>${esc(t('entry.candidates'))}</th><td class="num"><a href="#/info/sources/${c.key}">${esc(t('entry.nCandsIn', { n: c.data.candidates.length, k: c.data.candidates.filter(x => x.inPlay === true).length }))}</a></td></tr>
       <tr><th>${esc(t('entry.topicsTh'))}</th><td class="num">${esc(topics)}</td></tr>
       <tr><th>${esc(t('entry.passages'))}</th><td class="num">${esc(t('entry.passagesVal', { n: ps.length, avg }))}</td></tr>
       ${meta.join('')}
@@ -865,19 +865,34 @@ async function viewShare(c){
 }
 
 // ---------------- D4 靜態頁 ----------------
-function viewInfo(tab){
+// 每都的收錄狀況：只講「有沒有收進來」，不講出處種類、不放出處網址（開票前不露；owner 2026-10-21 設計決定 #2）。
+async function coverageHtml(){
+  const rs = await Promise.allSettled(METRO_KEYS.map(k => loadRace(k)));
+  const h2 = 'class="mid" style="font-size:calc(17px*var(--fs))"';
+  const sec = METRO_KEYS.map((k, i) => {
+    const cands = rs[i].status === 'fulfilled' ? rs[i].value.candidates : [];
+    const body = !cands.some(x => x.inPlay === true)
+      ? `<p class="muted">${esc(t('cov.prep'))}</p>`
+      : `<table>${cands.map(x => `<tr><td style="white-space:nowrap;vertical-align:top">${esc(x.name)}</td><td>${x.inPlay === true ? esc(t('cov.in')) : `<span class="muted">${esc(t('cov.out'))}</span>`}</td></tr>`).join('')}</table>`;
+    return `<section id="cov-${k}" class="stack" style="gap:6px"><h2 ${h2}>${esc(t('city.' + k))}</h2>${body}</section>`;
+  }).join('');
+  return `<h2 ${h2}>${esc(t('cov.why'))}</h2><ul class="stack" style="padding-left:18px;margin:0;font-size:14px;gap:6px">${[1, 2, 3].map(i => `<li>${esc(t('cov.why' + i))}</li>`).join('')}</ul><div class="eyebrow">${esc(t('cov.title'))}</div>${sec}`;
+}
+
+async function viewInfo(tab, focus){
   const tabs = ['method', 'sources', 'privacy', 'about'];
   if (!tabs.includes(tab)) tab = 'method';
   const chips = tabs.map(k => `<a class="chip${k === tab ? ' on' : ''}" href="#/info/${k}" aria-current="${k === tab}">${esc(t('info.tab.' + k))}</a>`).join('');
   let content = '';
   if (tab === 'method') content = `<h1 class="mid">${esc(t('info.method.title'))}</h1><ol class="stack" style="padding-left:18px;margin:0;font-size:14px;gap:6px">${[1, 2, 3, 4, 5].map(i => `<li>${esc(t('info.method.' + i))}</li>`).join('')}</ol>`;
-  if (tab === 'sources') content = `<h1 class="mid">${esc(t('info.sources.title'))}</h1><p style="font-size:14px">${esc(t('info.sources.body'))}</p>`;
+  if (tab === 'sources') content = `<h1 class="mid">${esc(t('info.sources.title'))}</h1><p style="font-size:14px">${esc(t('cov.list'))}</p><p style="font-size:14px">${esc(t('info.sources.body'))}</p>` + await coverageHtml();
   if (tab === 'about') content = `<h1 class="mid">${esc(t('info.about.title'))}</h1><p style="font-size:14px">${esc(t('info.about.body'))}</p>`;
   if (tab === 'privacy') content = `<h1 class="mid">${esc(t('info.privacy.title'))}</h1><table><tr><th>${esc(t('info.privacy.th1'))}</th><th>${esc(t('info.privacy.th2'))}</th></tr>`
     + [1, 2, 3, 4].map(i => `<tr><td>${esc(t('info.privacy.r' + i + 'a'))}</td><td>${esc(t('info.privacy.r' + i + 'b'))}</td></tr>`).join('')
     + `</table><p class="muted">${esc(t('info.privacy.fonts'))}</p><p class="muted">${esc(t('info.privacy.note'))}</p>`
     + `<button type="button" class="btn ghost" data-act="optout" aria-pressed="${isOptedOut()}">${esc(t('info.privacy.optout'))}</button><p class="muted" role="status" id="optoutmsg">${isOptedOut() ? esc(t('info.privacy.optoutOn')) : ''}</p>`;
-  return { html: page(bar(t('brand'), t('info.meta')), `<div class="row">${chips}</div>${content}<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`, footer()) };
+  return { html: page(bar(t('brand'), t('info.meta')), `<div class="row">${chips}</div>${content}<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`, footer()),
+    mount: () => { if (tab === 'sources' && focus){ const el = document.getElementById('cov-' + focus); if (el) el.scrollIntoView(); } } };
 }
 
 // ---------------- 給媒體 #/embed ----------------
