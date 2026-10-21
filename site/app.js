@@ -708,7 +708,8 @@ async function viewClass(code, city){
   let rd = null;
   try { rd = await loadRace(city); } catch {}
   const raceId = raceIdOf(city);
-  const nCand = rd ? rd.candidates.length : 0;
+  const nIn = rd ? rd.candidates.filter(x => x.inPlay === true).length : 0;   // 猜作者選單的人數（同 /api/health 的 random）；沒有 inPlay 才退回名單
+  const nCand = nIn >= 2 ? nIn : rd ? rd.candidates.length : 0;
   const random = nCand >= 2 ? 1 / nCand : null;
   const body = `
     <div class="row between" style="align-items:baseline"><span class="eyebrow">${esc(t('class.boardEyebrow', { city: t('city.' + city) }))}</span><span class="num clscode-s">${code}</span></div>
@@ -736,7 +737,7 @@ async function viewClass(code, city){
           const tot = (v.same || 0) + (v.different || 0) + (v.none || 0);
           const row = (k, n) => `<div class="hbar"><span>${esc(t('class.v.' + k))}</span><div class="htrack"><i style="width:${tot ? n / tot * 100 : 0}%"></i></div><span class="num">${tot ? pct(n / tot) : 0}%</span></div>`;
           vHtml = `<div class="stack" style="gap:10px">${row('same', v.same || 0)}${row('different', v.different || 0)}${row('none', v.none || 0)}</div><p class="muted">${esc(t('class.vNote', { n: tot }))}</p>`;
-        } else if (j.blackout || plays >= MIN_CLASS){
+        } else if (j.blackout === true || (j.blackout === undefined && plays >= MIN_CLASS)){
           // 有 ≥ 5 局卻沒有 verdicts = 靜默期（選罷法第 53 條）；日期由後端決定，這裡不算
           vHtml = `<div class="banner"><b>${esc(t('blackout.title'))}</b><span>${esc(t('class.blackoutBody'))}</span></div>`;
         } else {
