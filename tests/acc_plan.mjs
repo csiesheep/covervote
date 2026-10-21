@@ -10,7 +10,7 @@
 import { section, check, ok, importOrNull } from './harness.js';
 
 const mod = await importOrNull('../site/data.js');
-const STRICT_24 = false;
+const STRICT_24 = true;   // #24 land 時翻
 
 // 三位候選人 A、B、C，五個議題都三人提出，外加一個只有 C 提出的加分題。
 const ISSUES = ['i1', 'i2', 'i3', 'i4', 'i5'];
