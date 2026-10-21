@@ -4,8 +4,8 @@
   --stamp:#C4321F; --stamp-soft:#F3DCD6; --back:#2A2622; --back-line:#E9E2D3;
   --ok:#3F6B4E; --warn:#9A6A12;
   --paper-img:url(assets/paper_texture.webp);
-  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti",serif;
-  --f-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti","DFKai-SB","BiauKai",serif;
+  --f-body:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
   --f-num:"IBM Plex Mono",ui-monospace,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){:root{
