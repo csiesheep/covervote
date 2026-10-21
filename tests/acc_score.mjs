@@ -5,11 +5,14 @@
 //   2. 一個議題要有 ≥ 2 位候選人在這個選區提出段落才計分；只有一人提出的是「加分題」，不計分。
 //   3. 標成重要的議題，那一段權重 2，其他 1。
 //   4. 候選人分數 = round(50 × 加權平均)，落在 −100..+100；沒有任何計分段落 → null。
+//      捨入是遠離 0 的對稱捨入（±12.5 → ±13），−0 寫成 0（orchestrator 裁決 #1：分數全部翻號，結果要剛好翻號）。
 //   5. n = 計分段落數（不加權）；n < 3 → lowConfidence。
 //   6. 可能範圍 [lo, hi]：bootstrap 1000 次、取第 10 與第 90 百分位；必須 lo ≤ score ≤ hi；
 //      所有分數相同時 lo = hi = score；亂數用傳入的 rng（預設 Math.random），同一個 rng 序列結果相同。
 //   7. top = 分數最高的候選人（並列全收），null 不算。
-//   8. verdict(lean, result)：lean 為 null／'undecided'／'private' → 'none'；lean 在 top 裡 → 'same'；否則 'different'。
+//   8. verdict(lean, result)：lean 為 null／'undecided'／'private' → 'none'；top 是空的 → 'none'
+//      （orchestrator 裁決 #1：沒有任何計分段落時說「不同」是錯的結論）；lean 在 top 裡 → 'same'；否則 'different'。
+//   候選人的鍵是姓名（orchestrator 裁決 #1：cands/ 與 reveal/ 都不帶 id，號次抽籤前是 null 會撞），傾向也存姓名。
 //
 // API（issue #1 定的介面）：
 //   score({ passages: [{ id, issueId, candidateId }], ratings: { [passageId]: -2..2 }, important: [issueId] }, { rng }?)
@@ -106,6 +109,20 @@ check('可能範圍：lo ≤ score ≤ hi；分數全相同時 lo = hi = score�
   return ok(true, `A ${a.score} ∈ [${a.lo}, ${a.hi}]；B 全 +1 → [${same.lo}, ${same.hi}]`);
 });
 
+check('捨入對稱：±12.5 → ±13，翻號結果剛好翻號', () => {
+  const t = need(); if (t) return t;
+  // 另一個選區：D、E 兩人四個議題都有提出。D 四段 +1、−1、−1、0 → 50 × (−1/4) = −12.5。
+  const Q = ['a', 'b', 'c', 'd'].flatMap(i => [{ id: 'D' + i, issueId: i, candidateId: 'D' }, { id: 'E' + i, issueId: i, candidateId: 'E' }]);
+  const neg = { Da: 1, Db: -1, Dc: -1, Dd: 0, Ea: 0, Eb: 0, Ec: 0, Ed: 0 };
+  const pos = Object.fromEntries(Object.entries(neg).map(([k, v]) => [k, -v || 0]));
+  const s = rr => byId(withSeed(3, () => mod.score({ passages: Q, ratings: rr, important: [] })));
+  const n = s(neg), p = s(pos);
+  // 最像的錯實作 Math.round：−12.5 → −12、+12.5 → +13，翻號後不對稱
+  const errs = [eq(n.D.score, -13, 'D 總和 −1/4（若是 −12，用了 Math.round）'), eq(p.D.score, 13, 'D 翻號後'),
+    eq(Object.is(n.E.score, -0) ? '-0' : n.E.score, 0, 'E 全 0（不能是 −0）')].filter(x => x !== true);
+  return errs.length ? errs.join('；') : ok(true, `−12.5 → ${n.D.score}，+12.5 → ${p.D.score}`);
+});
+
 check('分數超出 −2..2 或不是整數會丟錯', () => {
   const t = need(); if (t) return t;
   const bad = [3, -3, 1.5, '2'];
@@ -117,7 +134,9 @@ check('verdict：same / different / none，並列時傾向在 top 裡算 same', 
   const t = need(); if (t) return t;
   const r = run(BASE);                                    // top = [A]
   const tie = run({ p1: 2, p3: -1, p2: 0, p4: 1 });       // top = [A, B]
-  const cases = [['A', r, 'same'], ['B', r, 'different'], [null, r, 'none'], ['undecided', r, 'none'], ['private', r, 'none'], ['B', tie, 'same']];
+  const empty = run({ p8: 2 });                           // 只打了加分題 → top 是空的
+  if (empty.top.length) return `只打加分題時 top 應為空，實際 ${JSON.stringify(empty.top)}`;
+  const cases = [['A', r, 'same'], ['B', r, 'different'], [null, r, 'none'], ['undecided', r, 'none'], ['private', r, 'none'], ['B', tie, 'same'], ['A', empty, 'none']];
   const errs = cases.map(([lean, res, want]) => eq(mod.verdict(lean, res), want, `verdict(${JSON.stringify(lean)})`)).filter(x => x !== true);
   return errs.length ? errs.join('；') : ok(true, `${cases.length} 個案例都對`);
 });
