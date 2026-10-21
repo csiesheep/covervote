@@ -19,7 +19,7 @@ const mem = await importOrNull('../worker/memstore.mjs');
 const data = loadData();
 
 const MIN_CLASS = 5;
-const STRICT_10 = false;
+const STRICT_10 = true;   // #10 land 時翻
 const BASE = 'https://games.csiesheep.com/covervote/api/';
 const T_BEFORE = new Date('2026-11-10T12:00:00+08:00');
 const T_IN = new Date('2026-11-20T12:00:00+08:00');
@@ -48,6 +48,7 @@ if (api?.handleApi && mem?.memStore && ps.length >= 2){
       await call(s, 'POST', 'play', { race, verdict: 'same' });                       // 沒帶班級
       await call(s, 'POST', 'play', { race, verdict: 'same', class: 'abc234' });     // 小寫：格式不對
       await call(s, 'POST', 'play', { race, verdict: 'same', class: 'ABC10O' });     // 含 1、0、O：格式不對
+      await call(s, 'POST', 'play', { race, verdict: 'same', class: ['ABC234'] });   // 不是字串：陣列轉字串會變成合法代碼（BE #10 回報的洞）
       await call(s, 'POST', 'guess', { race, class: 'ABC234', guesses: [{ passage: a.id, name: name[a.candidateId] }, { passage: ps[1].id, name: other(ps[1]) }] });
       const c = await json(await call(s, 'GET', `class/ABC234/${race}`));
       const st = await json(await call(s, 'GET', `stats/${race}`));
@@ -55,8 +56,8 @@ if (api?.handleApi && mem?.memStore && ps.length >= 2){
       const badKeys = s.keys().filter(k => /abc234|ABC10O/.test(k));
       if (badKeys.length) return `格式不對的代碼被存了：${badKeys.join('、')}`;
       const errs = [eq(c.plays, 3, '班級局數（沒帶班級與格式不對的不算）'), eq(c.guesses?.answers, 2, '班級答題數'), eq(c.guesses?.correct, 1, '班級答對數'),
-        eq(st.plays, 6, '全站局數（帶班級的照樣算進全站）')].filter(x => x !== true);
-      return errs.length ? errs.join('；') : ok(true, `班級 3 局、答題 2 對 1；全站 6 局`);
+        eq(st.plays, 7, '全站局數（帶班級的照樣算進全站）')].filter(x => x !== true);
+      return errs.length ? errs.join('；') : ok(true, `班級 3 局（陣列代碼不算）、答題 2 對 1；全站 7 局`);
     });
 
     await run('min', async () => {
