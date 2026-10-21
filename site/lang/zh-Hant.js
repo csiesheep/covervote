@@ -14,7 +14,7 @@ export default {
   'common.back': '返回',
 
   // A1 首頁
-  'home.title': '名字蓋起來，\n你會投給誰？',
+  'home.title': '名字蓋起來，你會投給誰？',
   'home.sub': '每輪一個議題，遮住名字給政見打分。最後翻牌，看你契合的是誰。',
   'home.heroAlt': '投票桌上一排蓋著的牌，一隻手正翻開其中一張',
   'home.mapLabel': '縣市地圖',
