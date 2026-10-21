@@ -34,11 +34,16 @@ const seatOf = i => { const s = [...t('seats')]; return s[i] || String(i + 1); }
 // ---------------- 共用片段 ----------------
 const ICON_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
 const ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
-function bar(left, meta){
+const MENU_LINKS = [['#/info/method', 'foot.method'], ['#/info/sources', 'foot.sources'], ['#/info/privacy', 'foot.privacy'], ['#/info/about', 'foot.about'], ['#/embed', 'foot.media'], ['#/class', 'foot.class']];
+// 首頁頁首的「≡」選單（#27）：頁尾那排連結搬進來。按鈕有 aria-expanded；Esc、點外面、Tab 離開都關。
+const menuHtml = hk => `<button class="snd menu-btn" data-act="menu" aria-expanded="false" aria-controls="homemenu" aria-label="${esc(t('menu.label'))}"><span aria-hidden="true">≡</span></button>`
+  + `<nav class="menu" id="homemenu" aria-label="${esc(t('menu.label'))}" hidden>${MENU_LINKS.map(([h, key]) => `<a href="${h}">${esc(t(key))}</a>` + (key === 'foot.sources' ? `<a id="menuhealth" href="#/${esc(hk)}/health">${esc(t('foot.health'))}</a>` : '')).join('')}</nav>`;
+function bar(left, meta, menu, hk = 'taipei'){
   if (EMBED) return '';
   const on = isSoundOn();
-  return `<header class="bar"><a class="brand" href="#/"><i></i>${esc(left)}</a><span class="bar-r">${meta ? `<span class="meta num" id="barmeta">${esc(meta)}</span>` : '<span class="meta num" id="barmeta"></span>'}`
+  return `<header class="bar${menu ? ' home-bar' : ''}"><a class="brand" href="#/"><i></i>${esc(left)}</a><span class="bar-r">${menu ? '' : meta ? `<span class="meta num" id="barmeta">${esc(meta)}</span>` : '<span class="meta num" id="barmeta"></span>'}`
     + `<button class="fsz" data-act="fontsize" aria-label="${esc(t('font.label', { size: t('font.' + fontSize()) }))}">${esc(t('font.btn'))}<small>${esc(t('font.' + fontSize()))}</small></button>`
+    + (menu ? menuHtml(hk) : '')
     + `<button class="snd" data-act="sound" aria-pressed="${on}" aria-label="${esc(t(on ? 'sound.on' : 'sound.off'))}" title="${esc(t(on ? 'sound.on' : 'sound.off'))}">${on ? ICON_ON : ICON_OFF}</button></span></header>`;
 }
 const footer = healthKey => EMBED
@@ -46,7 +51,7 @@ const footer = healthKey => EMBED
   : `<footer class="foot">${healthKey !== undefined ? `<a id="healthlink" href="#/${esc(healthKey || '')}/health"${healthKey ? '' : ' hidden'}>${esc(t('foot.health'))}</a>` : ''}<a href="#/info/method">${esc(t('foot.method'))}</a><a href="#/info/sources">${esc(t('foot.sources'))}</a><a href="#/info/privacy">${esc(t('foot.privacy'))}</a><a href="#/info/about">${esc(t('foot.about'))}</a><a href="#/embed">${esc(t('foot.media'))}</a><a href="#/class">${esc(t('foot.class'))}</a></footer>`;
 // 學生帶了格式正確的 ?class= 才有這一行；老師頁（#/class…）不顯示。
 const classLine = () => { const c = classCode(); return c && parse()[0] !== 'class' ? `<div class="classline num" id="classline">${esc(t('class.line', { code: c }))}</div>` : ''; };
-const page = (barHtml, body, foot = '') => `${barHtml}${classLine()}<main id="main" tabindex="-1"><div class="pad">${body}</div>${foot || (EMBED ? footer() : '')}</main>`;
+const page = (barHtml, body, foot = '', padCls = '') => `${barHtml}${classLine()}<main id="main" tabindex="-1"><div class="pad${padCls ? ' ' + padCls : ''}">${body}</div>${foot || (EMBED ? footer() : '')}</main>`;
 const spinner = () => `<div class="spin" role="status">${esc(t('loading'))}</div>`;
 const errorBox = (msg, retryAct = 'reload') => `<div class="errbox" role="alert"><span>${esc(msg)}</span><button class="btn ghost" data-act="${retryAct}">${esc(t('err.retry'))}</button></div>`;
 
@@ -181,15 +186,31 @@ async function viewHome(){
     return `<a class="tile" style="grid-area:${tl.area}" href="#/${tl.key}">${name}</a>`;
   }).join('');
   const body = `
-    <img class="illo" src="assets/hero.webp" alt="${esc(t('home.heroAlt'))}" width="1152" height="648" fetchpriority="high" decoding="async" style="margin:-6px 0 -4px;object-fit:cover;object-position:right;aspect-ratio:16/7">
+    <img class="illo hero" src="assets/hero.webp" alt="${esc(t('home.heroAlt'))}" width="1152" height="384" fetchpriority="high" decoding="async">
     <h1 class="big tagline" style="--tl:${lang() === 'en' ? 24.2 : 12.3}">${esc(t('home.title'))}</h1>
-    <p class="muted">${esc(t('home.sub'))}</p>
     <div class="tiles" role="group" aria-label="${esc(t('home.mapLabel'))}">${tiles}</div>
-    <div class="legend"><span><i class="sw"></i>${esc(t('home.legendOn'))}</span><span><i class="sw d"></i>${esc(t('home.legendOff'))}</span></div>
-    <p class="muted num" id="plays" hidden></p>
+    <div class="legend"><span><i class="sw"></i>${esc(t('home.legendOn'))}</span><span><i class="sw d"></i>${esc(t('home.legendOff'))}</span><span class="lg-soon">${esc(t('home.legendSoon'))}</span></div>
     <a class="btn" id="startbtn" href="${homePick ? '#/' + homePick : '#/'}" data-act="start" ${homePick ? '' : 'aria-disabled="true"'}>${esc(startLabel())}</a>
-    <p class="muted">${esc(t('home.promise'))}</p>`;
-  return { html: page(bar(t('brand'), ''), body, footer(homePick || [...ready.keys()][0] || '')), mount: () => { fillCountdown(ready); fillPlays(ready); } };
+    <p class="homefoot"><span id="homecount"></span><span>${esc(t('home.free'))}</span><span id="plays" hidden></span></p>`;
+  return { html: page(bar(t('brand'), '', true, homePick || [...ready.keys()][0] || 'taipei'), body, '', 'home'), mount: () => { fillCountdown(ready); fillPlays(ready); return mountMenu(); } };
+}
+// 「≡」選單：開啟時焦點進第一個連結；Esc 關並回到按鈕；點外面、Tab 離開也關。
+function mountMenu(){
+  const btn = document.querySelector('.menu-btn'), menu = document.getElementById('homemenu');
+  if (!btn || !menu) return null;
+  const setOpen = (open, focusBtn) => {
+    menu.hidden = !open; btn.setAttribute('aria-expanded', String(open));
+    if (open) menu.querySelector('a')?.focus(); else if (focusBtn) btn.focus();
+  };
+  const onClick = e => {
+    if (btn.contains(e.target)) { setOpen(menu.hidden, false); return; }
+    if (!menu.hidden && !menu.contains(e.target)) setOpen(false, false);
+  };
+  const onKey = e => { if (e.key === 'Escape' && !menu.hidden) { e.preventDefault(); setOpen(false, true); } };
+  const onFocusOut = e => { if (!menu.hidden && e.relatedTarget && !menu.contains(e.relatedTarget) && !btn.contains(e.relatedTarget)) setOpen(false, false); };
+  document.addEventListener('click', onClick); document.addEventListener('keydown', onKey);
+  menu.addEventListener('focusout', onFocusOut);
+  return () => { document.removeEventListener('click', onClick); document.removeEventListener('keydown', onKey); };
 }
 // 「已有 N 局」：局數照常（靜默期也不受影響）；取不到或 0 就不顯示。
 const playsCache = new Map();
@@ -198,6 +219,12 @@ function showPlays(){
   const n = homePick ? playsCache.get(homePick) : 0;
   el.hidden = !(n > 0);
   if (n > 0) el.textContent = t('home.plays', { n });
+  fitFoot();
+}
+// 最下面那一行放不下就拿掉局數（#27）
+function fitFoot(){
+  const f = document.querySelector('.homefoot'), el = document.getElementById('plays'); if (!f || !el || el.hidden) return;
+  if (f.scrollWidth > f.clientWidth + 1 || f.offsetHeight > parseFloat(getComputedStyle(f).lineHeight) * 1.5) el.hidden = true;
 }
 function fillPlays(ready){
   for (const [key, d] of ready){
@@ -216,7 +243,7 @@ function fillCountdown(ready){
     const md = `${+m[2]}/${+m[3]}`;
     const today = new Date(); today.setHours(0, 0, 0, 0);
     const days = Math.round((new Date(+m[1], +m[2] - 1, +m[3]) - today) / 86400000);
-    const el = document.getElementById('barmeta'); if (!el) return;
+    const el = document.getElementById('homecount'); if (!el) return;
     el.textContent = days > 0 ? t('home.meta.vote', { md, d: days }) : days === 0 ? t('home.meta.today', { md }) : t('home.meta.over');
     return;
   }
@@ -995,6 +1022,7 @@ root.addEventListener('click', async e => {
       const sb = document.getElementById('startbtn'); sb.textContent = startLabel(); sb.removeAttribute('aria-disabled'); sb.href = '#/' + homePick;
       showPlays();
       const hl = document.getElementById('healthlink'); if (hl){ hl.href = `#/${homePick}/health`; hl.hidden = false; }
+      const mh = document.getElementById('menuhealth'); if (mh) mh.href = `#/${homePick}/health`;
       break;
     }
     case 'start': if (!homePick) e.preventDefault(); break;

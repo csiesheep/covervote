@@ -225,3 +225,29 @@ html[data-fs="l"] .rate button.on{color:var(--stamp)}
 html[data-fs="l"] #barmeta{display:none}   /* 390px 放不下品牌＋字＋音效＋進度；進度條與甲乙丙已經說了現在在哪 */
 .fsz small{font-size:.75em;font-weight:500;margin-left:2px;color:var(--ink-2)}
 html[data-fs="l"] .rate button{min-height:56px}
+
+/* 首頁 A 版（#27）：手機（390×664、375×600，字級小／中）不用捲動。
+   由上到下：頁首 → 扁圖(3:1) → 標語一行 → 方格地圖（每列 27px 起、間距 3px、22 格全在）→ 圖例一行 → 開始鈕 → 最下面一行小字。
+   不用 zoom／transform: scale；多出來的高度由地圖列高吃掉。字級「大」允許捲，不破版。 */
+.pad.home{gap:6px;padding-top:8px;padding-bottom:8px}
+.home .hero{width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;flex:none;border-radius:10px;margin:0}
+.home .tagline{line-height:1.15;flex:none}
+.home .tiles{flex:1 1 auto;min-height:calc(9*27px + 8*3px);max-height:calc(9*40px + 8*3px);grid-template-rows:repeat(9,minmax(27px,1fr));gap:3px}
+.home .tile{font-size:calc(11.5px*var(--fs));min-width:0;min-height:27px}
+.home .tile.live{font-size:calc(12.5px*var(--fs))}
+.home .tile small{font-size:calc(9px*var(--fs));color:var(--stamp);margin-top:0}
+.home .legend{line-height:1.2;flex:none;flex-wrap:nowrap;justify-content:center;gap:10px;font-size:calc(11px*var(--fs));white-space:nowrap}
+.home .legend span{gap:4px}
+.home .lg-soon{color:var(--stamp)}
+.home .btn{flex:none;min-height:50px;height:50px;border-radius:12px}
+html[data-fs="l"] .home .btn{height:auto;min-height:calc(48px*var(--fs))}
+.homefoot{flex:none;display:flex;justify-content:center;font-size:calc(11px*var(--fs));color:var(--ink-2);white-space:nowrap;line-height:1.25}
+.homefoot span+span:not([hidden])::before{content:"・"}
+html[data-fs="l"] .homefoot,html.embed .homefoot{white-space:normal;flex-wrap:wrap;row-gap:2px}   /* 大字級／嵌入放不下一行時才換行 */
+.home-bar{padding-top:max(8px,env(safe-area-inset-top,0px));padding-bottom:7px;min-height:0}
+.home-bar .snd,.home-bar .fsz{height:calc(32px*var(--fs))}
+.menu-btn span{font-size:20px;line-height:1;font-family:var(--f-body)}
+.menu{position:absolute;right:12px;top:calc(100% + 4px);min-width:170px;background:var(--paper);border:1.5px solid var(--ink);border-radius:12px;padding:4px;display:flex;flex-direction:column;box-shadow:0 12px 28px -12px rgba(0,0,0,.45);z-index:10}
+.menu a{display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:8px;text-decoration:none;font-size:calc(15px*var(--fs))}
+.menu a:hover,.menu a:focus-visible{background:var(--stamp-soft)}
+html.embed .pad.home{padding-top:14px;padding-bottom:10px}
