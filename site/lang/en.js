@@ -106,22 +106,16 @@ export default {
   'rate.-2': 'Strongly disagree', 'rate.-1': 'Disagree', 'rate.0': 'No opinion', 'rate.1': 'Agree', 'rate.2': 'Strongly agree',
   seats: 'ABCDEFGHIJ',
 
-  // Elder mode (#15): large text, one passage at a time, plain-word rating buttons, read aloud, send to parents
-  'elder.toggle': 'Big text',
-  'elder.toggleLabel': 'Big text mode',
-  'elder.rate.-2': 'Strongly disagree', 'elder.rate.-1': 'Somewhat disagree', 'elder.rate.0': 'No opinion', 'elder.rate.1': 'Somewhat agree', 'elder.rate.2': 'Strongly agree',
-  'elder.leanSub': 'Pick one, or skip.',
-  'elder.hint': 'Rate this one to see the next.',
-  'elder.impSub': 'Marked topics count double. Optional.',
-  'elder.guess': 'Guess who wrote it? (optional)',
-  'elder.guessNote': 'Revealed at the end',
+  // Font size (#18): header button cycles Small > Medium > Large
+  'font.btn': 'Aa',
+  'font.s': 'S', 'font.m': 'M', 'font.l': 'L',
+  'font.label': 'Text size: {size} (tap for next)',
   'speak.btn': '🔊 Read aloud',
   'speak.stop': '■ Stop',
   'speak.result': '🔊 Read my result',
   'speak.resSame': 'You leaned {lean}. Best fit: {top}. {msg}',
   'speak.resTop': 'Best fit: {top}. {msg}',
   'speak.resNone': '{msg}',
-  'parents.share': 'Send to parents (big text)',
 
   'bonus.eyebrow': 'Bonus · not counted in fit',
   'bonus.title': 'Only one candidate raised these',
@@ -205,6 +199,7 @@ export default {
   'type.campaign': 'Campaign',
   'type.facebook': 'Facebook',
   'type.press-rewritten': 'Press (rewritten)',
+  'type.social': 'Social video',
 
   'share.meta': 'Share',
   'share.title': 'Share card',
