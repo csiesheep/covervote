@@ -64,3 +64,35 @@ export const hasProgress = s => s.lean !== null || Object.keys(s.ratings).length
 
 // ?embed=1：嵌入模式（媒體把一局放進 iframe）。只看網址；不影響任何資料請求，也不改變 internal 旗標。
 export const isEmbed = () => { try { return new URLSearchParams(location.search).get("embed") === "1"; } catch { return false; } };
+
+// ---- 班級（課堂版，#11）----
+// ?class=<code>：6 碼，A–Z 去掉 I、O，加 2–9。格式對才收，存 sessionStorage；格式不對的忽略（不覆蓋、不顯示）。
+// 學生端唯一多送的東西就是這個代碼；沒有座號、姓名、任何能辨認學生的欄位。
+export const CLASS_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+export const CLASS_RE = /^[A-HJ-NP-Z2-9]{6}$/;
+let classMem = '';
+export function initClass(){
+  try {
+    const v = new URLSearchParams(location.search).get('class');
+    if (v && CLASS_RE.test(v)){ classMem = v; try { sessionStorage.setItem('covervote:class', v); } catch {} }
+  } catch {}
+}
+export function classCode(){
+  let v = classMem;
+  try { v = sessionStorage.getItem('covervote:class') || v; } catch {}
+  return v && CLASS_RE.test(v) ? v : '';
+}
+export function newClassCode(){
+  const out = [];
+  const buf = new Uint8Array(32);
+  while (out.length < 6){
+    crypto.getRandomValues(buf);
+    for (const b of buf){ if (b < 224 && out.length < 6) out.push(CLASS_ALPHABET[b % 32]); }   // 224 = 7×32，拒絕取樣免偏
+  }
+  return out.join('');
+}
+// 老師的班級清單：只在老師的瀏覽器
+export function loadClasses(){
+  try { const a = JSON.parse(getItem('covervote:classes')); return Array.isArray(a) ? a.filter(x => x && CLASS_RE.test(x.code)) : []; } catch { return []; }
+}
+export function saveClasses(a){ try { setItem('covervote:classes', JSON.stringify(a)); } catch {} }

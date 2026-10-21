@@ -6,7 +6,7 @@
 //   GET  health / stats                                  讀匯總
 // 本檔刻意不接受「任意 body」：每個函式自己組欄位，多餘的東西沒有地方可以夾帶。
 // internal=1（網址或 sessionStorage 有旗標）：所有 POST 帶 ?internal=1，後端不計。
-import { isInternal } from './store.js';
+import { isInternal, classCode } from './store.js';
 
 // 相對網址：頁面在 /covervote/ 底下，api/ 就是 /covervote/api/（路徑等於網址，見 tools/build_public.mjs）。
 const url = (path, post) => 'api/' + path + (post && isInternal() ? '?internal=1' : '');
@@ -23,7 +23,10 @@ async function send(method, path, body, ms = 5000){
   } finally { clearTimeout(timer); }
 }
 
-export const postGuess = (race, guesses) => send('POST', 'guess', { race, guesses: guesses.map(g => ({ passage: g.passage, name: g.name })) });
-export const postPlay = (race, verdict) => send('POST', 'play', { race, verdict });
+// class = 網址 ?class= 帶進來且格式對的 6 碼班級代碼（store.js classCode）；沒有就整個欄位不送。除此之外沒有任何學生欄位。
+const withClass = body => { const c = classCode(); return c ? { ...body, class: c } : body; };
+export const postGuess = (race, guesses) => send('POST', 'guess', withClass({ race, guesses: guesses.map(g => ({ passage: g.passage, name: g.name })) }));
+export const postPlay = (race, verdict) => send('POST', 'play', withClass({ race, verdict }));
+export const getClass = (code, race) => send('GET', 'class/' + encodeURIComponent(code) + '/' + encodeURIComponent(race));
 export const getHealth = race => send('GET', 'health/' + encodeURIComponent(race));
 export const getStats = race => send('GET', 'stats/' + encodeURIComponent(race));

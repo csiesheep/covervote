@@ -35,3 +35,5 @@ export const METRO_ETA = "11/1";
 export const CEC_URL = 'https://www.cec.gov.tw/';
 // 嵌入模式的「完整版」連結（TEAM.md 部署一節的網址）
 export const FULL_URL = 'https://games.csiesheep.com/covervote/';
+// 班級儀表板：後端在班級局數滿這麼多局才給 verdicts（worker/api.mjs 的 MIN_CLASS）；前端只拿來判斷「沒有 verdicts 是因為靜默期還是未滿局數」，不拿來擋任何東西。
+export const MIN_CLASS = 5;
