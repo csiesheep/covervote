@@ -4,9 +4,23 @@ import { raceIdOf } from './config.js';
 
 export class NotFound extends Error {}
 
+// 資料檔版本：部署後幾秒內邊緣可能混送新舊檔，題目檔和開票檔版本不一致會讓開票對錯人。
+// 開頁時先拿 version.txt 的 SHA，之後 race/ cands/ reveal/ issues.json 都帶 ?v=<sha>。拿不到（404、逾時、不像 SHA）就不加。
+let dataVersion = '';
+export const getDataVersion = () => dataVersion;
+export async function initVersion(){
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 3000);
+  try {
+    const r = await fetch('version.txt', { cache: 'no-store', signal: ctl.signal });
+    if (r.ok){ const v = (await r.text()).trim(); if (/^[0-9a-f]{7,64}$/i.test(v)) dataVersion = v; }
+  } catch {} finally { clearTimeout(timer); }
+}
+const versioned = path => dataVersion ? path + '?v=' + encodeURIComponent(dataVersion) : path;
+
 async function getJson(path){
   let r;
-  try { r = await fetch(path); } catch (e) { throw new Error('network'); }
+  try { r = await fetch(versioned(path)); } catch (e) { throw new Error('network'); }
   if (r.status === 404) throw new NotFound(path);
   if (!r.ok) throw new Error('http ' + r.status);
   try { return await r.json(); } catch { throw new NotFound(path); }

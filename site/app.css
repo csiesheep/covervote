@@ -176,4 +176,16 @@ details summary{cursor:pointer}
 .flag{font-size:11px;color:var(--stamp);white-space:nowrap}
 .banner{border:1.5px dashed var(--warn);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:13px}
 .banner b{color:var(--warn)}
+
+/* 嵌入模式（?embed=1）：高度跟內容走（不撐滿視窗），不出現橫向捲軸，寬 320–720 都排得下 */
+html.embed,html.embed body{overflow-x:hidden}
+html.embed body{background:var(--paper)}
+html.embed .app{min-height:0;max-width:560px;border-inline:0}
+html.embed .pad{padding-top:14px;padding-bottom:14px}
+html.embed .foot.embed-foot{justify-content:center;padding:8px 16px 10px}
+html.embed .big{font-size:26px}
+html.embed img,html.embed canvas{max-width:100%}
+/* 給媒體頁 */
+.code{margin:0;padding:12px;border:1px solid var(--rule);border-radius:10px;background:var(--ground);font-family:var(--f-num);font-size:12px;line-height:1.5;overflow-x:auto;white-space:pre}
+.prev{width:100%;height:640px;border:1px solid var(--rule);border-radius:10px;background:var(--paper)}
 .tile.live[aria-pressed="true"]{background:var(--ink);color:var(--paper)}

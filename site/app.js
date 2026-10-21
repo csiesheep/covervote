@@ -5,15 +5,19 @@
 //  - 傾向、分數、猜作者只存本機（store.js）。不載入任何分析或錄製腳本。
 //  - 分數一律呼叫 engine/score.mjs，FE 不自己算。候選人的鍵是姓名。
 import { t, initLang, lang, has } from './i18n.js';
-import { TILES, METRO_KEYS, METRO_ETA, CEC_URL } from './config.js';
-import { initInternal, loadState, saveState, freshState, hasProgress } from './store.js';
+import { TILES, METRO_KEYS, METRO_ETA, CEC_URL, FULL_URL } from './config.js';
+import { initInternal, isEmbed, loadState, saveState, freshState, hasProgress } from './store.js';
 import { initSound, isSoundOn, setSound, sfx } from './sound.js';
 import { postGuess, postPlay, getHealth, getStats } from './api.js';
-import { loadRace, loadIssues, fetchReveal, buildPlan, menuOrder, mulberry32, NotFound } from './data.js';
+import { loadRace, loadIssues, fetchReveal, buildPlan, menuOrder, mulberry32, NotFound, initVersion } from './data.js';
 
 initInternal();
 initLang();
 initSound();
+// 嵌入模式（?embed=1）：沒有品牌列與頁尾連結，只留一行「完整版 ↗」；聲音維持預設關（initSound 不看這個旗標）。
+// 嵌入模式不改變任何資料流：開票前不 fetch reveal/、guess 先於 reveal、internal=1 照樣生效，都在同一份程式裡。
+const EMBED = isEmbed();
+if (EMBED) document.documentElement.classList.add('embed');
 
 const root = document.getElementById('root');
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -26,12 +30,15 @@ const seatOf = i => { const s = [...t('seats')]; return s[i] || String(i + 1); }
 const ICON_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
 const ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
 function bar(left, meta){
+  if (EMBED) return '';
   const on = isSoundOn();
   return `<header class="bar"><a class="brand" href="#/"><i></i>${esc(left)}</a><span class="bar-r">${meta ? `<span class="meta num" id="barmeta">${esc(meta)}</span>` : '<span class="meta num" id="barmeta"></span>'}`
     + `<button class="snd" data-act="sound" aria-pressed="${on}" aria-label="${esc(t(on ? 'sound.on' : 'sound.off'))}" title="${esc(t(on ? 'sound.on' : 'sound.off'))}">${on ? ICON_ON : ICON_OFF}</button></span></header>`;
 }
-const footer = healthKey => `<footer class="foot">${healthKey !== undefined ? `<a id="healthlink" href="#/${esc(healthKey || '')}/health"${healthKey ? '' : ' hidden'}>${esc(t('foot.health'))}</a>` : ''}<a href="#/info/method">${esc(t('foot.method'))}</a><a href="#/info/sources">${esc(t('foot.sources'))}</a><a href="#/info/privacy">${esc(t('foot.privacy'))}</a><a href="#/info/about">${esc(t('foot.about'))}</a></footer>`;
-const page = (barHtml, body, foot = '') => `${barHtml}<main id="main" tabindex="-1"><div class="pad">${body}</div>${foot}</main>`;
+const footer = healthKey => EMBED
+  ? `<footer class="foot embed-foot"><a href="${FULL_URL}" target="_blank" rel="noopener">${esc(t('embed.full'))}</a></footer>`
+  : `<footer class="foot">${healthKey !== undefined ? `<a id="healthlink" href="#/${esc(healthKey || '')}/health"${healthKey ? '' : ' hidden'}>${esc(t('foot.health'))}</a>` : ''}<a href="#/info/method">${esc(t('foot.method'))}</a><a href="#/info/sources">${esc(t('foot.sources'))}</a><a href="#/info/privacy">${esc(t('foot.privacy'))}</a><a href="#/info/about">${esc(t('foot.about'))}</a><a href="#/embed">${esc(t('foot.media'))}</a></footer>`;
+const page = (barHtml, body, foot = '') => `${barHtml}<main id="main" tabindex="-1"><div class="pad">${body}</div>${foot || (EMBED ? footer() : '')}</main>`;
 const spinner = () => `<div class="spin" role="status">${esc(t('loading'))}</div>`;
 const errorBox = (msg, retryAct = 'reload') => `<div class="errbox" role="alert"><span>${esc(msg)}</span><button class="btn ghost" data-act="${retryAct}">${esc(t('err.retry'))}</button></div>`;
 
@@ -107,6 +114,7 @@ async function render(){
 async function route(seg){
   if (seg.length === 0) return viewHome();
   if (seg[0] === 'info') return viewInfo(seg[1] || 'method');
+  if (seg[0] === 'embed') return viewMedia();
   const key = seg[0], sub = seg[1] || '';
   let c;
   try { c = await getCtx(key); }
@@ -534,7 +542,7 @@ function resultBody(c, rv, comp){
     ${guessHtml}
     <div id="natl-box" style="display:contents"></div>
     <details><summary class="muted">${esc(t('res.adjust'))}</summary><div id="imps" style="margin-top:6px">${impRows(c) || `<p class="muted">${esc(t('imp.none'))}</p>`}</div></details>
-    <div class="btns"><a class="btn" href="#/${c.key}/share">${esc(t('res.share'))}</a><button class="btn ghost" data-act="again">${esc(t('res.again'))}</button></div>
+    <div class="btns">${EMBED ? `<a class="btn" href="${esc(gameUrl(c))}" target="_blank" rel="noopener">${esc(t('embed.openResult'))}</a>` : `<a class="btn" href="#/${c.key}/share">${esc(t('res.share'))}</a>`}<button class="btn ghost" data-act="again">${esc(t('res.again'))}</button></div>
     <a class="btn line" href="#/${c.key}/detail">${esc(t('res.detail'))}</a>
     <p class="muted">${esc(t('res.disclaimer'))}</p>`;
 }
@@ -745,6 +753,65 @@ function viewInfo(tab){
   return { html: page(bar(t('brand'), t('info.meta')), `<div class="row">${chips}</div>${content}<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`, footer()) };
 }
 
+// ---------------- 給媒體 #/embed ----------------
+// 只講「可以免費嵌入」與怎麼貼；不寫價格、不寫合作條件（owner 的事）。信箱是佔位字串，待 owner 確認。
+function embedSnippet(key){
+  return `<iframe id="covervote" src="${FULL_URL}?embed=1#/${key}" title="${t('media.iframeTitle')}"
+  style="width:100%;max-width:720px;height:640px;border:0" loading="lazy"></iframe>
+<script>
+window.addEventListener('message', function (e) {
+  if (!e.data || e.data.type !== 'covervote:height') return;
+  var f = document.getElementById('covervote');
+  if (f && e.source === f.contentWindow) f.style.height = e.data.height + 'px';
+});
+</script>`;
+}
+async function viewMedia(){
+  const ready = await readyMetros();
+  const key = [...ready.keys()][0] || 'taipei';
+  const code = embedSnippet(key);
+  const src = location.pathname + '?embed=1#/' + key;
+  const body = `
+    <h1 class="mid">${esc(t('media.title'))}</h1>
+    <p>${esc(t('media.lead'))}</p>
+    <p>${esc(t('media.why'))} <a href="#/${esc(key)}/health">${esc(t('media.health'))}</a></p>
+    <div class="eyebrow">${esc(t('media.codeTitle'))}</div>
+    <pre class="code" tabindex="0"><code>${esc(code)}</code></pre>
+    <button class="btn ghost" data-act="copycode">${esc(t('media.copy'))}</button>
+    <p class="muted">${esc(t('media.codeNote'))}</p>
+    <p class="muted">${esc(t('media.promise'))}</p>
+    <div class="eyebrow">${esc(t('media.previewTitle'))}</div>
+    <iframe id="mediaprev" class="prev" src="${esc(src)}" title="${esc(t('media.iframeTitle'))}" loading="lazy"></iframe>
+    <div class="eyebrow">${esc(t('media.contactTitle'))}</div>
+    <p>${esc(t('media.contactBody'))}<span class="num">${esc(t('media.contactMail'))}</span> <span class="muted">${esc(t('media.contactTodo'))}</span></p>`;
+  return {
+    html: page(bar(t('brand'), t('media.meta')), body + `<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`, footer()),
+    mount(el){
+      const f = el.querySelector('#mediaprev');
+      const on = e => { if (e.source === f.contentWindow && e.data && e.data.type === 'covervote:height' && e.data.height > 0) f.style.height = e.data.height + 'px'; };
+      window.addEventListener('message', on);
+      el.dataset.code = code;
+      return () => window.removeEventListener('message', on);
+    },
+  };
+}
+
+// 嵌入模式：畫面高度一改變就通知嵌入方（只送高度，不送任何其他東西）。
+function reportHeight(){
+  if (!EMBED || window.parent === window) return;
+  let last = -1;
+  const send = () => {
+    const h = Math.ceil(document.body.getBoundingClientRect().height);
+    if (h === last || h <= 0) return;
+    last = h;
+    try { window.parent.postMessage({ type: 'covervote:height', height: h }, '*'); } catch {}
+  };
+  if (typeof ResizeObserver === 'function') new ResizeObserver(send).observe(document.body);
+  new MutationObserver(send).observe(root, { childList: true, subtree: true, attributes: true });
+  window.addEventListener('load', send);
+  send();
+}
+
 // ---------------- 事件 ----------------
 function curCtx(){ const seg = parse(); return seg[0] ? ctxs.get(seg[0]) : null; }
 function setPressed(btns, pred){ btns.forEach(b => { const on = pred(b); b.classList.toggle('on', on); if (b.hasAttribute('aria-pressed')) b.setAttribute('aria-pressed', on); if (b.getAttribute('role') === 'radio') b.setAttribute('aria-checked', on); }); }
@@ -854,6 +921,15 @@ root.addEventListener('click', async e => {
       const det = el.closest('.det'), o = det.querySelector('.orig'); o.hidden = !o.hidden;
       el.textContent = t(o.hidden ? 'det.original' : 'det.hideOriginal'); sfx('tap'); break;
     }
+    case 'copycode': {
+      const code = root.dataset.code || root.querySelector('pre.code')?.textContent || '';
+      try { await navigator.clipboard.writeText(code); toast(t('media.copied')); }
+      catch {
+        try { const ta = document.createElement('textarea'); ta.value = code; document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); toast(t(ok ? 'media.copied' : 'media.copyFail')); }
+        catch { toast(t('media.copyFail')); }
+      }
+      break;
+    }
     case 'copy': {
       if (!c) break;
       const url = shareUrl(c);
@@ -868,4 +944,5 @@ root.addEventListener('click', async e => {
 });
 
 window.addEventListener('hashchange', render);
-render();
+// 先拿資料版本（最多等 3 秒）再畫第一個畫面，之後所有資料檔都帶 ?v=<sha>。
+initVersion().then(() => { render(); reportHeight(); });
