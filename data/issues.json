@@ -1,0 +1,17 @@
+[
+  { "id": "childcare", "label": "托育" },
+  { "id": "eldercare", "label": "長照與高齡" },
+  { "id": "transit", "label": "公車與捷運" },
+  { "id": "housing", "label": "居住" },
+  { "id": "education", "label": "校園教育" },
+  { "id": "pedsafety", "label": "行人與交通安全" },
+  { "id": "flood", "label": "治水防災" },
+  { "id": "parks", "label": "公園與綠地" },
+  { "id": "economy", "label": "產業與就業" },
+  { "id": "health", "label": "醫療" },
+  { "id": "safety", "label": "治安" },
+  { "id": "environment", "label": "環境清潔" },
+  { "id": "culture", "label": "文化觀光" },
+  { "id": "youth", "label": "青年" },
+  { "id": "transport", "label": "公車與捷運" }
+]

@@ -1,7 +1,8 @@
 // data/schema.mjs — 資料欄位的唯一定義與驗證。BE 所有。
 //
 // 一場「選舉」(elections.json) 有多個「選區」(races.json)，每個選區有候選人(candidates.json)
-// 與政見段落(passages.json)。race id = `<electionId>.<office>.<district>`，所以 2028 總統、立委
+// 與政見段落(passages.json)；段落的 issueId 都要在議題表(issues.json：[{ id, label }])裡。
+// 候選人有 number（抽籤後的號次，正整數；未抽籤 null），同選區號次與姓名都不得重複（姓名是前端的鍵）。race id = `<electionId>.<office>.<district>`，所以 2028 總統、立委
 // 或任何一場補選都只是多加幾列，不用改結構。
 //
 // 段落欄位照 plan 第四節：id, race, issueId, candidateId, original, masked, plain,
@@ -24,7 +25,7 @@ export const textLength = s => [...String(s).replace(/\s/g, '')].length;
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
-export function validate({ elections, races, candidates, passages }){
+export function validate({ elections, races, candidates, passages, issues }){
   const errs = [];
   const ids = new Map();
   const uniq = (table, id) => {
@@ -32,6 +33,13 @@ export function validate({ elections, races, candidates, passages }){
     if (ids.has(key)) errs.push(`${table} id 重複：${id}`);
     ids.set(key, true);
   };
+  // 議題（issues.json）：[{ id, label }]，議題顯示名的唯一一份（orchestrator 裁決 #1／#3：FE 不自己放對照表）。
+  if (!Array.isArray(issues)) errs.push('沒有 issues 表（data/issues.json）');
+  const issueIds = new Set((issues || []).map(i => i.id));
+  for (const i of issues || []){
+    uniq('issue', i.id);
+    if (!i.label) errs.push(`issue ${i.id}: 沒有 label`);
+  }
   const electionIds = new Set(elections.map(e => e.id));
   for (const e of elections){
     uniq('election', e.id);
@@ -75,6 +83,7 @@ export function validate({ elections, races, candidates, passages }){
     const extra = Object.keys(p).filter(f => !PASSAGE_FIELDS.includes(f));
     if (extra.length) errs.push(`passage ${p.id}: 多出欄位 ${extra.join(', ')}`);
     if (!raceIds.has(p.race)) errs.push(`passage ${p.id}: race ${p.race} 不存在`);
+    if (Array.isArray(issues) && !issueIds.has(p.issueId)) errs.push(`passage ${p.id}: issueId ${p.issueId} 不在 data/issues.json`);
     const c = candById.get(p.candidateId);
     if (!c) errs.push(`passage ${p.id}: candidateId ${p.candidateId} 不存在`);
     else if (c.raceId !== p.race) errs.push(`passage ${p.id}: 候選人 ${p.candidateId} 不在 ${p.race}`);

@@ -4,7 +4,9 @@
 //
 // 版面：站台在 <outDir>/covervote/，路徑等於網址（games.csiesheep.com/covervote/…），
 // 靜態檔由 Cloudflare 直接送、不經 Worker。複製 site/ 裡的頁面與 engine/，再寫：
-//   covervote/race/<raceId>.json     每個選區開票前的題目資料（只有 PUBLIC_PASSAGE_FIELDS）
+//   covervote/race/<raceId>.json     每個選區開票前的題目資料：race { id, label, voteDate, dataAsOf }，
+//                                    段落只有 PUBLIC_PASSAGE_FIELDS
+//   covervote/issues.json            議題顯示名 [{ id, label }]（data/issues.json，FE 不自己放對照表）
 //   covervote/cands/<raceId>.json    開票前的候選人名單 { race, candidates: [{ number, name }] }，照號次、null 排最後
 //                                    （owner 裁決 2026-10-21：獨立檔、只有號次與姓名、不帶任何段落對應）
 //   covervote/reveal/<raceId>.json   開票檔 { race, passages: [{ id, candidate: { number, name }, original,
@@ -27,17 +29,24 @@ const read = f => JSON.parse(fs.readFileSync(path.join(ROOT, 'data', f), 'utf8')
 
 export function loadData(){
   return { elections: read('elections.json'), races: read('races.json'),
-           candidates: read('candidates.json'), passages: read('passages.json') };
+           candidates: read('candidates.json'), passages: read('passages.json'), issues: read('issues.json') };
 }
 
 const pick = (obj, keys) => Object.fromEntries(keys.map(k => [k, obj[k]]));
 
-export function racePayload(race, passages){
+// race 帶 voteDate（該場選舉的投票日，倒數用）與 dataAsOf（這個選區段落 sourceDate 的最大值；沒有段落 → null）。
+// 兩者都不指向作者（orchestrator 裁決 #3）。
+export function racePayload(race, passages, elections = []){
+  const ps = passages.filter(p => p.race === race.id);
+  const election = elections.find(e => e.id === race.electionId);
+  const dataAsOf = ps.reduce((m, p) => (m === null || p.sourceDate > m) ? p.sourceDate : m, null);
   return {
-    race: { id: race.id, label: race.label },
-    passages: passages.filter(p => p.race === race.id).map(p => pick(p, PUBLIC_PASSAGE_FIELDS)),
+    race: { id: race.id, label: race.label, voteDate: election ? election.voteDate : null, dataAsOf },
+    passages: ps.map(p => pick(p, PUBLIC_PASSAGE_FIELDS)),
   };
 }
+
+export const issuesPayload = issues => issues.map(i => ({ id: i.id, label: i.label }));
 
 // 號次小的在前；null（未抽籤）排最後，null 之間照 data/candidates.json 的列順序（sort 是穩定的）。
 const byNumber = (a, b) => (a.number === null) - (b.number === null) || (a.number ?? 0) - (b.number ?? 0);
@@ -75,10 +84,11 @@ export function build(outDir = path.join(ROOT, 'public')){
 
   const write = (dir, race, obj) => fs.writeFileSync(path.join(site, dir, race.id + '.json'), JSON.stringify(obj) + '\n');
   for (const race of data.races){
-    write('race', race, racePayload(race, data.passages));
+    write('race', race, racePayload(race, data.passages, data.elections));
     write('cands', race, candsPayload(race, data.candidates));
     write('reveal', race, revealPayload(race, data.passages, data.candidates));
   }
+  fs.writeFileSync(path.join(site, 'issues.json'), JSON.stringify(issuesPayload(data.issues)) + '\n');
   let sha = 'unknown';
   try { sha = execSync('git rev-parse HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch {}
   fs.writeFileSync(path.join(site, 'version.txt'), sha + '\n');
