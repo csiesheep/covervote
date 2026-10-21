@@ -1,5 +1,5 @@
 // site/store.js — 傾向、每段分數、猜作者只存在這支手機（localStorage）。FE 所有。
-// 每次讀寫都包 try/catch；讀不到就用記憶體，照樣能玩。這裡沒有任何網路請求。
+// 每次讀寫都包 try/catch；讀不到就用記憶體，照樣能玩。這裡沒有任何網路請求（網路只在 api.js）。
 const mem = new Map();
 
 export function getItem(k){
@@ -15,7 +15,7 @@ export function removeItem(k){
   try { localStorage.removeItem(k); } catch {}
 }
 
-// ?internal=1：記在 sessionStorage，之後的上報（現在還沒有）一律跳過。
+// ?internal=1：記在 sessionStorage；api.js 的所有 POST 都帶 ?internal=1（後端不計）。
 let internalFlag = false;
 export function initInternal(){
   try {
@@ -38,7 +38,8 @@ const randomSeed = () => {
 // lean / guesses 的值是候選人姓名（orchestrator 裁決 #3：鍵是姓名）。
 // lean：姓名 | 'undecided' | 'private' | null；guesses[passageId]：姓名 | 'unknown'
 export function freshState(){
-  return { v: 1, seed: randomSeed(), lean: null, ratings: {}, guesses: {}, important: [], menuOrder: null, done: false };
+  return { v: 1, seed: randomSeed(), lean: null, ratings: {}, guesses: {}, important: [], menuOrder: null, done: false,
+           sent: { guess: false, play: false } };   // 這一局的猜作者／局有沒有已經送出（同一局只送一次；再玩一次 = freshState，旗標歸零）
 }
 
 export function loadState(raceId){
@@ -53,6 +54,7 @@ export function loadState(raceId){
     if (Array.isArray(j.important)) s.important = j.important.filter(x => typeof x === 'string');
     if (Array.isArray(j.menuOrder)) s.menuOrder = j.menuOrder.filter(x => typeof x === 'string');
     s.done = j.done === true;
+    if (j.sent && typeof j.sent === 'object') s.sent = { guess: j.sent.guess === true, play: j.sent.play === true };
   } catch {}
   return s;
 }

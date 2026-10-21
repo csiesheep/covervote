@@ -107,7 +107,7 @@ const todo1 = what => STRICT_1 ? what : 'TODO: ' + what;
 const readDir = d => { const p = path.join(out, 'covervote', d); return fs.existsSync(p)
   ? Object.fromEntries(fs.readdirSync(p).filter(f => f.endsWith('.json')).map(f => [f, fs.readFileSync(path.join(p, f), 'utf8')])) : null; };
 const cands = readDir('cands'), reveal = readDir('reveal');
-const CAND_TOP = ['race', 'candidates'], CAND_KEYS = ['number', 'name'];
+const CAND_TOP = ['race', 'candidates'], CAND_KEYS = ['number', 'name', 'inPlay'];   // inPlay：orchestrator 裁決 #6
 const REVEAL_TOP = ['race', 'passages'], REVEAL_KEYS = ['id', 'candidate', 'original', 'sourceUrl', 'sourceDate', 'sourceType'];
 
 section('候選人名單檔與開票檔（#1）');
@@ -128,6 +128,31 @@ check('cands/：每個選區一檔，只有號次與姓名，人數對得上', (
     if (want !== got) bad.push(`${rc.id}: 名單 ${got} ≠ data 的 ${want}`);
   }
   return bad.length ? bad.slice(0, 8).join('；') : ok(true, `${races.length} 檔，欄位只有 ${CAND_KEYS.join(', ')}`);
+});
+
+// orchestrator 裁決（#6）：猜作者選單只放有段落的候選人——放進沒有段落的人，玩家的猜測被稀釋，猜中率被壓低，
+// 遮蔽看起來比實際好（W1 失真）。inPlay 只說「這人在這一都有沒有段落」，不說哪一段是他的。
+const STRICT_6 = true;   // #6 land 時翻
+check('cands/：inPlay 等於「這位候選人在這一都至少有一段」', () => {
+  if (!cands) return todo1('build 還沒有產生 covervote/cands/');
+  const bad = [];
+  let n = 0;
+  for (const rc of races){
+    const list = JSON.parse(cands[rc.id + '.json'] || '{"candidates":[]}').candidates;
+    for (const c of candidates.filter(x => x.raceId === rc.id)){
+      const want = passages.some(p => p.candidateId === c.id);
+      const got = list.find(x => x.name === c.name)?.inPlay;
+      if (got === undefined){ if (!STRICT_6) return 'TODO: cands/ 還沒有 inPlay（#6）'; bad.push(c.name + ' 沒有 inPlay'); continue; }
+      n++;
+      if (got !== want) bad.push(`${rc.id} ${c.name}: inPlay ${got}，應為 ${want}`);
+    }
+  }
+  if (bad.length) return bad.slice(0, 6).join('；');
+  const r = nonEmpty(n, '沒有任何候選人帶 inPlay'); if (r !== true) return r;
+  // 分得出對錯的母體：至少要有一位「沒有段落」的候選人。全員都有段落時，「inPlay 一律 true」的錯實作也會綠。
+  const idle = candidates.filter(c => !passages.some(p => p.candidateId === c.id)).length;
+  if (!idle) return 'TODO: 母體分不出 inPlay 的對錯（每位候選人都有段落），等有沒有段落的候選人進資料再判';
+  return ok(true, `${n} 位候選人的 inPlay 都對，其中 ${idle} 位沒有段落`);
 });
 
 check('cands/ 裡沒有任何段落 id 或候選人 id', () => {

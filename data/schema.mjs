@@ -2,6 +2,7 @@
 //
 // 一場「選舉」(elections.json) 有多個「選區」(races.json)，每個選區有候選人(candidates.json)
 // 與政見段落(passages.json)；段落的 issueId 都要在議題表(issues.json：[{ id, label }])裡。
+// 選舉有 voteDate（YYYY-MM-DD）與 pollBlackoutFrom（帶時區的 ISO 時間，早於投票日；見下方 isIsoWithTz）。
 // 候選人有 number（抽籤後的號次，正整數；未抽籤 null），同選區號次與姓名都不得重複（姓名是前端的鍵）。race id = `<electionId>.<office>.<district>`，所以 2028 總統、立委
 // 或任何一場補選都只是多加幾列，不用改結構。
 //
@@ -25,6 +26,23 @@ export const textLength = s => [...String(s).replace(/\s/g, '')].length;
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
+// 選罷法第 53 條的禁止期起點（elections.json 的 pollBlackoutFrom，orchestrator 裁決 #6）：
+// 必填、帶時區的 ISO 8601 時間（Z 或 ±HH:MM；沒有時區的字串，各地的瀏覽器與 Worker 會各自解讀成不同時刻）、
+// 嚴格早於投票日。投票日當天從 00:00 臺灣時間算起——和 worker/api.mjs 的投票截止（voteDate 16:00 +08:00）同一個時區假設。
+const ISO_TZ = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,3})?)?(?:Z|[+-](\d{2}):(\d{2}))$/;
+export const VOTE_DAY_START = 'T00:00:00+08:00';
+
+// 格式對、而且日曆上存在（2026-02-30、25:00 這種 Date.parse 可能會進位放行的，也算錯）。
+export function isIsoWithTz(s){
+  const m = ISO_TZ.exec(typeof s === 'string' ? s : '');
+  if (!m) return false;
+  const [y, mo, d, h, mi, sec = '0', oh = '0', om = '0'] = m.slice(1);
+  const dim = new Date(Date.UTC(+y, +mo, 0)).getUTCDate();   // 該月天數
+  if (+mo < 1 || +mo > 12 || +d < 1 || +d > dim) return false;
+  if (+h > 23 || +mi > 59 || +sec > 59 || +oh > 14 || +om > 59) return false;
+  return Number.isFinite(Date.parse(s));
+}
+
 export function validate({ elections, races, candidates, passages, issues }){
   const errs = [];
   const ids = new Map();
@@ -43,7 +61,14 @@ export function validate({ elections, races, candidates, passages, issues }){
   const electionIds = new Set(elections.map(e => e.id));
   for (const e of elections){
     uniq('election', e.id);
-    if (!DATE.test(e.voteDate || '')) errs.push(`election ${e.id}: voteDate 不是 YYYY-MM-DD`);
+    const voteOk = DATE.test(e.voteDate || '');
+    if (!voteOk) errs.push(`election ${e.id}: voteDate 不是 YYYY-MM-DD`);
+    if (!('pollBlackoutFrom' in e) || e.pollBlackoutFrom == null || e.pollBlackoutFrom === '')
+      errs.push(`election ${e.id}: 缺 pollBlackoutFrom（選罷法第 53 條禁止期起點）`);
+    else if (!isIsoWithTz(e.pollBlackoutFrom))
+      errs.push(`election ${e.id}: pollBlackoutFrom ${JSON.stringify(e.pollBlackoutFrom)} 不是帶時區的 ISO 時間（例 2026-11-18T00:00:00+08:00）`);
+    else if (voteOk && !(Date.parse(e.pollBlackoutFrom) < Date.parse(e.voteDate + VOTE_DAY_START)))
+      errs.push(`election ${e.id}: pollBlackoutFrom ${e.pollBlackoutFrom} 不早於投票日 ${e.voteDate}${VOTE_DAY_START}`);
   }
   const raceIds = new Set(races.map(r => r.id));
   for (const r of races){

@@ -29,6 +29,24 @@ check('validate() 抓得到缺欄位、壞 race、壞候選人、長度不符', 
   return missed.length ? `沒抓到：${missed.join('、')}` : ok(true, `${Object.keys(cases).length} 種壞資料都被抓到`);
 });
 
+// #6：選舉的 pollBlackoutFrom 必填、是帶時區的 ISO 時間、早於投票日。缺了後端會 fail closed（整段禁止期），
+// 但那是安全網，不是規格——資料錯了要在 validate 就紅。STRICT_6S 在 #6 land 時翻。
+const STRICT_6S = true;   // #6 land 時翻
+check('validate() 抓得到缺 pollBlackoutFrom、格式錯、晚於投票日', () => {
+  const e = data.elections[0];
+  if (!e) return '母體是空的：沒有選舉';
+  const { pollBlackoutFrom, ...noBO } = e;
+  const bad = {
+    '缺 pollBlackoutFrom': { ...data, elections: [noBO] },
+    '沒有時區': { ...data, elections: [{ ...e, pollBlackoutFrom: '2026-11-18T00:00:00' }] },
+    '晚於投票日': { ...data, elections: [{ ...e, pollBlackoutFrom: '2026-11-29T00:00:00+08:00' }] },
+    '剛好等於投票日 00:00': { ...data, elections: [{ ...e, pollBlackoutFrom: e.voteDate + 'T00:00:00+08:00' }] },   // 嚴格早於（BE #6 回報的邊界）
+  };
+  const missed = Object.entries(bad).filter(([, d]) => validate(d).length === 0).map(([k]) => k);
+  if (missed.length) return (STRICT_6S ? '' : 'TODO: ') + `沒抓到：${missed.join('、')}`;
+  return ok(true, `${Object.keys(bad).length} 種壞 pollBlackoutFrom 都被抓到`);
+});
+
 // #1 加的規則（orchestrator 裁決：姓名是前端的鍵；號次抽籤前 null；議題顯示名只有一份）。
 // 每一種壞資料都要被抓到，而且合法的變化（number null、正整數號次）不能被誤抓。
 check('validate() 抓得到號次、姓名重複、議題表的錯，且不誤抓合法號次', () => {
