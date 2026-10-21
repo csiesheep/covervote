@@ -5,5 +5,19 @@
     "office": "mayor",
     "district": "taipei",
     "label": "臺北市長"
+  },
+  {
+    "id": "2026-local.mayor.taoyuan",
+    "electionId": "2026-local",
+    "office": "mayor",
+    "district": "taoyuan",
+    "label": "桃園市長"
+  },
+  {
+    "id": "2026-local.mayor.taichung",
+    "electionId": "2026-local",
+    "office": "mayor",
+    "district": "taichung",
+    "label": "臺中市長"
   }
 ]
