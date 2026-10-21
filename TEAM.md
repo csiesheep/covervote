@@ -105,6 +105,7 @@ owner 裁決（2026-10-21，init 時的選擇題，選項原文）：
   `node tools/check_public_imports.mjs` 確認每個相對 import 都解析得到，再 `wrangler deploy`）。push 到 main 不會自己部署。
 - **怎麼做**：land 哪個 SHA 就部署哪個 SHA；部署後抓線上的 `/covervote/version.txt` 對 SHA，並逐位元組比對 `index.html`
   與 `race/*.json` 和本機 `public/covervote/` 的同名檔，比對過了才在 issue 上寫「已部署 <SHA>」。
+- **部署後查有沒有被注入第三方腳本**：用瀏覽器 User-Agent 抓 `/covervote/`、`?embed=1`、`?class=ABC234` 的 HTML，`cloudflareinsights` 必須出現 0 次（Cloudflare 帳號層級的 Web Analytics 會自動注入，#14 靠 HTML 的 `Cache-Control: no-transform` 擋掉；curl 預設 UA 看不到注入）。
 - **線上檢查不進統計**：對線上開頁的一切檢查（無頭瀏覽器、探針、自動玩一局）網址一律帶 `internal=1`
   （產品要提供：不載入 analytics、不上報計數與猜作者匯總，記在 sessionStorage）。不帶的話，你的驗證會灌進真實玩家的數字與猜中率。
 
