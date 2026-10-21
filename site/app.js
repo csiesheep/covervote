@@ -36,14 +36,14 @@ const ICON_ON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5
 const ICON_OFF = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
 const MENU_LINKS = [['#/info/method', 'foot.method'], ['#/info/sources', 'foot.sources'], ['#/info/privacy', 'foot.privacy'], ['#/info/about', 'foot.about'], ['#/embed', 'foot.media'], ['#/class', 'foot.class']];
 // 首頁頁首的「≡」選單（#27）：頁尾那排連結搬進來。按鈕有 aria-expanded；Esc、點外面、Tab 離開都關。
-const menuHtml = () => `<button class="snd menu-btn" data-act="menu" aria-expanded="false" aria-controls="homemenu" aria-label="${esc(t('menu.label'))}"><span aria-hidden="true">≡</span></button>`
-  + `<nav class="menu" id="homemenu" aria-label="${esc(t('menu.label'))}" hidden>${MENU_LINKS.map(([h, key]) => `<a href="${h}">${esc(t(key))}</a>`).join('')}</nav>`;
-function bar(left, meta, menu){
+const menuHtml = hk => `<button class="snd menu-btn" data-act="menu" aria-expanded="false" aria-controls="homemenu" aria-label="${esc(t('menu.label'))}"><span aria-hidden="true">≡</span></button>`
+  + `<nav class="menu" id="homemenu" aria-label="${esc(t('menu.label'))}" hidden>${MENU_LINKS.map(([h, key]) => `<a href="${h}">${esc(t(key))}</a>` + (key === 'foot.sources' ? `<a id="menuhealth" href="#/${esc(hk)}/health">${esc(t('foot.health'))}</a>` : '')).join('')}</nav>`;
+function bar(left, meta, menu, hk = 'taipei'){
   if (EMBED) return '';
   const on = isSoundOn();
   return `<header class="bar${menu ? ' home-bar' : ''}"><a class="brand" href="#/"><i></i>${esc(left)}</a><span class="bar-r">${menu ? '' : meta ? `<span class="meta num" id="barmeta">${esc(meta)}</span>` : '<span class="meta num" id="barmeta"></span>'}`
     + `<button class="fsz" data-act="fontsize" aria-label="${esc(t('font.label', { size: t('font.' + fontSize()) }))}">${esc(t('font.btn'))}<small>${esc(t('font.' + fontSize()))}</small></button>`
-    + (menu ? menuHtml() : '')
+    + (menu ? menuHtml(hk) : '')
     + `<button class="snd" data-act="sound" aria-pressed="${on}" aria-label="${esc(t(on ? 'sound.on' : 'sound.off'))}" title="${esc(t(on ? 'sound.on' : 'sound.off'))}">${on ? ICON_ON : ICON_OFF}</button></span></header>`;
 }
 const footer = healthKey => EMBED
@@ -192,7 +192,7 @@ async function viewHome(){
     <div class="legend"><span><i class="sw"></i>${esc(t('home.legendOn'))}</span><span><i class="sw d"></i>${esc(t('home.legendOff'))}</span><span class="lg-soon">${esc(t('home.legendSoon'))}</span></div>
     <a class="btn" id="startbtn" href="${homePick ? '#/' + homePick : '#/'}" data-act="start" ${homePick ? '' : 'aria-disabled="true"'}>${esc(startLabel())}</a>
     <p class="homefoot"><span id="homecount"></span><span>${esc(t('home.free'))}</span><span id="plays" hidden></span></p>`;
-  return { html: page(bar(t('brand'), '', true), body, '', 'home'), mount: () => { fillCountdown(ready); fillPlays(ready); return mountMenu(); } };
+  return { html: page(bar(t('brand'), '', true, homePick || [...ready.keys()][0] || 'taipei'), body, '', 'home'), mount: () => { fillCountdown(ready); fillPlays(ready); return mountMenu(); } };
 }
 // 「≡」選單：開啟時焦點進第一個連結；Esc 關並回到按鈕；點外面、Tab 離開也關。
 function mountMenu(){
@@ -1022,6 +1022,7 @@ root.addEventListener('click', async e => {
       const sb = document.getElementById('startbtn'); sb.textContent = startLabel(); sb.removeAttribute('aria-disabled'); sb.href = '#/' + homePick;
       showPlays();
       const hl = document.getElementById('healthlink'); if (hl){ hl.href = `#/${homePick}/health`; hl.hidden = false; }
+      const mh = document.getElementById('menuhealth'); if (mh) mh.href = `#/${homePick}/health`;
       break;
     }
     case 'start': if (!homePick) e.preventDefault(); break;
