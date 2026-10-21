@@ -97,4 +97,67 @@ check('payload 原文裡找不到 original 原文與 sourceUrl', () => {
   return hits.length ? hits.slice(0, 8).join('；') : ok(true, `${passages.length} 段的原文與出處都不在`);
 });
 
+// ---- #1：候選人名單檔與開票檔（owner 裁決 2026-10-21：名單放獨立檔案，只有號次與姓名、不帶段落對應）----
+// cands/<raceId>.json   { race, candidates: [{ number, name }] }          開票前給傾向選單與猜作者選單
+// reveal/<raceId>.json  { race, passages: [{ id, candidate: { number, name }, original, sourceUrl, sourceDate, sourceType }] }
+//                       開票時才 fetch。檔案本身公開可抓（orchestrator 裁決：v1 接受，猜作者匯總只收開票前送出的猜測）。
+// STRICT 在 #1 land 時翻成 true。
+const STRICT_1 = false;
+const todo1 = what => STRICT_1 ? what : 'TODO: ' + what;
+const readDir = d => { const p = path.join(out, 'covervote', d); return fs.existsSync(p)
+  ? Object.fromEntries(fs.readdirSync(p).filter(f => f.endsWith('.json')).map(f => [f, fs.readFileSync(path.join(p, f), 'utf8')])) : null; };
+const cands = readDir('cands'), reveal = readDir('reveal');
+const CAND_TOP = ['race', 'candidates'], CAND_KEYS = ['number', 'name'];
+const REVEAL_TOP = ['race', 'passages'], REVEAL_KEYS = ['id', 'candidate', 'original', 'sourceUrl', 'sourceDate', 'sourceType'];
+
+section('候選人名單檔與開票檔（#1）');
+
+check('cands/：每個選區一檔，只有號次與姓名，人數對得上', () => {
+  if (!cands) return todo1('build 還沒有產生 covervote/cands/');
+  const r = nonEmpty(races.length, 'data/races.json 是空的'); if (r !== true) return r;
+  const bad = [];
+  for (const rc of races){
+    const t = cands[rc.id + '.json'];
+    if (!t){ bad.push(`缺 ${rc.id}.json`); continue; }
+    const j = JSON.parse(t);
+    for (const k of Object.keys(j)) if (!CAND_TOP.includes(k)) bad.push(`${rc.id}: 頂層 ${k}`);
+    const list = j.candidates || [];
+    for (const c of list) for (const k of Object.keys(c)) if (!CAND_KEYS.includes(k)) bad.push(`${rc.id}: 候選人欄位 ${k}`);
+    const want = candidates.filter(c => c.raceId === rc.id).map(c => c.name).sort().join(',');
+    const got = list.map(c => c.name).sort().join(',');
+    if (want !== got) bad.push(`${rc.id}: 名單 ${got} ≠ data 的 ${want}`);
+  }
+  return bad.length ? bad.slice(0, 8).join('；') : ok(true, `${races.length} 檔，欄位只有 ${CAND_KEYS.join(', ')}`);
+});
+
+check('cands/ 裡沒有任何段落 id 或候選人 id', () => {
+  if (!cands) return todo1('build 還沒有產生 covervote/cands/');
+  const r = nonEmpty(passages.length, 'data/passages.json 是空的'); if (r !== true) return r;
+  const hits = [];
+  for (const [f, t] of Object.entries(cands)){
+    for (const p of passages) if (t.includes(`"${p.id}"`)) hits.push(`${f} 含段落 id ${p.id}`);
+    for (const c of candidates) if (t.includes(c.id)) hits.push(`${f} 含候選人 id ${c.id}`);
+  }
+  return hits.length ? hits.slice(0, 8).join('；') : ok(true, `${Object.keys(cands).length} 檔 × ${passages.length} 段，沒有對應`);
+});
+
+check('reveal/：每段都在，作者姓名與 data 一致，欄位只有允許的', () => {
+  if (!reveal) return todo1('build 還沒有產生 covervote/reveal/');
+  const r = nonEmpty(passages.length, 'data/passages.json 是空的'); if (r !== true) return r;
+  const name = Object.fromEntries(candidates.map(c => [c.id, c.name]));
+  const bad = [];
+  for (const p of passages){
+    const t = reveal[p.race + '.json'];
+    if (!t){ bad.push(`缺 ${p.race}.json`); continue; }
+    const j = JSON.parse(t);
+    for (const k of Object.keys(j)) if (!REVEAL_TOP.includes(k)) bad.push(`${p.race}: 頂層 ${k}`);
+    const q = (j.passages || []).find(x => x.id === p.id);
+    if (!q){ bad.push(`${p.id} 不在 reveal`); continue; }
+    for (const k of Object.keys(q)) if (!REVEAL_KEYS.includes(k)) bad.push(`${p.id}.${k}`);
+    if (q.candidate?.name !== name[p.candidateId]) bad.push(`${p.id}: 作者 ${q.candidate?.name} ≠ ${name[p.candidateId]}`);
+    if (q.original !== p.original) bad.push(`${p.id}: original 不同`);
+  }
+  return bad.length ? bad.slice(0, 8).join('；') : ok(true, `${passages.length} 段都在，作者一致`);
+});
+
 fs.rmSync(out, { recursive: true, force: true });
