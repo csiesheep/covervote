@@ -406,5 +406,345 @@
       "answers": 0,
       "correct": 0
     }
+  },
+  {
+    "id": "p-taichung-001",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "childcare",
+    "candidateId": "c-taichung-2",
+    "original": "準公共托嬰補助加碼，從每月 1,400 元提高到 3,000 元，並逐步朝向第二胎以上零月費；同時針對未送托家庭的育兒津貼，每個月再加碼 1,000 元。",
+    "masked": "將準公共托嬰的每月補助由1,400元提高到3,000元，並逐步朝第二胎以上月費歸零推進；另對沒有送托的家庭，育兒津貼每月再增加1,000元。",
+    "plain": "準公共托嬰的補助，每個月從1,400元調高到3,000元，之後朝第二胎以上不用繳月費的方向走；沒有送托的家庭，育兒津貼每月再多給1,000元。",
+    "sourceUrl": "https://taichungway.tw/parenting-friendly-city-childcare-support",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 70,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-002",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "childcare",
+    "candidateId": "c-taichung-1",
+    "original": "加碼生育津貼，第一胎 4 萬元、第二胎 6 萬元、第三胎 8 萬元，減輕家庭迎接新生命的經濟壓力。改善各區托育資源不均問題，推動 0 至 2 歲公托名額倍增，讓不同區域的家庭都能享有更公平、可近的托育服務。",
+    "masked": "提高生育津貼，第一胎4萬元、第二胎6萬元、第三胎8萬元；並讓0至2歲的公共托育名額增加一倍，改善各區托育資源不均的情形，讓不同區域的家庭都能就近使用。",
+    "plain": "生育津貼要提高：第一胎給4萬元、第二胎給6萬元、第三胎給8萬元；0到2歲的公共托育名額要增加一倍，讓各區的托育資源比較平均，家長不用跑遠。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 75,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-003",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "eldercare",
+    "candidateId": "c-taichung-2",
+    "original": "計程車單趟扣抵翻倍至 200 點、折抵 YouBike 2.0E 及長青學苑報名費；每月可用部分點數至農會與特約藥局採買保健品，看病更是不限額折抵掛號費。",
+    "masked": "將長者福利卡的計程車單趟扣抵提高一倍到200點，並可折抵電輔自行車租用費與長者學習課程報名費；每月可用部分點數到農會與特約藥局買保健品，掛號費則不限額折抵。",
+    "plain": "長輩的福利卡，搭計程車每趟可以扣200點（是原來的兩倍），也能抵電輔自行車的租用費和長者學習課程的報名費；每月部分點數可到農會、特約藥局買保健品，掛號費不限額度折抵。",
+    "sourceUrl": "https://taichungway.tw/senior-care-community-hubs",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 78,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-004",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "eldercare",
+    "candidateId": "c-taichung-1",
+    "original": "提供 65 歲以上長者假牙補助最高 5 萬元，改善口腔健康、飲食品質與生活舒適度，讓長輩能吃得健康、笑得自在，提升整體生活品質。",
+    "masked": "提供65歲以上長者假牙補助，最高5萬元，改善口腔健康、飲食品質與生活舒適度，讓長輩吃得健康、笑得自在，提升整體生活品質。",
+    "plain": "65歲以上的長輩裝假牙，最高可以補助5萬元，希望他們吃得健康、笑得自在，生活品質也跟著變好。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 60,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-005",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "health",
+    "candidateId": "c-taichung-2",
+    "original": "推出設籍臺中孕婦施打 RSV（呼吸道融合病毒）疫苗補助，在懷孕後期減免自費施打費用，讓抗體在媽媽肚子裡就能保護寶寶。\n提升產後到宅月嫂補助時數至 40 小時，讓專業月嫂有充裕的時間指導育兒並協助媽媽休養，做女性最體貼的生育神隊友。\n將「健康好孕專車」的使用期限貼心延長至「產後一年」，為媽媽產後回診與寶寶打疫苗的交通路途多一份呵護。",
+    "masked": "補助設籍的孕婦在懷孕後期施打呼吸道融合病毒疫苗並減免自費；將產後到宅月嫂的補助時數提高到40小時；孕產婦專用接送車的使用期限延長到產後一年。",
+    "plain": "設籍本市的孕婦，懷孕後期打呼吸道融合病毒（RSV）疫苗可以減免自費；產後到家的月嫂補助增加到40小時；孕產婦專用接送車可以用到產後一年。",
+    "sourceUrl": "https://taichungway.tw/parenting-friendly-city-maternal-care",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 70,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-006",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "health",
+    "candidateId": "c-taichung-1",
+    "original": "提高女性勞工健康檢查補助，減輕女性照顧自身健康的負擔。乳癌篩檢免費服務擴大納入 30 至 39 歲女性，讓健康風險能夠更早被發現、及早治療。",
+    "masked": "提高女性勞工的健康檢查補助，減輕照顧自身健康的負擔；乳癌篩檢的免費服務擴大納入30至39歲的女性，讓健康風險更早被發現、及早治療。",
+    "plain": "女性勞工的健康檢查補助要提高；30到39歲的女性也可以免費做乳癌篩檢，希望健康問題早點被發現、早點治療。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 65,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-007",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "transit",
+    "candidateId": "c-taichung-2",
+    "original": "將雙十公車升級為「臺中市民搭乘公車運輸全程免費」（含幹線、市區與捷運接駁）。同時由市府帶頭編列預算補貼，實質補足公車駕駛的薪資缺口，透過加薪解決駕駛荒，確保路線不中斷。",
+    "masked": "讓市民搭乘公車全程免費，範圍含幹線、市區與捷運接駁；同時由市府編列預算補貼，補足公車駕駛的薪資缺口，以加薪解決駕駛短缺，確保路線不中斷。",
+    "plain": "市民搭公車全程免費，包含幹線、市區公車和捷運接駁；市府編預算補貼，補足公車司機薪水的缺口，用加薪來解決司機不足，路線才不會中斷。",
+    "sourceUrl": "https://taichungway.tw/smart-transport-public-transit",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 68,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-008",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "transit",
+    "candidateId": "c-taichung-1",
+    "original": "建構 4+1 轉運中心\n在既有轉運中心規劃基礎上，增設海區轉運中心，串聯台鐵、高鐵、環線捷運、國道客運、市區公車、多元計程車與公共自行車系統，提升轉乘便利性，強化台中公共運輸整體服務效率。",
+    "masked": "在既有規劃的四個轉運中心之外增設一個海區轉運中心，串聯台鐵、高鐵、環線捷運、國道客運、市區公車、多元計程車與公共自行車系統，提升轉乘便利性。",
+    "plain": "在原本規劃的四個轉運中心之外，再增設一個海區轉運中心，把台鐵、高鐵、環線捷運、國道客運、市區公車、計程車和公共自行車串在一起，轉乘更方便。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 70,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-009",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "education",
+    "candidateId": "c-taichung-2",
+    "original": "在教育局內大刀闊斧成立技職教育專責單位，統籌資源，補足長期缺乏專責統籌的現況。\n大幅增設「職業探索中心」，拉高學子參與職業探索的群科豐富度與頻率。\n讓孩子在國高中階段就能透過實際操作與導師分享，提早把創意與雙手結合，幫年輕學子新增「技職教育」這項驕傲的職涯選項。",
+    "masked": "在教育局內成立技職教育專責單位統籌資源，增設職業探索中心，並讓學生在國高中階段就透過實際操作與導師分享，提早把創意與雙手結合。",
+    "plain": "教育局裡要成立專門負責技職教育的單位來統籌資源；多設幾處職業探索中心；國中、高中的學生就能動手做、聽業師分享，提早接觸技職這條路。",
+    "sourceUrl": "https://taichungway.tw/robot-manufacturing-city-vocational-training",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 63,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-010",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "education",
+    "candidateId": "c-taichung-1",
+    "original": "每年編列 1 億元以上預算，支持中小學推動國際交流與合作，並擴充高中職國際文憑及國際學分課程名額。同步推展雙語遠距教學、課後共學、交換生計畫與雙語數位學伴，突破雙語師資限制，讓更多學生有機會接觸國際視野與多元語言環境。",
+    "masked": "每年編列1億元以上的預算，支持中小學推動國際交流與合作，擴充高中職國際文憑及國際學分課程名額，並推展雙語遠距教學、課後共學與交換生計畫。",
+    "plain": "每年至少編1億元，讓中小學做國際交流；高中職的國際文憑和國際學分課程要增加名額；同時辦雙語遠距教學、課後共學和交換生，讓更多學生接觸外語環境。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 68,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-011",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "safety",
+    "candidateId": "c-taichung-2",
+    "original": "體恤警消辛勞，放寬並提高健康檢查補助，40 歲以上每年補助 4,500 元，未滿 40 歲提高至每年 3,500 元。\n參考國際與其他城市經驗，成立專責的消防「職業安全衛生室」，編制專人推動風險評估與心理輔導，接住第一線人員的創傷壓力。",
+    "masked": "放寬並提高警消的健康檢查補助，40歲以上每年補助4,500元，未滿40歲提高到每年3,500元；另成立消防職業安全衛生室，由專人推動風險評估與心理輔導。",
+    "plain": "警察和消防員的健檢補助要放寬、提高：40歲以上每年補助4,500元，不到40歲每年3,500元；另外成立消防的職業安全衛生室，專人負責風險評估和心理輔導。",
+    "sourceUrl": "https://taichungway.tw/city-safety-first-responders",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 76,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-012",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "safety",
+    "candidateId": "c-taichung-1",
+    "original": "建置科技阻詐預警系統，串聯金融機構、地政、檢警調等單位，即時發現異常交易、可疑金流與高風險案件，及早攔阻詐騙，降低市民財產損失。",
+    "masked": "建置科技阻詐預警系統，串聯金融機構、地政與檢警調等單位，即時發現異常交易、可疑金流與高風險案件，及早攔阻詐騙，降低市民財產損失。",
+    "plain": "建立一套科技預警系統，連結銀行、地政和檢警調，一發現異常交易、可疑金流或高風險案件就提早攔下，減少市民被騙的損失。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 64,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-013",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "economy",
+    "candidateId": "c-taichung-2",
+    "original": "參考亞特蘭大與拉斯維加斯的成功經驗，成立跨局處一站式的「臺中市會展經濟推動辦公室」，專責推廣城市品牌並協助會展籌辦。\n系統性建置會展活動招商、供應鏈媒合、城市接待配套、成效追蹤、會展城市交流、產學合作等六大平台。\n推出誘因提供機制、公協會與會議大使計畫、建置全場館與供應鏈資料庫、城市接待方案等八項具體工具，將會展轉化為實質經濟效益。",
+    "masked": "成立跨局處一站式的會展經濟推動辦公室，專責推廣城市品牌並協助會展籌辦；建置招商、供應鏈媒合、成效追蹤等六大平台，並推出八項具體政策工具。",
+    "plain": "成立一個跨局處、一站式的會展推動辦公室，負責推廣城市品牌、協助辦展；建六個平台（招商、供應鏈媒合、成效追蹤等），再搭配八項具體工具，把會展變成實際的經濟收入。",
+    "sourceUrl": "https://taichungway.tw/exhibition-economy-taichung-hub",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 68,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-014",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "economy",
+    "candidateId": "c-taichung-1",
+    "original": "商圈輔導獎勵補助經費提高 3 倍；定期舉辦大型活動，或結合熱門手機遊戲行銷，吸引觀光人潮，活絡商圈經濟。\n鼓勵傳統產業及中小微企業智慧升級，成立產業創新中心，導入 AI 科技與智慧管理，打造創新產業鏈。",
+    "masked": "在北區，將商圈輔導獎勵補助經費提高3倍，並定期舉辦大型活動、結合熱門手機遊戲行銷；在豐原與后里，鼓勵傳統產業及中小微企業智慧升級，成立產業創新中心，導入AI科技與智慧管理。",
+    "plain": "在北區，商圈輔導的獎勵補助經費提高到原來的3倍，定期辦大型活動、和熱門手機遊戲合作宣傳；在豐原與后里，鼓勵傳統產業和中小微企業做智慧升級，設立產業創新中心，導入AI與智慧管理。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 86,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-015",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "housing",
+    "candidateId": "c-taichung-2",
+    "original": "面對全市 30 年以上老屋突破 60 萬棟的挑戰，市府將鎖定老舊住宅與人口密集社區，擴大推動老屋健檢，構築耐災安全的居住環境。\n針對高齡長輩進行屋內「機能延壽」的診斷與補助，從無障礙空間改善做起，朝向「結構機能雙延壽、空間無障礙」的目標前進。",
+    "masked": "全市屋齡30年以上的老屋已突破60萬棟，將鎖定老舊住宅與人口密集社區擴大老屋健檢，並對高齡長輩的屋內機能延壽提供診斷與補助，先從無障礙空間做起。",
+    "plain": "全市30年以上的老房子超過60萬棟，要優先替老舊住宅和人口密集的社區做健檢；高齡長輩家裡的設施改善（先從無障礙空間開始）也提供診斷和補助。",
+    "sourceUrl": "https://taichungway.tw/senior-care-age-friendly-housing",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 72,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-016",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "housing",
+    "candidateId": "c-taichung-1",
+    "original": "加速社會住宅多元興辦，推動 4 年 2,000 戶婚育宅，提供新婚與育兒家庭申請，減輕青年成家初期的居住壓力，讓青年能在台中安心工作、穩定生活、勇敢成家。",
+    "masked": "加速社會住宅多元興辦，在4年內推出2,000戶婚育宅，提供新婚與育兒家庭申請，減輕青年成家初期的居住壓力，讓青年安心工作、穩定生活。",
+    "plain": "加快興辦各種社會住宅，4年內推出2,000戶專給新婚和育兒家庭申請的婚育宅，減輕年輕人剛成家時的住房壓力。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 66,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-017",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "youth",
+    "candidateId": "c-taichung-2",
+    "original": "市府將主動協助，引進具備全球市場能力的指標性加速器進駐臺中。\n運用升級會展經濟 168 的模式，辦理青創、新創嘉年華，由國際導師一對一帶路，實質媒合海外資金。\n將「舊臺中縣議會」改造成新創孵化基地，協助創業團隊在聚落內形成互助生態系，達成「在地孵化、全球起飛」的目標。",
+    "masked": "主動協助引進具全球市場能力的指標性加速器進駐；辦理青創與新創嘉年華，由國際導師一對一帶路並媒合海外資金；將舊議會大樓改造成新創孵化基地。",
+    "plain": "市府主動協助，引進有全球市場經驗的大型加速器進駐；辦青創、新創嘉年華，由國際導師一對一帶路，幫忙媒合海外資金；把舊議會大樓改成新創團隊的孵化基地。",
+    "sourceUrl": "https://taichungway.tw/exhibition-economy-startup-accelerator",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 68,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-018",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "youth",
+    "candidateId": "c-taichung-1",
+    "original": "打造青年創業基地，發展共享辦公空間、創業孵化器、試驗場域與跨域交流平台，協助青年從創意發想、產品驗證到市場拓展。並設立區域創客中心（Makerspace），推動台中成為青年創客之都。",
+    "masked": "打造青年創業基地，發展共享辦公空間、創業孵化器、試驗場域與跨域交流平台，協助青年從創意發想、產品驗證到市場拓展，並設立區域創客中心。",
+    "plain": "設立青年創業基地，提供共享辦公室、創業孵化器、試驗場地和跨領域交流平台，陪年輕人從點子、試做到打進市場；各區再設創客中心。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 66,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-019",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "pedsafety",
+    "candidateId": "c-taichung-2",
+    "original": "鎖定學校、醫院與大眾運輸樞紐周邊，展開人行道鋪面翻新與無障礙坡道優化，檢討行人庇護島，打造無障礙、消弭斷點的全齡友善步行路網。",
+    "masked": "鎖定學校、醫院與大眾運輸樞紐周邊，翻新人行道鋪面、優化無障礙坡道，並檢討行人庇護島，打造無障礙、沒有斷點的全齡步行路網。",
+    "plain": "以學校、醫院和大眾運輸站點周邊為重點，翻新人行道路面、改善無障礙坡道、檢討行人庇護島，讓各年齡的人都能順暢步行、中間不再斷掉。",
+    "sourceUrl": "https://taichungway.tw/smart-transport-walkable-streets",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 60,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-020",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "pedsafety",
+    "candidateId": "c-taichung-1",
+    "original": "推動道路設計改善、人行空間優化與校園周邊通學步道改善，優先處理危險路口、行穿線退縮、庇護島與通學動線安全，建立友善行人與兒童的城市交通環境。",
+    "masked": "改善道路設計、優化人行空間與校園周邊通學步道，優先處理危險路口、行穿線退縮、庇護島與通學動線的安全，建立友善行人與兒童的交通環境。",
+    "plain": "改善道路設計和人行空間，也改善學校周邊的通學步道；優先處理危險路口、行人穿越線退縮、庇護島和上下學動線的安全，讓行人與孩子走得放心。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 65,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
   }
 ]

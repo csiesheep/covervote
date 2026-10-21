@@ -1,56 +1,16 @@
 [
-  {
-    "id": "c-taipei-1",
-    "raceId": "2026-local.mayor.taipei",
-    "name": "蔣萬安",
-    "number": null
-  },
-  {
-    "id": "c-taipei-2",
-    "raceId": "2026-local.mayor.taipei",
-    "name": "沈伯洋",
-    "number": null
-  },
-  {
-    "id": "c-taipei-3",
-    "raceId": "2026-local.mayor.taipei",
-    "name": "郭璽",
-    "number": null
-  },
-  {
-    "id": "c-taipei-4",
-    "raceId": "2026-local.mayor.taipei",
-    "name": "蕭文乾",
-    "number": null
-  },
-  {
-    "id": "c-taipei-5",
-    "raceId": "2026-local.mayor.taipei",
-    "name": "唐新民",
-    "number": null
-  },
-  {
-    "id": "c-taipei-6",
-    "raceId": "2026-local.mayor.taipei",
-    "name": "林志成",
-    "number": null
-  },
-  {
-    "id": "c-newtaipei-1",
-    "raceId": "2026-local.mayor.newtaipei",
-    "name": "蘇巧慧",
-    "number": null
-  },
-  {
-    "id": "c-newtaipei-2",
-    "raceId": "2026-local.mayor.newtaipei",
-    "name": "李四川",
-    "number": null
-  },
-  {
-    "id": "c-newtaipei-3",
-    "raceId": "2026-local.mayor.newtaipei",
-    "name": "蘇輝湟",
-    "number": null
-  }
+  {"id":"c-taipei-1","raceId":"2026-local.mayor.taipei","name":"蔣萬安","number":null},
+  {"id":"c-taipei-2","raceId":"2026-local.mayor.taipei","name":"沈伯洋","number":null},
+  {"id":"c-taipei-3","raceId":"2026-local.mayor.taipei","name":"郭璽","number":null},
+  {"id":"c-taipei-4","raceId":"2026-local.mayor.taipei","name":"蕭文乾","number":null},
+  {"id":"c-taipei-5","raceId":"2026-local.mayor.taipei","name":"唐新民","number":null},
+  {"id":"c-taipei-6","raceId":"2026-local.mayor.taipei","name":"林志成","number":null},
+  {"id":"c-newtaipei-1","raceId":"2026-local.mayor.newtaipei","name":"蘇巧慧","number":null},
+  {"id":"c-newtaipei-2","raceId":"2026-local.mayor.newtaipei","name":"李四川","number":null},
+  {"id":"c-newtaipei-3","raceId":"2026-local.mayor.newtaipei","name":"蘇輝湟","number":null},
+  {"id":"c-taoyuan-1","raceId":"2026-local.mayor.taoyuan","name":"張善政","number":null},
+  {"id":"c-taoyuan-2","raceId":"2026-local.mayor.taoyuan","name":"黃世杰","number":null},
+  {"id":"c-taichung-1","raceId":"2026-local.mayor.taichung","name":"何欣純","number":null},
+  {"id":"c-taichung-2","raceId":"2026-local.mayor.taichung","name":"江啟臣","number":null},
+  {"id":"c-taichung-3","raceId":"2026-local.mayor.taichung","name":"洪麗華","number":null}
 ]
