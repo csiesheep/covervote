@@ -15,6 +15,9 @@
 //                                    （orchestrator 裁決 #1：檔案公開可抓，v1 接受）
 //   covervote/engine/                engine/ 原樣複製，頁面 `import './engine/score.mjs'`
 //   covervote/version.txt            HEAD 的完整 SHA
+//   _headers                         （assets 目錄的根）每一頁 HTML 的 Cache-Control 加 no-transform（#14）：
+//                                    Cloudflare 帳號層級的 Web Analytics 會在線上 HTML 自動插入 beacon.min.js，
+//                                    帶 no-transform 的回應它不改寫。只列 HTML 的網址，其他檔維持預設快取。
 //
 // 開票前的 payload（race/、cands/）不得含任何能指出作者的東西（tests/acc_payload.mjs 守這條）。
 // 三種檔都用白名單一欄一欄挑，不用展開整列：資料表多一欄，不會自己跑上前端。
@@ -76,6 +79,20 @@ export function revealPayload(race, passages, candidates){
   };
 }
 
+// Workers static assets 對每個檔的預設是 `public, max-age=0, must-revalidate`；_headers 設的 Cache-Control 取代預設，
+// 所以整串寫出來、只多 no-transform。網址照 html_handling 的預設 auto-trailing-slash：dir/index.html 在 dir/，
+// x.html 在 x；.html 的網址會 307 過去，一起列（便宜，也不怕之後改 html_handling）。
+export const HTML_CACHE_CONTROL = 'public, max-age=0, must-revalidate, no-transform';
+
+export function headersFile(htmlPaths){
+  const urls = htmlPaths.flatMap(p => p.endsWith('/index.html') ? [p.slice(0, -'index.html'.length), p]
+                                                              : [p.slice(0, -'.html'.length), p]);
+  return '# tools/build_public.mjs 產生（#14）。HTML 帶 no-transform：Cloudflare 不在回應裡插入 Web Analytics beacon。\n'
+    + urls.map(u => `${u}\n  Cache-Control: ${HTML_CACHE_CONTROL}\n`).join('');
+}
+
+const walkFiles = d => fs.readdirSync(d).flatMap(f => { const p = path.join(d, f); return fs.statSync(p).isDirectory() ? walkFiles(p) : [p]; });
+
 export function build(outDir = path.join(ROOT, 'public')){
   const data = loadData();
   const errs = validate(data);
@@ -97,6 +114,9 @@ export function build(outDir = path.join(ROOT, 'public')){
   let sha = 'unknown';
   try { sha = execSync('git rev-parse HEAD', { cwd: ROOT, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim(); } catch {}
   fs.writeFileSync(path.join(site, 'version.txt'), sha + '\n');
+  const htmlPaths = walkFiles(site).filter(f => f.endsWith('.html'))
+    .map(f => '/' + path.relative(outDir, f).split(path.sep).join('/'));
+  fs.writeFileSync(path.join(outDir, '_headers'), headersFile(htmlPaths));
   return { site, races: data.races.length };
 }
 
