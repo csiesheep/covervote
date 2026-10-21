@@ -102,7 +102,7 @@ check('payload 原文裡找不到 original 原文與 sourceUrl', () => {
 // 奇數全是一位、偶數全是另一位；id 是 payload 的公開欄位，看過一段答案就能推出其餘全部。
 // 規則：公開的段落 id 一律是 p-<district>-<6 碼亂數>（小寫英數、至少含一個英文字母），不得是流水號。
 // 只檢查格式不夠：再檢查「依 id 排序後，相鄰兩段同作者」的比例不能是 0% 或 100%（交替或分塊都會被抓）。
-const STRICT_12 = false;
+const STRICT_12 = true;   // #12 land 時翻
 check('段落 id 是不透露作者的亂數碼（p-<district>-xxxxxx），不是流水號', () => {
   const r = nonEmpty(passages.length, 'data/passages.json 是空的'); if (r !== true) return r;
   const bad = passages.filter(p => { const m = /^p-([a-z]+)-([a-z0-9]{6})$/.exec(p.id); return !m || !/[a-z]/.test(m[2]) || p.race.split('.').pop() !== m[1]; }).map(p => p.id);
