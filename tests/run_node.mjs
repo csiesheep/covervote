@@ -4,6 +4,7 @@
 // 退出碼：有失敗 1，否則 0。
 import './acc_schema.mjs';
 import './acc_payload.mjs';
+import './acc_modules.js';
 import { R, summary } from './harness.js';
 
 const s = summary();

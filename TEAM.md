@@ -28,8 +28,7 @@
 
 ## 所有權
 
-> ⚠ **草稿，待 owner 確認**（Phase 0 起手的 session 2026-10-21 起草）。沒有確認過的列不算數；確認後把這一行改成
-> 「owner 確認，<日期>」。
+> **owner 確認，2026-10-21**（Phase 0 起手的 session 起草，owner 在 init 時逐項選「照草稿確認」）。
 
 | 檔案 | 主人 |
 |---|---|
@@ -40,10 +39,11 @@
 | `README.md`、`docs/`（`docs/guard-log.md` 除外）、畫面上的說明文案與隱私／法規說明頁的字 | writer |
 | `tests/`、`tools/orch.sh`、`tools/serve.py`、`tools/check_public_imports.mjs`、`docs/guard-log.md`、`TEAM.md` | orchestrator |
 
-待 owner 決定的兩件事（起草時看到的，不是裁決）：
-1. **資料內容給 writer 還是 BE？** 草稿給 writer，理由：遮蔽改寫是寫作的判斷；風險是資料量大時 writer 也要會跑抽取腳本。
-2. **開票前要不要給前端候選人名單？** 傾向選單與猜作者下拉都需要名字，但 G1 現在只查 `race/*.json`。草稿的想法是名單放
-   另一個檔（不帶任何 passage 對應），G1 繼續只守題目 payload；要 owner 點頭後由 orchestrator 改 G1 的範圍。
+owner 裁決（2026-10-21，init 時的選擇題，選項原文）：
+1. **資料內容歸誰**：選「writer (Recommended)」。資料內容（蒐集來源、切段、遮蔽改寫、白話、出處）歸 writer，欄位格式由 BE 定。
+2. **開票前的候選人名單**：選「可以，放獨立檔案 (Recommended)」。名單放在另一個檔，只有號次與姓名、不帶任何段落 id 或對應；
+   題目 payload（`race/*.json`）照舊不得含候選人。**orchestrator 待辦**：名單檔出現時，把 G1 擴成也守名單檔
+   （只准號次與姓名欄位、不准出現任何 passage id），並各證偽一次。
 
 - 跨界修改**可以**,但交付時要點名,由 orchestrator 轉給檔案主人。最糟的不是衝突,是兩邊安靜地各持一份真相。
 - **資料表要加 id 的**,開工第一則留言先列出這一趟**所有**新 id。同一個檔案裡有幾張表就有幾個命名空間;撞 id 時兩邊的測試都是綠的。
@@ -95,7 +95,7 @@
 
 ## 部署
 
-> ⚠ **草稿，待 owner 確認**（Phase 0 起手的 session 2026-10-21 起草，照 china_life 的慣例推定）。改這一節要 owner 裁決。
+> **owner 確認，2026-10-21**（Phase 0 起手的 session 照 china_life 的慣例起草，owner 在 init 時選「照草稿確認」）。改這一節要 owner 裁決。
 
 - **誰**：orchestrator。peer 絕不部署。
 - **網址**：`https://games.csiesheep.com/covervote/`（Worker `covervote`，path-scoped Routes `games.csiesheep.com/covervote`
