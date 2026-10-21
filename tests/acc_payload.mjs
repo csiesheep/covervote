@@ -97,6 +97,30 @@ check('payload 原文裡找不到 original 原文與 sourceUrl', () => {
   return hits.length ? hits.slice(0, 8).join('；') : ok(true, `${passages.length} 段的原文與出處都不在`);
 });
 
+// ---- #12：段落 id 本身不得透露作者 ----
+// 由來（writer #8 回報，orchestrator 2026-10-21 驗證）：台北、新北、台中的 id 是 p-<都>-001… 依作者交替編號，
+// 奇數全是一位、偶數全是另一位；id 是 payload 的公開欄位，看過一段答案就能推出其餘全部。
+// 規則：公開的段落 id 一律是 p-<district>-<6 碼亂數>（小寫英數、至少含一個英文字母），不得是流水號。
+// 只檢查格式不夠：再檢查「依 id 排序後，相鄰兩段同作者」的比例不能是 0% 或 100%（交替或分塊都會被抓）。
+const STRICT_12 = false;
+check('段落 id 是不透露作者的亂數碼（p-<district>-xxxxxx），不是流水號', () => {
+  const r = nonEmpty(passages.length, 'data/passages.json 是空的'); if (r !== true) return r;
+  const bad = passages.filter(p => { const m = /^p-([a-z]+)-([a-z0-9]{6})$/.exec(p.id); return !m || !/[a-z]/.test(m[2]) || p.race.split('.').pop() !== m[1]; }).map(p => p.id);
+  const pattern = [];
+  for (const rc of races){
+    const ps = passages.filter(p => p.race === rc.id).sort((a, b) => a.id < b.id ? -1 : 1);
+    if (ps.length < 6 || new Set(ps.map(p => p.candidateId)).size < 2) continue;
+    let same = 0; for (let i = 1; i < ps.length; i++) if (ps[i].candidateId === ps[i - 1].candidateId) same++;
+    const rate = same / (ps.length - 1);
+    // 兩位作者分成兩塊時中間一定有一個交界，比例是 (n−2)/(n−1) 而不是 100%——只抓 0／100% 會放過分塊（探針抓到的洞）。
+    // 隨機編號時這個比例大約在 40–60%；≤ 15% 或 ≥ 85% 就當成有規律。
+    if (rate <= 0.15 || rate >= 0.85) pattern.push(`${rc.id}：依 id 排序後相鄰同作者 ${Math.round(rate * 100)}%（${rate <= 0.15 ? '交替' : '分塊'}）`);
+  }
+  const msg = [bad.length && `${bad.length} 個 id 不是亂數碼：${bad.slice(0, 5).join('、')}`, pattern.length && pattern.join('；')].filter(Boolean).join('；');
+  if (msg) return (STRICT_12 ? '' : 'TODO: ') + msg;
+  return ok(true, `${passages.length} 個 id 都是亂數碼，沒有交替或分塊`);
+});
+
 // ---- #1：候選人名單檔與開票檔（owner 裁決 2026-10-21：名單放獨立檔案，只有號次與姓名、不帶段落對應）----
 // cands/<raceId>.json   { race, candidates: [{ number, name }] }          開票前給傾向選單與猜作者選單
 // reveal/<raceId>.json  { race, passages: [{ id, candidate: { number, name }, original, sourceUrl, sourceDate, sourceType }] }
