@@ -172,7 +172,7 @@ async function viewHome(){
     return `<a class="tile" style="grid-area:${tl.area}" href="#/${tl.key}">${name}</a>`;
   }).join('');
   const body = `
-    <img class="illo" src="assets/hero.webp" alt="${esc(t('home.heroAlt'))}" width="1536" height="864" style="margin:-6px 0 -4px;object-fit:cover;object-position:right;aspect-ratio:16/7">
+    <img class="illo" src="assets/hero.webp" alt="${esc(t('home.heroAlt'))}" width="1152" height="648" fetchpriority="high" decoding="async" style="margin:-6px 0 -4px;object-fit:cover;object-position:right;aspect-ratio:16/7">
     <h1 class="big">${lines(t('home.title'))}</h1>
     <p class="muted">${esc(t('home.sub'))}</p>
     <div class="tiles" role="group" aria-label="${esc(t('home.mapLabel'))}">${tiles}</div>
