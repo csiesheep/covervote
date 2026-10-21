@@ -122,6 +122,7 @@ async function route(seg){
     if (e instanceof NotFound) return viewMissing(key);
     return { html: page(bar(t('brand')), errorBox(t('err.load'))) };
   }
+  if (!playable(c.data)) return viewMissing(key);   // 有檔但沒有可比段落：走「還在整理」（六都）或「未收錄」
   switch (sub){
     case '': return viewEntry(c);
     case 'health': return viewHealth(c);
@@ -141,11 +142,17 @@ function redirect(h){ location.replace(h); return null; }
 // ---------------- A1 首頁 ----------------
 let homePick = null;
 function lastCity(){ try { return localStorage.getItem('covervote:lastCity'); } catch { return null; } }
+// 可玩 = race payload 裡至少有一個議題有 ≥ 2 段（可比的段落）。只有檔案、沒有可比段落的選區算「整理中」（orchestrator 裁決 #9）。
+function playable(data){
+  const n = new Map();
+  for (const p of data.passages) n.set(p.issueId, (n.get(p.issueId) || 0) + 1);
+  return [...n.values()].some(v => v >= 2);
+}
 // 六都裡哪些「有資料」：由 race/<id>.json 與 cands/<id>.json 存不存在決定，不寫死。
 async function readyMetros(){
   const rs = await Promise.allSettled(METRO_KEYS.map(k => loadRace(k)));
   const ready = new Map();
-  rs.forEach((r, i) => { if (r.status === 'fulfilled') ready.set(METRO_KEYS[i], r.value); });
+  rs.forEach((r, i) => { if (r.status === 'fulfilled' && playable(r.value)) ready.set(METRO_KEYS[i], r.value); });
   return ready;
 }
 
