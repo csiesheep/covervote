@@ -8,6 +8,7 @@ import './acc_modules.js';
 import './acc_score.mjs';
 import './acc_data.mjs';
 import './acc_api.mjs';
+import './acc_class.mjs';
 import { R, summary } from './harness.js';
 
 const s = summary();
