@@ -17,10 +17,21 @@
   ],
   // Only public/ is uploaded as static assets (tools/build_public.mjs builds it).
   // The site lives in public/covervote/, so asset paths equal URLs and are served
-  // without running the Worker; only the bare prefix runs it first (for the redirect).
+  // without running the Worker; only the bare prefix (for the redirect) and the API run it first.
   "assets": {
     "directory": "public",
     "binding": "ASSETS",
-    "run_worker_first": ["/covervote"]
-  }
+    "run_worker_first": ["/covervote", "/covervote/api/*"]
+  },
+  // Aggregate counters for /covervote/api/* (worker/api.mjs, worker/d1store.mjs).
+  // Creating the database is a deploy step and belongs to the orchestrator: create it,
+  // paste its id here, then `wrangler d1 migrations apply covervote --remote`.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "covervote",
+      "database_id": "bec24308-3642-4731-aa66-19910e3c2c76",
+      "migrations_dir": "migrations"
+    }
+  ]
 }
