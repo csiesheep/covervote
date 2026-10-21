@@ -5,7 +5,7 @@
 //  - 傾向、分數、猜作者只存本機（store.js）。不載入任何分析或錄製腳本。
 //  - 分數一律呼叫 engine/score.mjs，FE 不自己算。候選人的鍵是姓名。
 import { t, initLang, lang, has } from './i18n.js';
-import { TILES, LIVE_KEYS, CEC_URL } from './config.js';
+import { TILES, METRO_KEYS, METRO_ETA, CEC_URL } from './config.js';
 import { initInternal, loadState, saveState, freshState, hasProgress } from './store.js';
 import { initSound, isSoundOn, setSound, sfx } from './sound.js';
 import { loadRace, loadIssues, fetchReveal, buildPlan, menuOrder, mulberry32, NotFound } from './data.js';
@@ -131,12 +131,23 @@ function redirect(h){ location.replace(h); return null; }
 // ---------------- A1 首頁 ----------------
 let homePick = null;
 function lastCity(){ try { return localStorage.getItem('covervote:lastCity'); } catch { return null; } }
-function viewHome(){
+// 六都裡哪些「有資料」：由 race/<id>.json 與 cands/<id>.json 存不存在決定，不寫死。
+async function readyMetros(){
+  const rs = await Promise.allSettled(METRO_KEYS.map(k => loadRace(k)));
+  const ready = new Map();
+  rs.forEach((r, i) => { if (r.status === 'fulfilled') ready.set(METRO_KEYS[i], r.value); });
+  return ready;
+}
+
+async function viewHome(){
+  const ready = await readyMetros();
   const last = lastCity();
-  if (homePick === null && last && LIVE_KEYS.includes(last)) homePick = last;
+  if (homePick !== null && !ready.has(homePick)) homePick = null;
+  if (homePick === null && last && ready.has(last)) homePick = last;
   const tiles = TILES.map(tl => {
     const name = esc(t('tile.' + tl.key));
-    if (tl.live) return `<button class="tile live${homePick === tl.key ? ' pick' : ''}" style="grid-area:${tl.area}" data-act="pick" data-key="${tl.key}" aria-pressed="${homePick === tl.key}">${name}</button>`;
+    if (ready.has(tl.key)) return `<button class="tile live${homePick === tl.key ? ' pick' : ''}" style="grid-area:${tl.area}" data-act="pick" data-key="${tl.key}" aria-pressed="${homePick === tl.key}">${name}</button>`;
+    if (tl.metro) return `<a class="tile soon" style="grid-area:${tl.area}" href="#/${tl.key}" aria-label="${esc(t('tile.' + tl.key) + ' ' + t('home.soon'))}"><span>${name}<small>${esc(t('home.soon'))}</small></span></a>`;
     return `<a class="tile" style="grid-area:${tl.area}" href="#/${tl.key}">${name}</a>`;
   }).join('');
   const body = `
@@ -147,32 +158,40 @@ function viewHome(){
     <div class="legend"><span><i class="sw"></i>${esc(t('home.legendOn'))}</span><span><i class="sw d"></i>${esc(t('home.legendOff'))}</span></div>
     <a class="btn" id="startbtn" href="${homePick ? '#/' + homePick : '#/'}" data-act="start" ${homePick ? '' : 'aria-disabled="true"'}>${esc(startLabel())}</a>
     <p class="muted">${esc(t('home.promise'))}</p>`;
-  return { html: page(bar(t('brand'), ''), body, footer()), mount: () => { fillCountdown(); } };
+  return { html: page(bar(t('brand'), ''), body, footer()), mount: () => { fillCountdown(ready); } };
 }
 const startLabel = () => homePick ? t('home.startAt', { city: t('tile.' + homePick) }) : t('home.pick');
 
 // 倒數：只在 race payload 有 voteDate 才顯示
-async function fillCountdown(){
-  for (const key of LIVE_KEYS){
-    try {
-      const d = await loadRace(key);
-      const vd = d.meta.voteDate;
-      if (!vd) continue;
-      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(vd); if (!m) continue;
-      const md = `${+m[2]}/${+m[3]}`;
-      const today = new Date(); today.setHours(0, 0, 0, 0);
-      const days = Math.round((new Date(+m[1], +m[2] - 1, +m[3]) - today) / 86400000);
-      const el = document.getElementById('barmeta'); if (!el) return;
-      el.textContent = days > 0 ? t('home.meta.vote', { md, d: days }) : days === 0 ? t('home.meta.today', { md }) : t('home.meta.over');
-      return;
-    } catch {}
+function fillCountdown(ready){
+  for (const d of ready.values()){
+    const vd = d.meta.voteDate;
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(vd || ''); if (!m) continue;
+    const md = `${+m[2]}/${+m[3]}`;
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const days = Math.round((new Date(+m[1], +m[2] - 1, +m[3]) - today) / 86400000);
+    const el = document.getElementById('barmeta'); if (!el) return;
+    el.textContent = days > 0 ? t('home.meta.vote', { md, d: days }) : days === 0 ? t('home.meta.today', { md }) : t('home.meta.over');
+    return;
   }
 }
 
-// ---------------- A2 入口 / A3 未收錄 ----------------
-function viewMissing(key){
-  const known = TILES.some(x => x.key === key);
+// ---------------- A2 入口 / A3 未收錄 / 六都整理中 ----------------
+async function viewMissing(key){
+  const known = TILES.find(x => x.key === key);
   const city = known ? t('city.' + key) : t('city.unknown');
+  if (known && known.metro){
+    // 六都，但還沒有資料：不說「沒收錄」，說在整理、什麼時候公開，並指向已有資料的縣市
+    const ready = await readyMetros();
+    const first = [...ready.keys()][0];
+    const body = `
+      <img class="illo" src="assets/empty_state.webp" alt="" width="768" height="768" style="width:180px">
+      <h1 class="mid">${esc(t('soon.title', { city }))}</h1>
+      <p class="muted">${esc(t('soon.body', { md: METRO_ETA }))}</p>
+      ${first ? `<a class="btn" href="#/${first}">${esc(t('soon.playOther', { city: t('tile.' + first) }))}</a>` : ''}
+      <a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`;
+    return { html: page(bar(t('brand'), t('entry.change')), `<div class="stack center" style="gap:14px;align-items:center">${body}</div>`, footer()) };
+  }
   const body = `
     <img class="illo" src="assets/empty_state.webp" alt="" width="768" height="768" style="width:180px">
     <h1 class="mid">${esc(t('missing.title', { city }))}</h1>
@@ -219,7 +238,7 @@ function viewLean(c){
     const cand = c.byName.get(name);
     const on = c.st.lean === name;
     const no = Number.isInteger(cand.number) ? `<small>${esc(t('lean.no', { n: cand.number }))}</small>` : '';
-    return `<button class="opt" role="radio" aria-checked="${on}" data-act="lean" data-v="${esc(name)}"${collapsed && i >= 3 ? ' data-more hidden' : ''}><span class="ava">${esc([...name][0])}</span><span>${esc(name)}${no}</span></button>`;
+    return `<button class="opt" role="radio" aria-label="${esc(name + (Number.isInteger(cand.number) ? ", " + t("lean.no", { n: cand.number }) : ""))}" aria-checked="${on}" data-act="lean" data-v="${esc(name)}"${collapsed && i >= 3 ? ' data-more hidden' : ''}><span class="ava" aria-hidden="true">${esc([...name][0])}</span><span>${esc(name)}${no}</span></button>`;
   };
   const rest = names.length - 3;
   const body = `
