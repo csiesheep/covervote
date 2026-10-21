@@ -106,6 +106,23 @@ export default {
   'rate.-2': 'Strongly disagree', 'rate.-1': 'Disagree', 'rate.0': 'No opinion', 'rate.1': 'Agree', 'rate.2': 'Strongly agree',
   seats: 'ABCDEFGHIJ',
 
+  // Elder mode (#15): large text, one passage at a time, plain-word rating buttons, read aloud, send to parents
+  'elder.toggle': 'Big text',
+  'elder.toggleLabel': 'Big text mode',
+  'elder.rate.-2': 'Strongly disagree', 'elder.rate.-1': 'Somewhat disagree', 'elder.rate.0': 'No opinion', 'elder.rate.1': 'Somewhat agree', 'elder.rate.2': 'Strongly agree',
+  'elder.leanSub': 'Pick one, or skip.',
+  'elder.hint': 'Rate this one to see the next.',
+  'elder.impSub': 'Marked topics count double. Optional.',
+  'elder.guess': 'Guess who wrote it? (optional)',
+  'elder.guessNote': 'Revealed at the end',
+  'speak.btn': '🔊 Read aloud',
+  'speak.stop': '■ Stop',
+  'speak.result': '🔊 Read my result',
+  'speak.resSame': 'You leaned {lean}. Best fit: {top}. {msg}',
+  'speak.resTop': 'Best fit: {top}. {msg}',
+  'speak.resNone': '{msg}',
+  'parents.share': 'Send to parents (big text)',
+
   'bonus.eyebrow': 'Bonus · not counted in fit',
   'bonus.title': 'Only one candidate raised these',
   'bonus.sub': 'Different topics cannot be compared, so these are rated but not scored. Listed separately at the reveal.',

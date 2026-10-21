@@ -199,3 +199,68 @@ html.embed img,html.embed canvas{max-width:100%}
 .clscode{font-weight:600;font-size:20px;letter-spacing:.14em;color:var(--ink);text-decoration:none}
 .qs{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:6px}
 #clsboard{display:flex;flex-direction:column;gap:14px}
+
+/* 唸給你聽（#15）：每段政見下面一顆；沒有 zh-TW 聲音時整顆 hidden（[hidden] 規則在最上面） */
+.speakrow{padding:0 12px 10px}
+.chip.speak{border-color:var(--ink);font-weight:500}
+.chip.speak[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.eld{border:1px solid var(--rule);border-radius:999px;background:transparent;padding:0 10px;min-height:32px;font-size:13px;flex:none;white-space:nowrap}
+.eld[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* 長輩模式（#15）：?elder=1 或頁首「大字」。內文 ≥ 20px、按鈕 ≥ 56px 高、行距加大；打分鈕改成直排白話大按鈕。 */
+html.elder body{font-size:20px;line-height:1.75}
+html.elder .bar{font-size:15px;gap:6px;padding-left:12px;padding-right:12px}
+html.elder .brand{font-size:19px;letter-spacing:.04em}
+html.elder #barmeta{display:none}   /* 390px 放不下「品牌＋大字＋音效＋倒數」；進度條與甲乙丙已經說了現在在哪 */
+.pcard{scroll-margin-top:72px}
+html.elder .eld{min-height:44px;font-size:16px;padding:0 12px}
+html.elder .snd{width:44px;height:44px}
+html.elder .snd svg{width:22px;height:22px}
+html.elder .big{font-size:34px}
+html.elder .mid{font-size:27px;line-height:1.35}
+html.elder .eyebrow{font-size:16px}
+html.elder .muted{font-size:18px}
+html.elder .btn{min-height:60px;font-size:21px;padding:14px 16px}
+html.elder .chip{min-height:52px;font-size:19px;padding:10px 18px}
+html.elder .opt{min-height:68px;font-size:21px;gap:14px}
+html.elder .opt small{font-size:16px}
+html.elder .ava{width:44px;height:44px;font-size:20px}
+html.elder .lock{font-size:16px}
+html.elder .linkbtn{font-size:18px;padding:12px 0}
+html.elder .foot{font-size:16px;gap:2px 18px}
+html.elder .foot a{padding:12px 0}
+html.elder .classline{font-size:15px}
+html.elder table{font-size:18px}
+html.elder th{font-size:16px}
+html.elder .tiles{grid-template-rows:repeat(9,46px)}
+html.elder .tile{font-size:14px}
+html.elder .tile.live{font-size:15px}
+html.elder .legend{font-size:16px}
+html.elder .progress i{height:8px}
+html.elder .seat{width:44px;height:44px;font-size:26px}
+html.elder .pcard-head{padding:12px 14px}
+html.elder .pcard-body{font-size:22px;line-height:1.9;padding:14px}
+html.elder .speakrow{padding:0 14px 12px}
+html.elder .chip.speak{min-height:60px;width:100%;justify-content:center;font-size:21px}
+html.elder .rate{grid-template-columns:1fr;gap:10px;padding:0 14px 14px}
+html.elder .rate button{flex-direction:row;justify-content:flex-start;gap:16px;min-height:60px;padding:10px 16px;font-size:21px;color:var(--ink);text-align:left}
+html.elder .rate button b{display:none}   /* 白話字已經說了意思，−2…+2 對長輩只是雜訊（讀屏仍讀按鈕文字） */
+html.elder .rate button.on{color:var(--stamp)}
+html.elder .guess{margin:0 14px 14px}
+html.elder .guess summary{font-size:18px;min-height:52px}
+html.elder .guess .row{gap:10px}
+html.elder .x2{min-height:52px;font-size:20px;padding:6px 18px}
+html.elder .wt{font-size:21px;min-height:64px}
+html.elder .tag{font-size:15px}
+html.elder .score{font-size:17px;grid-template-columns:84px 1fr 54px}
+html.elder .scale-lbl{grid-template-columns:84px 1fr 54px;font-size:12px}
+html.elder .vs .who{font-size:16px}
+html.elder .vs .who b{font-size:24px}
+html.elder .guessbox .n{font-size:34px}
+html.elder .det-top{font-size:17px}
+html.elder .det p.t,html.elder .det .orig{font-size:19px;line-height:1.8}
+html.elder .src{font-size:15px}
+html.elder .conf{font-size:15px}
+html.elder .banner{font-size:17px}
+html.elder .errbox{font-size:18px}
+html.elder .toast{font-size:17px}
