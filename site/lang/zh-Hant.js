@@ -14,7 +14,7 @@ export default {
   'common.back': '返回',
 
   // A1 首頁
-  'home.title': '名字蓋起來，\n你還會選同一個人嗎？',
+  'home.title': '名字蓋起來，\n你會投給誰？',
   'home.sub': '每輪一個議題，遮住名字給政見打分。最後翻牌，看你契合的是誰。',
   'home.heroAlt': '投票桌上一排蓋著的牌，一隻手正翻開其中一張',
   'home.mapLabel': '縣市地圖',
@@ -94,7 +94,6 @@ export default {
   'lean.next': '下一步',
 
   // B2 打分
-  'play.issue': '議題',
   'play.textVersion': '文字版本',
   'play.plain': '白話',
   'play.masked': '遮蔽版',
@@ -250,11 +249,13 @@ export default {
   'info.privacy.th1': '資料',
   'info.privacy.th2': '存哪',
   'info.privacy.r1a': '你的傾向、每段分數、你標的重要議題', 'info.privacy.r1b': '只在你的瀏覽器',
-  'info.privacy.r2a': '分析或錄製腳本', 'info.privacy.r2b': '我們沒有放，不錄製畫面',
+  'info.privacy.r2a': 'Google Analytics（流量統計）', 'info.privacy.r2b': '用來看多少人來、從哪裡來、玩到哪一步。不送你的傾向、分數、猜測或任何候選人名字；不錄製畫面。嵌入版、班級連結不載入。可以在這頁關掉。',
   'info.privacy.r3a': '你猜的作者（每段只送段落編號和你猜的人名，不含你是誰）；這一局的結果類型（同一人／不同人／無從比較）；用班級連結玩的話，還有班級代碼', 'info.privacy.r3b': '按「開票」和看到結果時送出，伺服器只累加總數',
-  'info.privacy.r4a': '帳號、cookie', 'info.privacy.r4b': '沒有',
+  'info.privacy.r4a': '帳號、cookie', 'info.privacy.r4b': '沒有帳號。Google Analytics 會在你的瀏覽器設 cookie 來分辨回訪；我們自己不設 cookie。',
   'info.privacy.fonts': '字型由 Google Fonts 提供，開啟網頁時瀏覽器會向 Google 請求字型檔。',
-  'info.privacy.note': '網站由 Cloudflare 代管，連線時它和所有網站一樣看得到你的 IP；我們不記錄、不儲存。傾向、分數、進度、聲音與大字的偏好都存在你瀏覽器的本機儲存空間，清除網站資料就會全部消失。',
+  'info.privacy.note': 'Google Analytics 會收到你的 IP，但不儲存；我們關閉了廣告個人化與 Google 信號。網站由 Cloudflare 代管，連線時它和所有網站一樣看得到你的 IP；我們不記錄、不儲存。傾向、分數、進度、聲音與大字的偏好都存在你瀏覽器的本機儲存空間，清除網站資料就會全部消失。',
+  'info.privacy.optout': '不要統計我',
+  'info.privacy.optoutOn': '已關閉流量統計，這支手機之後不會載入 Google Analytics。',
   'info.about.title': '關於',
   'info.about.body': '蓋牌投票是一個小遊戲：先說你想投誰，再遮住名字給每段政見打分，開票時看你傾向的人和你契合的人是不是同一個。契合分數只反映你這局打的分，不是對任何候選人的評價，也不是投票建議。免費：玩家、老師、媒體嵌入都不用付費。不收任何政黨或候選人的錢。',
   "foot.media": "給媒體",
@@ -275,7 +276,6 @@ export default {
   "media.contactTitle": "合作或客製",
   "media.contactBody": "合作或客製請來信：",
   "media.contactMail": "csiegoat@gmail.com",
-  "media.contactTodo": "",
   "media.iframeTitle": "蓋牌投票",
   "foot.class": "課堂使用",
   "class.meta": "課堂使用",

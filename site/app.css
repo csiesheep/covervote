@@ -98,6 +98,10 @@ details summary{cursor:pointer}
 .toggle{display:inline-flex;border:1px solid var(--rule);border-radius:8px;overflow:hidden;font-size:calc(13px*var(--fs))}
 .toggle button{border:0;background:transparent;padding:6px 12px;min-height:calc(34px*var(--fs))}
 .toggle button.on{background:var(--ink);color:var(--paper)}
+.toggle button{white-space:nowrap}
+.issuerow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.issuerow .mid{flex:1 1 auto;min-width:0;margin:0;overflow-wrap:anywhere}
+.issuerow .toggle{flex:none}
 .rate{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:0 12px 12px}
 .rate button{border:1px solid var(--rule);background:transparent;border-radius:10px;padding:8px 0 6px;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:calc(11px*var(--fs));color:var(--ink-2);min-height:calc(56px*var(--fs));line-height:1.25}
 .rate button b{font-family:var(--f-num);font-size:calc(16px*var(--fs));color:var(--ink);font-weight:600}
@@ -205,6 +209,9 @@ html.embed img,html.embed canvas{max-width:100%}
 /* 唸給你聽（#15）：每段政見下面一顆；沒有 zh-TW 聲音時整顆 hidden（[hidden] 規則在最上面） */
 .speakrow{padding:0 12px 10px}
 .chip.speak{border-color:var(--ink);font-weight:500}
+.headl,.headr{display:flex;align-items:center;gap:8px;min-width:0}
+.headr{flex:none}
+.pcard-head .chip.speak{min-height:44px;min-width:44px;padding:0 12px;white-space:nowrap;justify-content:center}
 .chip.speak[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .fsz{border:1px solid var(--rule);border-radius:999px;background:transparent;padding:0 10px;font-weight:700;min-height:calc(32px*var(--fs));font-size:calc(13px*var(--fs));flex:none;white-space:nowrap}
 

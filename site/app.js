@@ -2,7 +2,7 @@
 //
 // 約束（issue #3）：
 //  - 開票前不 fetch reveal/（只在 revealNow() 裡，由「開票」按鈕觸發）；DOM 與 localStorage 都沒有作者。
-//  - 傾向、分數、猜作者只存本機（store.js）。不載入任何分析或錄製腳本。
+//  - 傾向、分數、猜作者只存本機（store.js）。不載入錄製腳本；Google Analytics 只在 analytics.js 的條件下載入，事件不帶任何政治資料（#21）。
 //  - 分數一律呼叫 engine/score.mjs，FE 不自己算。候選人的鍵是姓名。
 import { t, initLang, lang, has } from './i18n.js';
 import { raceIdOf, MIN_CLASS, TILES, METRO_KEYS, METRO_ETA, CEC_URL, FULL_URL } from './config.js';
@@ -10,6 +10,7 @@ import { initInternal, initClass, initFontSize, fontSize, setFontSize, FS_SIZES,
 import { initSound, isSoundOn, setSound, sfx } from './sound.js';
 import { hasVoice, syncSpeak, toggleSpeak, stopSpeaking } from './speech.js';
 import { postGuess, postPlay, getHealth, getStats, getClass } from './api.js';
+import { initAnalytics, trackPage, track, isOptedOut, setOptOut } from './analytics.js';
 import { loadRace, loadIssues, fetchReveal, buildPlan, menuOrder, mulberry32, NotFound, initVersion } from './data.js';
 
 initInternal();
@@ -17,6 +18,7 @@ initClass();
 initFontSize();
 initLang();
 initSound();
+initAnalytics();
 // 嵌入模式（?embed=1）：沒有品牌列與頁尾連結，只留一行「完整版 ↗」；聲音維持預設關（initSound 不看這個旗標）。
 // 嵌入模式不改變任何資料流：開票前不 fetch reveal/、guess 先於 reveal、internal=1 照樣生效，都在同一份程式裡。
 const EMBED = isEmbed();
@@ -99,7 +101,7 @@ function parse(){
   return seg;
 }
 const go = hash => { location.hash = hash; };
-let renderSeq = 0, cleanup = null;
+let renderSeq = 0, cleanup = null, lastPv = null;
 
 async function render(){
   const seq = ++renderSeq;
@@ -117,6 +119,8 @@ async function render(){
   const main = document.getElementById('main'); if (main) main.focus({ preventScroll: true });
   if (out.mount) cleanup = out.mount(root) || null;
   syncSpeak(root);
+  const pv = location.hash;
+  if (pv !== lastPv){ lastPv = pv; trackPage(); }   // 只在路由真的換了才算一次瀏覽（字級、重試的重畫不算）
 }
 
 async function route(seg){
@@ -327,9 +331,8 @@ function cardHtml(c, p, i, { guess, tag }) {
   const mode = textMode();
   const text = mode === 'masked' ? p.masked : p.plain;
   return `<div class="pcard" data-pid="${esc(p.id)}" >
-    <div class="pcard-head"><span class="seat" aria-label="${esc(seatOf(i))}">${esc(seatOf(i))}</span>${tag ? `<span class="tag">${esc(tag)}</span>` : ''}<span class="muted num" data-len>${esc(t('play.chars', { n: [...text].length }))}</span></div>
+    <div class="pcard-head"><span class="headl"><span class="seat" aria-label="${esc(seatOf(i))}">${esc(seatOf(i))}</span>${speakBtn(t('speak.btn'), `data-pid="${esc(p.id)}" aria-label="${esc(t('speak.btn') + ' · ' + seatOf(i))}"`)}</span><span class="headr">${tag ? `<span class="tag">${esc(tag)}</span>` : ''}<span class="muted num" data-len>${esc(t('play.chars', { n: [...text].length }))}</span></span></div>
     <div class="pcard-body" data-body>${renderText(text)}</div>
-    <div class="speakrow">${speakBtn(t('speak.btn'), `data-pid="${esc(p.id)}" aria-label="${esc(t('speak.btn') + ' · ' + seatOf(i))}"`)}</div>
     ${rateButtons(c, p, t('play.cardOf', { seat: seatOf(i) }))}
     ${guess ? guessBlock(c, p) : ''}
   </div>`;
@@ -348,8 +351,7 @@ function viewRound(c, n){
   const last = n === rounds.length;
   const body = `
     ${roundSteps(c, n - 1)}
-    <div class="row between"><div class="eyebrow">${esc(t('play.issue'))}</div>${toggleHtml()}</div>
-    <h1 class="mid">${esc(issueLabel(c, r.issueId))}</h1>
+    <div class="issuerow"><h1 class="mid">${esc(issueLabel(c, r.issueId))}</h1>${toggleHtml()}</div>
     ${r.cards.map((p, i) => cardHtml(c, p, i, { guess: true })).join('')}
     <div class="btns"><a class="btn ghost" href="${n > 1 ? `#/${c.key}/play/${n - 1}` : `#/${c.key}/lean`}" style="flex:0 0 38%">${esc(t('play.back'))}</a><a class="btn" id="nextbtn" data-act="next-round" data-n="${n}" href="${nextHash(c, n)}" ${roundDone(c, r) ? '' : 'aria-disabled="true"'}>${esc(last ? t('play.nextLast') : t('play.next'))}</a></div>
     <p class="muted" style="text-align:center" id="roundhint">${roundDone(c, r) ? '' : esc(t('play.hint')) + ' · '}<button class="linkbtn" data-act="skip-round" data-n="${n}">${esc(t('play.skip'))}</button></p>`;
@@ -414,6 +416,7 @@ async function revealNow(c, btn){
     return;
   }
   c.st.done = true; save(c);
+  track('reveal', c.key);
   go(`#/${c.key}/reveal`);
 }
 
@@ -872,7 +875,8 @@ function viewInfo(tab){
   if (tab === 'about') content = `<h1 class="mid">${esc(t('info.about.title'))}</h1><p style="font-size:14px">${esc(t('info.about.body'))}</p>`;
   if (tab === 'privacy') content = `<h1 class="mid">${esc(t('info.privacy.title'))}</h1><table><tr><th>${esc(t('info.privacy.th1'))}</th><th>${esc(t('info.privacy.th2'))}</th></tr>`
     + [1, 2, 3, 4].map(i => `<tr><td>${esc(t('info.privacy.r' + i + 'a'))}</td><td>${esc(t('info.privacy.r' + i + 'b'))}</td></tr>`).join('')
-    + `</table><p class="muted">${esc(t('info.privacy.fonts'))}</p><p class="muted">${esc(t('info.privacy.note'))}</p>`;
+    + `</table><p class="muted">${esc(t('info.privacy.fonts'))}</p><p class="muted">${esc(t('info.privacy.note'))}</p>`
+    + `<button type="button" class="btn ghost" data-act="optout" aria-pressed="${isOptedOut()}">${esc(t('info.privacy.optout'))}</button><p class="muted" role="status" id="optoutmsg">${isOptedOut() ? esc(t('info.privacy.optoutOn')) : ''}</p>`;
   return { html: page(bar(t('brand'), t('info.meta')), `<div class="row">${chips}</div>${content}<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`, footer()) };
 }
 
@@ -906,7 +910,7 @@ async function viewMedia(){
     <div class="eyebrow">${esc(t('media.previewTitle'))}</div>
     <iframe id="mediaprev" class="prev" src="${esc(src)}" title="${esc(t('media.iframeTitle'))}" loading="lazy"></iframe>
     <div class="eyebrow">${esc(t('media.contactTitle'))}</div>
-    <p>${esc(t('media.contactBody'))}<span class="num">${esc(t('media.contactMail'))}</span> <span class="muted">${esc(t('media.contactTodo'))}</span></p>`;
+    <p>${esc(t('media.contactBody'))}<span class="num">${esc(t('media.contactMail'))}</span></p>`;
   return {
     html: page(bar(t('brand'), t('media.meta')), body + `<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`, footer()),
     mount(el){
@@ -971,7 +975,7 @@ root.addEventListener('click', async e => {
       break;
     }
     case 'pick': {
-      homePick = el.dataset.key; sfx('tap');
+      homePick = el.dataset.key; sfx('tap'); track('select_city', homePick);
       setPressed([...root.querySelectorAll('.tile.live')], b => b.dataset.key === homePick);
       const sb = document.getElementById('startbtn'); sb.textContent = startLabel(); sb.removeAttribute('aria-disabled'); sb.href = '#/' + homePick;
       showPlays();
@@ -1009,7 +1013,10 @@ root.addEventListener('click', async e => {
     case 'more': {
       root.querySelectorAll('[data-more]').forEach(n => n.hidden = false); el.hidden = true; break;
     }
-    case 'lean-next': sfx('shuffle'); break;
+    case 'lean-next': sfx('shuffle'); if (c) track('game_start', c.key); break;
+    case 'download': if (c && el.getAttribute('aria-disabled') !== 'true') track('share', c.key); break;
+    case 'line': if (c) track('share', c.key); break;
+    case 'optout': { const off = !isOptedOut(); setOptOut(off); sfx('tap'); render(); break; }
     case 'textmode': {
       setTextMode(el.dataset.v); sfx('tap');
       root.querySelectorAll('[data-act=textmode]').forEach(b => { const on = b.dataset.v === el.dataset.v; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
@@ -1081,6 +1088,7 @@ root.addEventListener('click', async e => {
     case 'copy': {
       if (!c) break;
       const url = shareUrl(c);
+      track('share', c.key);
       try { await navigator.clipboard.writeText(url); toast(t('share.copied')); }
       catch {
         try { const ta = document.createElement('textarea'); ta.value = url; document.body.appendChild(ta); ta.select(); const ok = document.execCommand('copy'); ta.remove(); toast(t(ok ? 'share.copied' : 'share.copyFail')); }
