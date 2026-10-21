@@ -32,7 +32,7 @@
 
 | 檔案 | 主人 |
 |---|---|
-| `data/schema.mjs`（欄位定義、`validate()`、`PUBLIC_PASSAGE_FIELDS`）、`tools/build_public.mjs`、`worker/`、`wrangler.jsonc`、`package.json`，以及之後的後端端點（計數、猜作者匯總、問題回報）與 11/18 下架開關 | BE |
+| `data/schema.mjs`（欄位定義、`validate()`、`PUBLIC_PASSAGE_FIELDS`）、`engine/`（契合分數等純函式，orchestrator 裁決 2026-10-21）、`tools/build_public.mjs`、`worker/`、`wrangler.jsonc`、`package.json`，以及之後的後端端點（計數、猜作者匯總、問題回報）與 11/18 下架開關 | BE |
 | `data/elections.json`、`data/races.json`、`data/candidates.json`、`data/passages.json` 的**內容**（蒐集來源、切段、遮蔽改寫、白話、出處）| writer（欄位怎麼長由 BE 定） |
 | `site/`：頁面、前端程式、樣式、畫面上的字的接線（地圖、打分、猜作者、傾向、開票、分享卡） | FE |
 | `site/assets/`：分享卡底圖、OG 圖、圖示 | artist |

@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const SHIP = ['data', 'worker'];
+const SHIP = ['data', 'worker', 'engine'];
 const SKIP = [];
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 

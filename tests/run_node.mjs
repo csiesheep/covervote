@@ -5,6 +5,8 @@
 import './acc_schema.mjs';
 import './acc_payload.mjs';
 import './acc_modules.js';
+import './acc_score.mjs';
+import './acc_data.mjs';
 import { R, summary } from './harness.js';
 
 const s = summary();
