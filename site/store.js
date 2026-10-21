@@ -61,3 +61,6 @@ export function loadState(raceId){
 export function saveState(raceId, s){ try { setItem(KEY(raceId), JSON.stringify(s)); } catch {} }
 
 export const hasProgress = s => s.lean !== null || Object.keys(s.ratings).length > 0 || s.done;
+
+// ?embed=1：嵌入模式（媒體把一局放進 iframe）。只看網址；不影響任何資料請求，也不改變 internal 旗標。
+export const isEmbed = () => { try { return new URLSearchParams(location.search).get("embed") === "1"; } catch { return false; } };
