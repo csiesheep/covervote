@@ -2,38 +2,18 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>蓋牌投票・即將推出</title>
-<meta name="description" content="遮住名字給政見打分，看看你傾向的人和你契合的人是不是同一個。2026 六都市長，即將推出。">
-<style>
-  :root{--bg:#f6f3ec;--fg:#1d1d1f;--muted:#6b6760;--card:#fffdf8;--line:#ddd6c8;--accent:#b23a2b}
-  @media (prefers-color-scheme:dark){:root{--bg:#16161a;--fg:#ecebe6;--muted:#9a978f;--card:#202026;--line:#34343c;--accent:#e2735f}}
-  *{box-sizing:border-box}
-  body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--fg);
-       font:16px/1.7 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;padding:24px 16px}
-  main{max-width:440px;width:100%;text-align:center}
-  .cards{display:flex;justify-content:center;gap:10px;margin-bottom:28px}
-  .card{width:64px;height:88px;border-radius:8px;border:1px solid var(--line);background:var(--card);
-        display:grid;place-items:center;font-size:28px;font-weight:700;color:var(--muted);
-        box-shadow:0 2px 0 var(--line)}
-  .card:nth-child(1){transform:rotate(-6deg)} .card:nth-child(3){transform:rotate(6deg)}
-  .card.mid{color:var(--accent)}
-  h1{font-size:30px;letter-spacing:.08em;margin:0 0 4px}
-  .soon{color:var(--accent);font-weight:700;letter-spacing:.2em;margin:0 0 20px}
-  p{margin:0 0 12px;color:var(--muted);text-wrap:balance}
-  footer{margin-top:28px;font-size:13px;color:var(--muted)}
-  a{color:inherit}
-</style>
+<meta name="color-scheme" content="light dark">
+<title>蓋牌投票</title>
+<meta name="description" content="遮住名字給政見打分，看看你傾向的人和你契合的人是不是同一個。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="app.css">
 </head>
 <body>
-<main>
-  <div class="cards" aria-hidden="true"><div class="card">?</div><div class="card mid">?</div><div class="card">?</div></div>
-  <h1>蓋牌投票</h1>
-  <p class="soon">即將推出</p>
-  <p>先說你想投誰，再把名字蓋起來，給每段政見打分。</p>
-  <p>開票時看：你傾向的人，和你契合的人，是不是同一個。</p>
-  <footer>2026 六都市長 · <a href="https://games.csiesheep.com/">games.csiesheep.com</a></footer>
-</main>
+<div class="app" id="root"><noscript><p style="padding:24px">蓋牌投票需要開啟 JavaScript。</p></noscript></div>
+<script type="module" src="app.js"></script>
 </body>
 </html>
