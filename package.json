@@ -7,6 +7,7 @@
     "build": "node tools/build_public.mjs && node tools/check_public_imports.mjs",
     "deploy": "node tools/build_public.mjs && node tools/check_public_imports.mjs && wrangler deploy",
     "test": "node tests/run_node.mjs",
+    "test:be": "node worker/api_selftest.mjs",
     "serve": "bash tools/orch.sh serve ."
   },
   "devDependencies": {
