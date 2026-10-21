@@ -1,380 +1,6 @@
 [
   {
-    "id": "p-taipei-001",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "childcare",
-    "candidateId": "c-taipei-1",
-    "original": "臺北市預計115年9月推出全國首創「新生兒8小時免費電子臨托券」，本市市民家中有115年出生且滿6個月以上未滿1歲之新生兒均可申請，並可彈性使用至幼兒滿2歲前。新生兒爸媽屆時至社會局指定平台便可提出申請，詳情請見社會局官網。\n2-5歲私幼加碼 增加補助並放寬申請排富門檻\n為持續降低家庭幼兒教育支出，自115學年度起，針對設籍臺北市且就讀本市私立幼兒園的5歲幼兒，每名幼兒每學期均額外增加5,000元，依家戶年所得不同，可領每學期7,543元至1萬7,543元，進一步縮小公、私立幼兒園學費差距。",
-    "masked": "發放新生兒八小時免費電子臨托券，對象為一一五年出生、滿六個月未滿一歲的新生兒家庭，可使用到幼兒滿兩歲前；就讀私立幼兒園的五歲幼兒，每學期補助五千元。",
-    "plain": "發放新生兒八小時免費電子臨托券，給一一五年出生、滿六個月未滿一歲的新生兒家庭，用到兩歲前；就讀私立幼兒園的五歲幼兒，每學期補助五千元。",
-    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=9FF6EE075E94B939",
-    "sourceDate": "2026-08-19",
-    "sourceType": "press-rewritten",
-    "length": 74,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-002",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "childcare",
-    "candidateId": "c-taipei-2",
-    "original": "每週固定時數免費臨托：規劃提供滿 6 個月至六歲孩子，每週固定時數免費臨時托育，讓家長有休息、社交與處理個人事務的時間。\n❑ 加碼心理諮商與到宅育兒指導：\n規劃「3＋3」免費心理諮商，銜接中央方案 3 次服務，由市府為產後 12 個月的家長再加碼 3 次；中央方案仍依其適用資格辦理。另將未滿2歲兒童家庭的免費到宅育兒指導擴充至 6 次，提供餵奶、洗澡與居家安全等實際協助。\n❑ 增設夜間托育據點：規劃在夜市、百貨公司等夜間工作場所附近設置托育據點，回應夜間工作家庭的照顧需求。",
-    "masked": "為滿六個月到六歲的孩子提供每週固定時數的免費臨時托育；將未滿兩歲孩子家庭的免費到宅育兒指導增加到六次；並在夜市、百貨公司等夜間工作場所附近設置托育據點。",
-    "plain": "滿六個月到六歲的孩子，每週有固定時數的免費臨托；未滿兩歲孩子的家庭，到宅育兒指導增加到六次；夜市、百貨公司附近設夜間托育據點。",
-    "sourceUrl": "https://puma.taipei/policies/%E5%AE%B6%E5%BA%AD%E4%B8%80%E7%AB%99%E9%80%9A",
-    "sourceDate": "2026-06-28",
-    "sourceType": "campaign",
-    "length": 76,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-003",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "eldercare",
-    "candidateId": "c-taipei-1",
-    "original": "此外，自明年起，敬老愛心卡將進一步擴大使用範圍，新增超市、超商、藥局及農會等生活消費通路，規劃每月300點供長輩彈性運用，購買生活必需品；同時也可用於搭乘貓空纜車、藍色公路及觀光雙層巴士等服務，讓點數使用更加多元便利。",
-    "masked": "提供長輩每月三百點的生活消費額度，可在超市、超商、藥局與農會彈性購買生活必需品，也可用來搭乘觀光纜車、河上遊船與觀光雙層巴士。",
-    "plain": "提供長輩每月三百點的生活消費額度，可在超市、超商、藥局、農會買生活用品，也能搭觀光纜車、河上遊船和觀光雙層巴士。",
-    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=54A4E5FD9C772BD8",
-    "sourceDate": "2026-06-22",
-    "sourceType": "press-rewritten",
-    "length": 63,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-004",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "eldercare",
-    "candidateId": "c-taipei-2",
-    "original": "長者尊嚴安居與長照突破：將敬老卡與親子同行卡對齊，擴大適用場館、地點及使用範疇（藝文活動、健身房等等）；推出彈性「臨時托老券」並推動在宅醫療以無縫接軌社區安全網；針對長照缺口，藉由都更與退場學校用地增加住宿型機構空間，並引入「鐘點移工」填補夜間照護人力。",
-    "masked": "開放長者福利卡用於藝文活動與健身房，推出彈性臨時托老券並推動在宅醫療，利用都更與停用的學校用地新增住宿型機構，引進鐘點移工補足夜間照護人力。",
-    "plain": "讓長者福利卡可用在藝文活動和健身房，推出臨時托老券、推動在宅醫療，用都更和停用學校用地增設住宿型機構，並用鐘點移工補夜間人力。",
-    "sourceUrl": "https://puma.taipei/policies/%E7%A4%BE%E7%A6%8F%E6%94%BF%E7%AD%96",
-    "sourceDate": "2026-09-11",
-    "sourceType": "campaign",
-    "length": 70,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-005",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "transit",
-    "candidateId": "c-taipei-1",
-    "original": "軌道運輸方面，市府也規劃全新的「臺北XY軸捷運」構想。南北向捷運從松山機場向南串聯國父紀念館、大安、公館、中和；東西向軸線則串聯士林大同線、圓山、松山機場及內湖，進一步連結北士科、臺北AI園區、內科及南軟四大產業園區。",
-    "masked": "規劃兩條新的捷運：一條由市區北側向南，串聯國父紀念館、大安、公館與中和；一條東西向，串聯士林、圓山與內湖，並連結四個主要的產業園區。",
-    "plain": "新建兩條捷運：一條由市區北側向南經國父紀念館、大安、公館到中和，一條東西向經士林、圓山到內湖，並連結四個產業園區。",
-    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=8ED4D25BC664CF21",
-    "sourceDate": "2026-10-08",
-    "sourceType": "press-rewritten",
-    "length": 66,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-006",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "transit",
-    "candidateId": "c-taipei-2",
-    "original": "接：興建迎風—港墘跨基隆河自行車專用橋，直接銜接民生社區與內湖科技園區。\n養：以鋪面平整度、標線、照明、指標與越堤動線 5 項指標每季評分公開，維護預算與評分連動。\n補與配套：提供 YouBike 2.0E 尖峰時段（08:00-10:00 / 17:00-19:00）前 30 分鐘免費；設置「運動驛站」提供盥洗、置物與租借服務，並以綠建築與容積獎勵鼓勵大樓增設淋浴設施。",
-    "masked": "興建跨河的自行車專用橋，直接銜接住宅社區與科技園區；以鋪面平整度、標線、照明、指標與越堤動線五項指標每季公開評分，維護預算與評分連動；尖峰時段前三十分鐘免費騎乘電動輔助公共自行車。",
-    "plain": "蓋跨河自行車專用橋連住宅社區與科技園區；五項指標每季公開評分，維護預算跟評分連動；尖峰時段前三十分鐘免費騎電動輔助公共自行車。",
-    "sourceUrl": "https://puma.taipei/policies/%E4%BA%A4%E9%80%9A%E6%94%BF%E7%AD%96",
-    "sourceDate": "2026-09-16",
-    "sourceType": "campaign",
-    "length": 90,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-007",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "education",
-    "candidateId": "c-taipei-1",
-    "original": "市府積極推動「教育革新三箭」，包括導師每週授課節數減少1節、增加專責行政人力以減輕負擔，以及提升教師心理諮商輔導時數與次數。同時，市府也建立教師跨校交流機制、推動優秀教師帶職帶薪出國研究計畫，並規劃於未來3年內逐步調降師生比，讓教師能更專注於教學，也能更用心關照每一位孩子。",
-    "masked": "導師每週授課節數減少一節、增加專責行政人力以減輕負擔、提高教師心理諮商輔導的時數與次數，並建立教師跨校交流機制、推動優秀教師帶職帶薪出國研究，同時在三年內逐步降低師生比。",
-    "plain": "導師每週少授一節課、增加專責行政人力、增加教師心理諮商時數與次數，建立教師跨校交流，讓優秀教師帶職帶薪出國研究，三年內逐步降低師生比。",
-    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=F12432D6172EE59F",
-    "sourceDate": "2026-08-19",
-    "sourceType": "press-rewritten",
-    "length": 85,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-008",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "education",
-    "candidateId": "c-taipei-2",
-    "original": "規劃於117學年度達成國小每班24人、國中25人的目標，並以「減生不減師」為原則，將少子化釋出的空間，轉化為降低班級人數與提升教學品質的機會。同時透過釋出正式教師員額、增加專任輔導教師，並評估透過與爭取各種獎勵方案提高教師留任意願。",
-    "masked": "於一一七學年度達成國小每班二十四人、國中每班二十五人，將少子化釋出的空間用來降低班級人數而不減少教師，並釋出正式教師員額、增加專任輔導教師，提高教師留任意願。",
-    "plain": "一一七學年度達成國小每班二十四人、國中二十五人，人數降低但教師不減少，並釋出正式教師員額、增加專任輔導教師。",
-    "sourceUrl": "https://puma.taipei/policies/%E6%95%99%E8%82%B2%E6%94%BF%E7%AD%96",
-    "sourceDate": "2026-10-02",
-    "sourceType": "campaign",
-    "length": 79,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-009",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "health",
-    "candidateId": "c-taipei-1",
-    "original": "市府將推出新手家庭特別門診，整合小兒科醫師、護理師、社工師及營養師等專業人員，以聯合門診方式提供家庭支持。服務不只關注嬰幼兒生長發育，也將家長心理健康及親職教養納入評估，每次門診時間最長可達60分鐘，並由市府提供相關補助，預計115年10月開診，讓新手家庭遇到育兒問題時，有更專業、更充足的支持。",
-    "masked": "設立新手家庭特別門診，整合小兒科醫師、護理師、社工師與營養師，以聯合門診提供家庭支持，評估涵蓋嬰幼兒發育、家長心理健康與親職教養，每次最長六十分鐘，並由市府補助。",
-    "plain": "設立新手家庭特別門診，由小兒科醫師、護理師、社工師、營養師聯合看診，評估孩子發育與家長心理健康，每次最長六十分鐘，市府補助。",
-    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=9FF6EE075E94B939",
-    "sourceDate": "2026-08-19",
-    "sourceType": "press-rewritten",
-    "length": 81,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-010",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "health",
-    "candidateId": "c-taipei-2",
-    "original": "中壯年身心與職場後盾：擴大提供50歲以上市民皮蛇疫苗一劑補助；推行涵蓋15至65歲的免費心理諮商計畫（包含產後媽媽額外加碼），減輕中壯年焦慮；實施職場友善2.0與45歲以上透過職務再設計，擴大媒合和訓練資源，也提供創業利息補貼。",
-    "masked": "補助五十歲以上市民接種一劑皮蛇疫苗，提供十五至六十五歲市民免費心理諮商（產後媽媽額外加碼），並以職務再設計協助四十五歲以上者就業，另提供創業利息補貼。",
-    "plain": "補助五十歲以上市民打一劑皮蛇疫苗，十五到六十五歲市民可免費心理諮商（產後媽媽加碼），四十五歲以上者透過職務再設計就業，並有創業利息補貼。",
-    "sourceUrl": "https://puma.taipei/policies/%E7%A4%BE%E7%A6%8F%E6%94%BF%E7%AD%96",
-    "sourceDate": "2026-09-11",
-    "sourceType": "campaign",
-    "length": 75,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-011",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "parks",
-    "candidateId": "c-taipei-1",
-    "original": "增加透水鋪面及建築綠化，降低都市熱島效應。臺北市綠建築標章案件數與等級已連續3年創歷史新高，並位居全國之冠。\n六、推動無菸城市：編列1.6億元\n持續增設指定負壓式吸菸區，並擴大西門町、迪化街、心中山及信義四大商圈無菸範圍，同時導入AI偵測及語音勸導，打造更健康、友善的公共環境。\n七、活化水岸空間：編列6億元\n推動「公館水源區新天地創新再生」及「淡水河水岸空間環境營造」，持續改善河岸環境、活化水岸空間，打造具國際城市特色的水岸風貌。",
-    "masked": "增加透水鋪面與建築綠化，降低都市熱島效應；並推動水源區新天地的創新再生與淡水河水岸空間的環境營造，改善河岸環境、活化水岸空間，打造具國際城市特色的水岸風貌。",
-    "plain": "增加透水鋪面和建築綠化，降低都市熱島效應；推動水源區再生和淡水河水岸環境營造，活化水岸空間。",
-    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=63455203FD0A1669",
-    "sourceDate": "2026-08-12",
-    "sourceType": "press-rewritten",
-    "length": 78,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taipei-012",
-    "race": "2026-local.mayor.taipei",
-    "issueId": "parks",
-    "candidateId": "c-taipei-2",
-    "original": "空間上，運用閒置土地規劃 200 座口袋公園，重新檢討人行道樹種、樹穴、密度、交通與景觀；並在公有建築、商圈、公園與校園推動林蔭栽種，鼓勵私人空間一起投入。",
-    "masked": "運用閒置土地規劃兩百座口袋公園，重新檢討人行道的樹種、樹穴、密度、交通與景觀，並在公有建築、商圈、公園與校園推動林蔭栽種，同時鼓勵私人空間一起投入。",
-    "plain": "用閒置土地蓋兩百座口袋公園，重新檢討人行道的樹種、樹穴和密度，在公有建築、商圈、公園、校園種樹遮蔭，也鼓勵私人空間一起種。",
-    "sourceUrl": "https://puma.taipei/policies/%E9%83%BD%E5%B8%82%E5%BE%AE%E6%A3%AE%E6%9E%97",
-    "sourceDate": "2026-09-07",
-    "sourceType": "campaign",
-    "length": 74,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-001",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "childcare",
-    "candidateId": "c-newtaipei-1",
-    "original": "二、主動媒合企業組隊設置托育，首三年虧損補助 50%\n同時開辦夜托與擴大臨托，設立查詢平台，要用查得到。",
-    "masked": "主動媒合企業組隊設置托育，前三年虧損由市府補助五成，同時開辦夜間托育、增加臨時托育，並建置即時查詢平台，讓家長查得到托育名額。",
-    "plain": "媒合企業組隊辦托育，前三年虧損補助五成；開辦夜間托育、增加臨時托育，並設查詢平台讓家長查得到名額。",
-    "sourceUrl": "https://chiao.tw/policies/%e4%b8%89%e5%a4%a7%e5%ae%b6%e5%ba%ad%e7%85%a7%e9%a1%a7%e6%94%bf%e8%a6%8b",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 63,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-002",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "childcare",
-    "candidateId": "c-newtaipei-2",
-    "original": "所以這次的三大親子政策，我從家長最卡的地方下手：\n🚗 好孕專車延長到孩子滿 1 歲——產檢、回診、打預防針，一路有車。\n🧸 運動中心臨托試辦——每週三下午 2 點到晚上 9 點，2 到 12 歲，憑當日消費證明 2 小時免費。你流汗的時候，孩子在同一棟安全玩。\n🏛 室內大型親子館——下雨天、大熱天，孩子都有地方長大。",
-    "masked": "提供產檢、回診與預防針的接送專車，服務期間到孩子滿一歲；試辦運動中心臨托，每週三下午兩點到晚上九點，二到十二歲孩子憑當日消費證明可免費托兩小時；並設置室內大型親子館。",
-    "plain": "提供接送專車到孩子滿一歲，產檢、回診、打針都有車；運動中心試辦臨托，週三下午兩點到晚上九點，二到十二歲憑消費證明免費兩小時；另設室內大型親子館。",
-    "sourceUrl": "https://www.youtube.com/watch?v=6ePMRV5D5_M",
-    "sourceDate": "2026-07-23",
-    "sourceType": "social",
-    "length": 83,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-003",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "eldercare",
-    "candidateId": "c-newtaipei-1",
-    "original": "首先是 65 歲以上長輩裝假牙最高補助 5 萬元，讓長輩不用再為了經濟考量，犧牲健康。再來是敬老卡提升至 1000 點，且剩餘點數將不再每月歸零，效期從 1 個月延長至 1 年，鼓勵長輩多出門走走，在新北旅遊消費！",
-    "masked": "補助六十五歲以上長輩裝假牙最高五萬元，並將長輩福利卡的點數提高為每月一千點，剩餘點數不再每月歸零，效期從一個月改為一年。",
-    "plain": "補助六十五歲以上長輩裝假牙最多五萬元，福利卡每月給一千點，用不完的點數保留一年，不再每月歸零。",
-    "sourceUrl": "https://chiao.tw/policies/%e5%85%ad%e5%a4%a7%e9%95%b7%e5%b9%bc%e7%a6%8f%e5%88%a9%e6%94%bf%e8%a6%8b",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 60,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-004",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "eldercare",
-    "candidateId": "c-newtaipei-2",
-    "original": "我非常關注長者照顧，因為新北有全國最多的老人人口\n所以我提出敬老卡300點悠遊卡化、主動訪視搭配六大檢查、老屋加裝電梯",
-    "masked": "因應全國老年人口最多的現況，將長輩福利卡的三百點整合進悠遊卡，由市府主動訪視長輩並搭配六大檢查項目，同時推動老屋加裝電梯。",
-    "plain": "把福利卡的三百點放進悠遊卡，主動訪視長輩並搭配六大檢查，推動老屋加裝電梯。",
-    "sourceUrl": "https://www.youtube.com/watch?v=pegf-3545HU",
-    "sourceDate": "2026-10-18",
-    "sourceType": "social",
-    "length": 61,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-005",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "education",
-    "candidateId": "c-newtaipei-1",
-    "original": "編列假日出勤加班費\n建立教師非上班時間奉派出勤的補償機制，並編列相關預算。凡教師於假日因公帶隊參賽或參加研習 ，都能自由選擇請領加班費或補休。\n教師節禮金調升至 2,000 元\n由現行的 1,000 元調升至 2,000 元，實質回饋教師辛勞。",
-    "masked": "建立教師非上班時間奉派出勤的補償機制並編列預算，讓假日因公帶隊參賽或參加研習的老師可選擇請領加班費或補休，並把教師節禮金由一千元調升為兩千元。",
-    "plain": "讓假日因公帶隊比賽或研習的老師，可選擇領加班費或補休，並把教師節禮金從一千元提高到兩千元。",
-    "sourceUrl": "https://chiao.tw/policies/%e4%b8%83%e5%a4%a7%e6%95%99%e8%82%b2%e6%94%bf%e8%a6%8b",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 71,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-006",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "education",
-    "candidateId": "c-newtaipei-2",
-    "original": "AI 進校園、推動班班 25 人、提高教師免費心理諮商次數——這是我給新北孩子的三根鋼筋。\n老師顧孩子，我來顧老師。",
-    "masked": "讓人工智慧進入校園，推動每班二十五人，並增加教師可使用的免費心理諮商次數，作為給孩子的教育承諾；由市府照顧老師，老師就能專心照顧孩子。",
-    "plain": "讓人工智慧進校園、每班二十五人，並增加老師可用的免費心理諮商次數，由市府照顧老師。",
-    "sourceUrl": "https://www.youtube.com/watch?v=YV5nNjxU2Yo",
-    "sourceDate": "2026-07-04",
-    "sourceType": "social",
-    "length": 67,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-007",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "housing",
-    "candidateId": "c-newtaipei-1",
-    "original": "試辦「青年育兒宅」，讓符合條件的家庭可以長租 20 年，解決許多現在許多新生兒父母居住社宅的擔憂，孩童穩定成長，無後顧之憂。\n六、市府補助，鼓勵包租代管優先租給高齡長者\n推動「長者友善住宅」，由市府透過服務費用加碼、修繕補助加碼等方式，鼓勵包租代管業者優先承租給高齡長者，解決長者承租不易、居住環境不友善的問題。",
-    "masked": "試辦最長可租二十年的育兒住宅，讓符合條件的家庭穩定居住，並加碼服務費用與修繕補助，鼓勵包租代管業者優先把房子租給高齡長者。",
-    "plain": "試辦最長可租二十年的育兒住宅，加碼服務費和修繕補助，鼓勵包租代管業者優先租給高齡長者。",
-    "sourceUrl": "https://chiao.tw/policies/%e9%83%bd%e6%9b%b4%e8%88%87%e4%bd%8f%e5%ae%85%e6%94%bf%e8%a6%8b",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 61,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-008",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "housing",
-    "candidateId": "c-newtaipei-2",
-    "original": "不過，房租讓年輕人睡不著，這個不能放著不管。\n侯友宜市長提的 3.9 萬戶社宅繼續蓋，再加 1.2 萬戶。\n沒有地，就用容積獎勵把回饋回來的社宅，租出去。",
-    "masked": "繼續興建規劃中的三點九萬戶社會住宅，再增加一點二萬戶；沒有土地的地方，就以容積獎勵換取回饋的社宅再出租，減輕年輕人的房租壓力。",
-    "plain": "繼續蓋原規劃的三點九萬戶社宅，再增加一點二萬戶；沒有地的話，用容積獎勵換回社宅再出租。",
-    "sourceUrl": "https://www.youtube.com/watch?v=UlcQ3gczXFc",
-    "sourceDate": "2026-10-14",
-    "sourceType": "social",
-    "length": 63,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-009",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "culture",
-    "candidateId": "c-newtaipei-1",
-    "original": "自行車道\n每 5 公里設置簡易休息站、智慧駐車間等休憩設施。\n人行道\n重要觀光景點道路全面劃設人行道，增加公廁與飲水機。\n公路\n推動台 62 線延伸金山萬里、三芝輕軌、八里輕軌等計畫。\n公共運具\n全面優化快速公車與共享機車站，不用自己騎車也能自由行。\n研議觀光鐵道\n參考京都丹後鐵道的經驗，規劃從淡水到萬里的「觀光鐵路」，盡收北海岸風景。",
-    "masked": "在自行車道每五公里設置簡易休息站，在重要觀光景點道路全面劃設人行道並增設公廁與飲水機，推動公路延伸與輕軌計畫，並研議規劃從淡水到萬里的觀光鐵路。",
-    "plain": "自行車道每五公里設一個休息站，景點道路都劃人行道、增設公廁和飲水機，推動公路延伸和輕軌，並研議淡水到萬里的觀光鐵路。",
-    "sourceUrl": "https://chiao.tw/policies/%e6%96%b0%e7%9a%87%e5%86%a0%e6%b5%b7%e5%b2%b8%e8%a8%88%e7%95%ab",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 72,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-010",
-    "race": "2026-local.mayor.newtaipei",
-    "issueId": "culture",
-    "candidateId": "c-newtaipei-2",
-    "original": "我提了文化三策：600 元新北文化幣每年 15 萬份、新北國際藝術節、創作免場租。\n我是做工程的人，但是做工程只能讓城市變大，只有文化才能讓這個城市變偉大。",
-    "masked": "每年發放十五萬份、每份六百元的文化幣，舉辦國際藝術節，並讓創作者免付場地租金，因為建設只能讓城市變大，只有文化才能讓城市變得偉大。",
-    "plain": "每年發十五萬份六百元的文化幣、辦國際藝術節、創作免場租。",
-    "sourceUrl": "https://www.youtube.com/watch?v=QCB4V3MMWwo",
-    "sourceDate": "2026-10-15",
-    "sourceType": "social",
-    "length": 65,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-newtaipei-011",
+    "id": "p-newtaipei-9u9dw8",
     "race": "2026-local.mayor.newtaipei",
     "issueId": "economy",
     "candidateId": "c-newtaipei-1",
@@ -391,24 +17,24 @@
     }
   },
   {
-    "id": "p-newtaipei-012",
+    "id": "p-newtaipei-etrtd2",
     "race": "2026-local.mayor.newtaipei",
-    "issueId": "economy",
+    "issueId": "culture",
     "candidateId": "c-newtaipei-2",
-    "original": "未來五股、蘆洲、林口、淡水、土城、鶯歌、新店——我要把AI跟高科技的產業鏈拉進這幾個地方。\n我看的不是三年五年，是往後三十年。\n好工作留在新北，人就留在新北。",
-    "masked": "將人工智慧與高科技的產業鏈引進五股、蘆洲、林口、淡水、土城、鶯歌與新店，以未來三十年而不是三五年為目標，讓好工作留在本市。",
-    "plain": "把人工智慧和高科技產業鏈引進七個行政區，眼光看三十年，讓好工作留在本市。",
-    "sourceUrl": "https://www.youtube.com/watch?v=dCLfbO4pJaA",
-    "sourceDate": "2026-08-25",
+    "original": "我提了文化三策：600 元新北文化幣每年 15 萬份、新北國際藝術節、創作免場租。\n我是做工程的人，但是做工程只能讓城市變大，只有文化才能讓這個城市變偉大。",
+    "masked": "每年發放十五萬份、每份六百元的文化幣，舉辦國際藝術節，並讓創作者免付場地租金，因為建設只能讓城市變大，只有文化才能讓城市變得偉大。",
+    "plain": "每年發十五萬份六百元的文化幣、辦國際藝術節、創作免場租。",
+    "sourceUrl": "https://www.youtube.com/watch?v=QCB4V3MMWwo",
+    "sourceDate": "2026-10-15",
     "sourceType": "social",
-    "length": 61,
+    "length": 65,
     "guessStats": {
       "answers": 0,
       "correct": 0
     }
   },
   {
-    "id": "p-taichung-001",
+    "id": "p-taichung-xg3fg6",
     "race": "2026-local.mayor.taichung",
     "issueId": "childcare",
     "candidateId": "c-taichung-2",
@@ -425,24 +51,24 @@
     }
   },
   {
-    "id": "p-taichung-002",
-    "race": "2026-local.mayor.taichung",
+    "id": "p-newtaipei-3xi57q",
+    "race": "2026-local.mayor.newtaipei",
     "issueId": "childcare",
-    "candidateId": "c-taichung-1",
-    "original": "加碼生育津貼，第一胎 4 萬元、第二胎 6 萬元、第三胎 8 萬元，減輕家庭迎接新生命的經濟壓力。改善各區托育資源不均問題，推動 0 至 2 歲公托名額倍增，讓不同區域的家庭都能享有更公平、可近的托育服務。",
-    "masked": "提高生育津貼，第一胎4萬元、第二胎6萬元、第三胎8萬元；並讓0至2歲的公共托育名額增加一倍，改善各區托育資源不均的情形，讓不同區域的家庭都能就近使用。",
-    "plain": "生育津貼要提高：第一胎給4萬元、第二胎給6萬元、第三胎給8萬元；0到2歲的公共托育名額要增加一倍，讓各區的托育資源比較平均，家長不用跑遠。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
+    "candidateId": "c-newtaipei-1",
+    "original": "二、主動媒合企業組隊設置托育，首三年虧損補助 50%\n同時開辦夜托與擴大臨托，設立查詢平台，要用查得到。",
+    "masked": "主動媒合企業組隊設置托育，前三年虧損由市府補助五成，同時開辦夜間托育、增加臨時托育，並建置即時查詢平台，讓家長查得到托育名額。",
+    "plain": "媒合企業組隊辦托育，前三年虧損補助五成；開辦夜間托育、增加臨時托育，並設查詢平台讓家長查得到名額。",
+    "sourceUrl": "https://chiao.tw/policies/%e4%b8%89%e5%a4%a7%e5%ae%b6%e5%ba%ad%e7%85%a7%e9%a1%a7%e6%94%bf%e8%a6%8b",
+    "sourceDate": "2026-10-21",
     "sourceType": "campaign",
-    "length": 75,
+    "length": 63,
     "guessStats": {
       "answers": 0,
       "correct": 0
     }
   },
   {
-    "id": "p-taichung-003",
+    "id": "p-taichung-a8sw25",
     "race": "2026-local.mayor.taichung",
     "issueId": "eldercare",
     "candidateId": "c-taichung-2",
@@ -459,398 +85,7 @@
     }
   },
   {
-    "id": "p-taichung-004",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "eldercare",
-    "candidateId": "c-taichung-1",
-    "original": "提供 65 歲以上長者假牙補助最高 5 萬元，改善口腔健康、飲食品質與生活舒適度，讓長輩能吃得健康、笑得自在，提升整體生活品質。",
-    "masked": "提供65歲以上長者假牙補助，最高5萬元，改善口腔健康、飲食品質與生活舒適度，讓長輩吃得健康、笑得自在，提升整體生活品質。",
-    "plain": "65歲以上的長輩裝假牙，最高可以補助5萬元，希望他們吃得健康、笑得自在，生活品質也跟著變好。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
-    "sourceType": "campaign",
-    "length": 60,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-005",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "health",
-    "candidateId": "c-taichung-2",
-    "original": "推出設籍臺中孕婦施打 RSV（呼吸道融合病毒）疫苗補助，在懷孕後期減免自費施打費用，讓抗體在媽媽肚子裡就能保護寶寶。\n提升產後到宅月嫂補助時數至 40 小時，讓專業月嫂有充裕的時間指導育兒並協助媽媽休養，做女性最體貼的生育神隊友。\n將「健康好孕專車」的使用期限貼心延長至「產後一年」，為媽媽產後回診與寶寶打疫苗的交通路途多一份呵護。",
-    "masked": "補助設籍的孕婦在懷孕後期施打呼吸道融合病毒疫苗並減免自費；將產後到宅月嫂的補助時數提高到40小時；孕產婦專用接送車的使用期限延長到產後一年。",
-    "plain": "設籍本市的孕婦，懷孕後期打呼吸道融合病毒（RSV）疫苗可以減免自費；產後到家的月嫂補助增加到40小時；孕產婦專用接送車可以用到產後一年。",
-    "sourceUrl": "https://taichungway.tw/parenting-friendly-city-maternal-care",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 70,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-006",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "health",
-    "candidateId": "c-taichung-1",
-    "original": "提高女性勞工健康檢查補助，減輕女性照顧自身健康的負擔。乳癌篩檢免費服務擴大納入 30 至 39 歲女性，讓健康風險能夠更早被發現、及早治療。",
-    "masked": "提高女性勞工的健康檢查補助，減輕照顧自身健康的負擔；乳癌篩檢的免費服務擴大納入30至39歲的女性，讓健康風險更早被發現、及早治療。",
-    "plain": "女性勞工的健康檢查補助要提高；30到39歲的女性也可以免費做乳癌篩檢，希望健康問題早點被發現、早點治療。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
-    "sourceType": "campaign",
-    "length": 65,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-007",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "transit",
-    "candidateId": "c-taichung-2",
-    "original": "將雙十公車升級為「臺中市民搭乘公車運輸全程免費」（含幹線、市區與捷運接駁）。同時由市府帶頭編列預算補貼，實質補足公車駕駛的薪資缺口，透過加薪解決駕駛荒，確保路線不中斷。",
-    "masked": "讓市民搭乘公車全程免費，範圍含幹線、市區與捷運接駁；同時由市府編列預算補貼，補足公車駕駛的薪資缺口，以加薪解決駕駛短缺，確保路線不中斷。",
-    "plain": "市民搭公車全程免費，包含幹線、市區公車和捷運接駁；市府編預算補貼，補足公車司機薪水的缺口，用加薪來解決司機不足，路線才不會中斷。",
-    "sourceUrl": "https://taichungway.tw/smart-transport-public-transit",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 68,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-008",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "transit",
-    "candidateId": "c-taichung-1",
-    "original": "建構 4+1 轉運中心\n在既有轉運中心規劃基礎上，增設海區轉運中心，串聯台鐵、高鐵、環線捷運、國道客運、市區公車、多元計程車與公共自行車系統，提升轉乘便利性，強化台中公共運輸整體服務效率。",
-    "masked": "在既有規劃的四個轉運中心之外增設一個海區轉運中心，串聯台鐵、高鐵、環線捷運、國道客運、市區公車、多元計程車與公共自行車系統，提升轉乘便利性。",
-    "plain": "在原本規劃的四個轉運中心之外，再增設一個海區轉運中心，把台鐵、高鐵、環線捷運、國道客運、市區公車、計程車和公共自行車串在一起，轉乘更方便。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
-    "sourceType": "campaign",
-    "length": 70,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-009",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "education",
-    "candidateId": "c-taichung-2",
-    "original": "在教育局內大刀闊斧成立技職教育專責單位，統籌資源，補足長期缺乏專責統籌的現況。\n大幅增設「職業探索中心」，拉高學子參與職業探索的群科豐富度與頻率。\n讓孩子在國高中階段就能透過實際操作與導師分享，提早把創意與雙手結合，幫年輕學子新增「技職教育」這項驕傲的職涯選項。",
-    "masked": "在教育局內成立技職教育專責單位統籌資源，增設職業探索中心，並讓學生在國高中階段就透過實際操作與導師分享，提早把創意與雙手結合。",
-    "plain": "教育局裡要成立專門負責技職教育的單位來統籌資源；多設幾處職業探索中心；國中、高中的學生就能動手做、聽業師分享，提早接觸技職這條路。",
-    "sourceUrl": "https://taichungway.tw/robot-manufacturing-city-vocational-training",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 63,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-010",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "education",
-    "candidateId": "c-taichung-1",
-    "original": "每年編列 1 億元以上預算，支持中小學推動國際交流與合作，並擴充高中職國際文憑及國際學分課程名額。同步推展雙語遠距教學、課後共學、交換生計畫與雙語數位學伴，突破雙語師資限制，讓更多學生有機會接觸國際視野與多元語言環境。",
-    "masked": "每年編列1億元以上的預算，支持中小學推動國際交流與合作，擴充高中職國際文憑及國際學分課程名額，並推展雙語遠距教學、課後共學與交換生計畫。",
-    "plain": "每年至少編1億元，讓中小學做國際交流；高中職的國際文憑和國際學分課程要增加名額；同時辦雙語遠距教學、課後共學和交換生，讓更多學生接觸外語環境。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
-    "sourceType": "campaign",
-    "length": 68,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-011",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "safety",
-    "candidateId": "c-taichung-2",
-    "original": "體恤警消辛勞，放寬並提高健康檢查補助，40 歲以上每年補助 4,500 元，未滿 40 歲提高至每年 3,500 元。\n參考國際與其他城市經驗，成立專責的消防「職業安全衛生室」，編制專人推動風險評估與心理輔導，接住第一線人員的創傷壓力。",
-    "masked": "放寬並提高警消的健康檢查補助，40歲以上每年補助4,500元，未滿40歲提高到每年3,500元；另成立消防職業安全衛生室，由專人推動風險評估與心理輔導。",
-    "plain": "警察和消防員的健檢補助要放寬、提高：40歲以上每年補助4,500元，不到40歲每年3,500元；另外成立消防的職業安全衛生室，專人負責風險評估和心理輔導。",
-    "sourceUrl": "https://taichungway.tw/city-safety-first-responders",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 76,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-012",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "safety",
-    "candidateId": "c-taichung-1",
-    "original": "建置科技阻詐預警系統，串聯金融機構、地政、檢警調等單位，即時發現異常交易、可疑金流與高風險案件，及早攔阻詐騙，降低市民財產損失。",
-    "masked": "建置科技阻詐預警系統，串聯金融機構、地政與檢警調等單位，即時發現異常交易、可疑金流與高風險案件，及早攔阻詐騙，降低市民財產損失。",
-    "plain": "建立一套科技預警系統，連結銀行、地政和檢警調，一發現異常交易、可疑金流或高風險案件就提早攔下，減少市民被騙的損失。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
-    "sourceType": "campaign",
-    "length": 64,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-013",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "economy",
-    "candidateId": "c-taichung-2",
-    "original": "參考亞特蘭大與拉斯維加斯的成功經驗，成立跨局處一站式的「臺中市會展經濟推動辦公室」，專責推廣城市品牌並協助會展籌辦。\n系統性建置會展活動招商、供應鏈媒合、城市接待配套、成效追蹤、會展城市交流、產學合作等六大平台。\n推出誘因提供機制、公協會與會議大使計畫、建置全場館與供應鏈資料庫、城市接待方案等八項具體工具，將會展轉化為實質經濟效益。",
-    "masked": "成立跨局處一站式的會展經濟推動辦公室，專責推廣城市品牌並協助會展籌辦；建置招商、供應鏈媒合、成效追蹤等六大平台，並推出八項具體政策工具。",
-    "plain": "成立一個跨局處、一站式的會展推動辦公室，負責推廣城市品牌、協助辦展；建六個平台（招商、供應鏈媒合、成效追蹤等），再搭配八項具體工具，把會展變成實際的經濟收入。",
-    "sourceUrl": "https://taichungway.tw/exhibition-economy-taichung-hub",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 68,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-014",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "economy",
-    "candidateId": "c-taichung-1",
-    "original": "商圈輔導獎勵補助經費提高 3 倍；定期舉辦大型活動，或結合熱門手機遊戲行銷，吸引觀光人潮，活絡商圈經濟。\n鼓勵傳統產業及中小微企業智慧升級，成立產業創新中心，導入 AI 科技與智慧管理，打造創新產業鏈。",
-    "masked": "在北區，將商圈輔導獎勵補助經費提高3倍，並定期舉辦大型活動、結合熱門手機遊戲行銷；在豐原與后里，鼓勵傳統產業及中小微企業智慧升級，成立產業創新中心，導入AI科技與智慧管理。",
-    "plain": "在北區，商圈輔導的獎勵補助經費提高到原來的3倍，定期辦大型活動、和熱門手機遊戲合作宣傳；在豐原與后里，鼓勵傳統產業和中小微企業做智慧升級，設立產業創新中心，導入AI與智慧管理。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
-    "sourceType": "campaign",
-    "length": 86,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-015",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "housing",
-    "candidateId": "c-taichung-2",
-    "original": "面對全市 30 年以上老屋突破 60 萬棟的挑戰，市府將鎖定老舊住宅與人口密集社區，擴大推動老屋健檢，構築耐災安全的居住環境。\n針對高齡長輩進行屋內「機能延壽」的診斷與補助，從無障礙空間改善做起，朝向「結構機能雙延壽、空間無障礙」的目標前進。",
-    "masked": "全市屋齡30年以上的老屋已突破60萬棟，將鎖定老舊住宅與人口密集社區擴大老屋健檢，並對高齡長輩的屋內機能延壽提供診斷與補助，先從無障礙空間做起。",
-    "plain": "全市30年以上的老房子超過60萬棟，要優先替老舊住宅和人口密集的社區做健檢；高齡長輩家裡的設施改善（先從無障礙空間開始）也提供診斷和補助。",
-    "sourceUrl": "https://taichungway.tw/senior-care-age-friendly-housing",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 72,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-016",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "housing",
-    "candidateId": "c-taichung-1",
-    "original": "加速社會住宅多元興辦，推動 4 年 2,000 戶婚育宅，提供新婚與育兒家庭申請，減輕青年成家初期的居住壓力，讓青年能在台中安心工作、穩定生活、勇敢成家。",
-    "masked": "加速社會住宅多元興辦，在4年內推出2,000戶婚育宅，提供新婚與育兒家庭申請，減輕青年成家初期的居住壓力，讓青年安心工作、穩定生活。",
-    "plain": "加快興辦各種社會住宅，4年內推出2,000戶專給新婚和育兒家庭申請的婚育宅，減輕年輕人剛成家時的住房壓力。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
-    "sourceType": "campaign",
-    "length": 66,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-017",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "youth",
-    "candidateId": "c-taichung-2",
-    "original": "市府將主動協助，引進具備全球市場能力的指標性加速器進駐臺中。\n運用升級會展經濟 168 的模式，辦理青創、新創嘉年華，由國際導師一對一帶路，實質媒合海外資金。\n將「舊臺中縣議會」改造成新創孵化基地，協助創業團隊在聚落內形成互助生態系，達成「在地孵化、全球起飛」的目標。",
-    "masked": "主動協助引進具全球市場能力的指標性加速器進駐；辦理青創與新創嘉年華，由國際導師一對一帶路並媒合海外資金；將舊議會大樓改造成新創孵化基地。",
-    "plain": "市府主動協助，引進有全球市場經驗的大型加速器進駐；辦青創、新創嘉年華，由國際導師一對一帶路，幫忙媒合海外資金；把舊議會大樓改成新創團隊的孵化基地。",
-    "sourceUrl": "https://taichungway.tw/exhibition-economy-startup-accelerator",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 68,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-018",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "youth",
-    "candidateId": "c-taichung-1",
-    "original": "打造青年創業基地，發展共享辦公空間、創業孵化器、試驗場域與跨域交流平台，協助青年從創意發想、產品驗證到市場拓展。並設立區域創客中心（Makerspace），推動台中成為青年創客之都。",
-    "masked": "打造青年創業基地，發展共享辦公空間、創業孵化器、試驗場域與跨域交流平台，協助青年從創意發想、產品驗證到市場拓展，並設立區域創客中心。",
-    "plain": "設立青年創業基地，提供共享辦公室、創業孵化器、試驗場地和跨領域交流平台，陪年輕人從點子、試做到打進市場；各區再設創客中心。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
-    "sourceType": "campaign",
-    "length": 66,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-019",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "pedsafety",
-    "candidateId": "c-taichung-2",
-    "original": "鎖定學校、醫院與大眾運輸樞紐周邊，展開人行道鋪面翻新與無障礙坡道優化，檢討行人庇護島，打造無障礙、消弭斷點的全齡友善步行路網。",
-    "masked": "鎖定學校、醫院與大眾運輸樞紐周邊，翻新人行道鋪面、優化無障礙坡道，並檢討行人庇護島，打造無障礙、沒有斷點的全齡步行路網。",
-    "plain": "以學校、醫院和大眾運輸站點周邊為重點，翻新人行道路面、改善無障礙坡道、檢討行人庇護島，讓各年齡的人都能順暢步行、中間不再斷掉。",
-    "sourceUrl": "https://taichungway.tw/smart-transport-walkable-streets",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 60,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-taichung-020",
-    "race": "2026-local.mayor.taichung",
-    "issueId": "pedsafety",
-    "candidateId": "c-taichung-1",
-    "original": "推動道路設計改善、人行空間優化與校園周邊通學步道改善，優先處理危險路口、行穿線退縮、庇護島與通學動線安全，建立友善行人與兒童的城市交通環境。",
-    "masked": "改善道路設計、優化人行空間與校園周邊通學步道，優先處理危險路口、行穿線退縮、庇護島與通學動線的安全，建立友善行人與兒童的交通環境。",
-    "plain": "改善道路設計和人行空間，也改善學校周邊的通學步道；優先處理危險路口、行人穿越線退縮、庇護島和上下學動線的安全，讓行人與孩子走得放心。",
-    "sourceUrl": "https://a-chun.tw/future",
-    "sourceDate": "2026-08-20",
-    "sourceType": "campaign",
-    "length": 65,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-001",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "youth",
-    "candidateId": "c-kaohsiung-2",
-    "original": "1. 就業安心：非典勞動青年轉正計畫 兼職打工、接案雖然自由，但若你想追求更穩定的正職生活，我們推你一把！ 針對畢業後從事非典型工作或待業中的青年，只要你有意願轉正，我們提供專屬津貼： ✅ 輔導津貼： 每次 5,000 元（最多 3 次，最高可領 15,000 元）。 ✅ 轉正獎金： 成功轉正職，再加碼發放 15,000 元！ 最高 3 萬元的實質補助，減輕你的經濟壓力，陪你穩健踏入職場正軌！",
-    "masked": "針對畢業後從事非典型工作或待業的青年，有意轉為正職者提供津貼：輔導津貼每次5,000元，最多3次，最高15,000元；成功轉正職者再發轉正獎金15,000元，合計最高3萬元。",
-    "plain": "畢業後打工、接案或待業的青年，想轉正職可領輔導津貼，每次5,000元最多3次；成功轉正職再領15,000元，合計最高3萬元。",
-    "sourceUrl": "https://kochihen2026.tw/policy/%E6%88%90%E5%B0%B1%E9%9D%92%E5%B9%B4/%E5%8B%87%E6%95%A2%E7%AF%89%E5%A4%A2%E3%80%81%E5%AE%89%E5%BF%83%E6%89%93%E6%8B%9A",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 87,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-002",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "culture",
-    "candidateId": "c-kaohsiung-2",
-    "original": "1. 創造郵輪經濟產值 我們將全力發展郵輪經濟，前兩年挑戰 30億元，四年後更要挑戰高達 50億元 的總產值！ 2. 會展與節慶國際化 打造「亞洲慶典之都」，目標讓國際旅客入境增長 50% 3. 推動長者友善觀光，樂齡漫遊好安心 長輩的笑容是無價之寶！我們將規劃 20條 專屬的「長青之旅」路線，讓長者出遊更安全便利，預估將帶動在地消費成長 10%。 4. 觀光紅利大爆發，創造青年就業 透過全方位的旅遊升級，我們承諾在5年內讓觀光收入成長 30%，並為地方創造 5,000個 嶄新的就業機會，讓年輕人留在家鄉打拼！",
-    "masked": "發展郵輪經濟，前兩年產值挑戰30億元、四年後挑戰50億元；使國際旅客入境人數增長50%；規劃20條長者專屬旅遊路線，預估帶動在地消費成長10%；5年內觀光收入成長30%，創造5,000個就業機會。",
-    "plain": "發展郵輪經濟，前兩年產值30億元、四年後50億元；國際旅客增加50%；規劃20條長輩旅遊路線；5年內觀光收入成長30%，增加5,000個工作。",
-    "sourceUrl": "https://kochihen2026.tw/policy/%E6%96%87%E5%8C%96%E8%A7%80%E5%85%89/%E5%A4%A7%E6%B8%AF%E6%8E%A5%E8%BB%8C%E5%85%A8%E7%90%83",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 98,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-003",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "flood",
-    "candidateId": "c-kaohsiung-2",
-    "original": "2. 啟動「流域治水總體戰略」 針對典寶溪、二仁溪、曹公新圳等主要流域，從上游、中游到下游整體檢視，釐清河道、堤防、滯洪空間、排水能力及潮位等問題，透過滯洪、分流、河道改善與堤防強化，從源頭降低洪峰壓力。 3. 擴充「高雄滯洪網」：全面改善都市排水 全面盤點雨水下水道、區域排水、箱涵、抽水站及排水路網，找出真正的「卡點」，依照淹水風險排定改善順序。 同時加強推動「城市滯洪」概念，把公園、學校、廣場、地下空間等公共設施納入防洪系統，在不影響平時使用的前提下，持續打造平時是公共空間、暴雨時能夠暫存雨水的多功能滯洪設施。建立一座能夠接住雨水、延緩洪峰的城市。",
-    "masked": "針對主要河川流域從上游到下游整體檢視，以滯洪、分流、河道改善與堤防強化降低洪峰壓力；盤點排水系統並依淹水風險排定改善順序，把公園、學校、廣場與地下空間納入防洪系統，在不影響平時使用下暫存雨水。",
-    "plain": "從上游到下游整體檢視主要河川，用滯洪、分流、河道改善和堤防降低洪峰；依淹水風險排改善順序，讓公園、學校、廣場平時能用、下大雨時能蓄水。",
-    "sourceUrl": "https://kochihen2026.tw/policy/%E5%B1%85%E5%AE%89%E7%A4%BE%E5%AE%89/%E6%B2%BB%E6%B0%B4%E6%94%BF%E8%A6%8B",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 96,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-004",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "economy",
-    "candidateId": "c-kaohsiung-2",
-    "original": "三、服務業億元轉型，成為中小企業最強後盾 高雄的服務業也要升級。推動「服務業億元轉型計畫」，投入資源陪伴中小企業進行數位轉型，成立「數位轉型輔導小組」，結合產官學力量，協助企業導入智慧化系統。 加速引進AI、雲端等科技，發展智慧醫療、遠距教育、智慧物流等新型態服務業，創造更多高薪工作機會；鼓勵在地業者異業結盟，打造一站式電商平台，把高雄品牌推向國際。",
-    "masked": "投入資源陪伴中小企業進行數位轉型，成立由產官學組成的輔導小組協助導入智慧化系統；引進AI與雲端科技發展智慧醫療、遠距教育與智慧物流等服務業，並鼓勵業者異業結盟建置一站式電商平台。",
-    "plain": "幫中小企業做數位轉型，成立產官學輔導小組；用AI和雲端發展智慧醫療、遠距教育、智慧物流；鼓勵業者合作做一站式電商平台。",
-    "sourceUrl": "https://kochihen2026.tw/policy/%E7%94%A2%E6%A5%AD%E5%8D%87%E7%B4%9A/%E5%95%86%E5%9C%88%E5%BE%A9%E8%88%88%E8%88%87%E7%94%A2%E6%A5%AD%E8%BD%89%E5%9E%8B",
-    "sourceDate": "2026-10-21",
-    "sourceType": "campaign",
-    "length": 89,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-005",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "housing",
-    "candidateId": "c-kaohsiung-1",
-    "original": "居住方面，擴大社會住宅、包租代管、租金補貼與青年友善租屋資訊與通勤支持，減輕青年在高雄工作、生活與成家的壓力，讓大家不只回得來，也住得下來。結合 TOD 大眾運輸導向發展模式，讓捷運、輕軌等大眾運輸與社宅、青創基地、托育資源緊密串聯，建構住、行、育、業共好環境；同時搭配生育補助與公共托育，減輕養育下一代的負擔。",
-    "masked": "增加社會住宅、包租代管與租金補貼的供給，提供青年友善的租屋資訊與通勤支持；以大眾運輸導向開發使捷運、輕軌與社宅、青創基地和托育資源緊密串聯，並搭配生育補助與公共托育。",
-    "plain": "多蓋社會住宅，增加包租代管和租金補貼，提供租屋資訊和通勤支持；社宅、青創基地、托育設在捷運輕軌站附近，並搭配生育補助和公共托育。",
-    "sourceUrl": "https://www.zenolai.tw/policy/youth/10",
-    "sourceDate": "2026-09-09",
-    "sourceType": "campaign",
-    "length": 83,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-006",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "childcare",
-    "candidateId": "c-kaohsiung-1",
-    "original": "育兒津貼全面提升：育兒津貼由原本每月 5,000～7,000 元，提升至最高每月 10,000 元。 兒童成長津貼加碼：響應中央 0–18 歲成長津貼政策，高雄 0–6 歲孩童每月再加碼 1,000 元。 廣設公共托育據點：持續增加公托與準公托據點，提升托育量能與品質，並提供每年 60 小時育兒喘息支持（公托/準公托延託券）。",
-    "masked": "將育兒津貼由每月5,000至7,000元提高到最高每月10,000元，0至6歲孩童在中央成長津貼之外每月另補1,000元；增設公共與準公共托育據點，並提供每年60小時的育兒喘息支持，以公共與準公共托育的延託券發放。",
-    "plain": "育兒津貼最高每月1萬元，0到6歲每月再多1,000元；多設公共托育據點，每年有60小時喘息時數。",
-    "sourceUrl": "https://www.zenolai.tw/policy/youth/9",
-    "sourceDate": "2026-09-09",
-    "sourceType": "campaign",
-    "length": 107,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-007",
+    "id": "p-kaohsiung-jzee6m",
     "race": "2026-local.mayor.kaohsiung",
     "issueId": "housing",
     "candidateId": "c-kaohsiung-2",
@@ -867,126 +102,58 @@
     }
   },
   {
-    "id": "p-kaohsiung-008",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "culture",
-    "candidateId": "c-kaohsiung-1",
-    "original": "三、打造「高雄盛事城」，發展多元活動 提高經濟產值 整合旅宿、景點與飲食，推出「高雄盛事城」套票，並策辦創意文化節慶與主題商品，延長旅客停留時間、擴大周邊效益。 未來更將以吸引國際巨星演出、促成國際影視團隊進駐拍攝為目標，讓高雄城市品牌享譽全球。 四、推動「深度體驗旅遊廊帶」，提升回訪率 推動「深度體驗旅遊廊帶」，提出串連歷史、藝陣、客庄、原鄉、農村的「高雄住一晚PLUS」計畫，讓旅客深入不同區域，看見更多元的高雄，提升旅客停留時間與回訪率。 五、打造「智慧低碳旅遊城」 整合捷運、輕軌、單車與觀光船班，推出數位旅遊卡，並建置智慧候車亭、多功能資訊站，推動旗津無人載具試辦等，打造更便利、智慧、低碳的旅遊環境。",
-    "masked": "整合旅宿、景點與餐飲推出套票並辦理節慶活動，延長旅客停留時間；規劃串連歷史、藝陣、客庄、原鄉與農村的深度旅遊路線；整合捷運、輕軌、單車與觀光船班推出數位旅遊卡，並設置智慧候車亭與資訊站。",
-    "plain": "推出旅宿、景點、餐飲套票和節慶活動；規劃串連歷史、藝陣、客庄、原鄉、農村的旅遊路線；捷運、輕軌、單車、觀光船整合成一張數位旅遊卡。",
-    "sourceUrl": "https://www.zenolai.tw/policy/culture/19",
-    "sourceDate": "2026-09-30",
-    "sourceType": "campaign",
-    "length": 93,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-009",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "education",
-    "candidateId": "c-kaohsiung-1",
-    "original": "行動 1｜預算要倍增！ 雙語教育預算將逐步提高至 每年 10 億元，並全面導入 AI 與 AR 科技建置智慧學習平台，讓科技輔助語言學習，縮短學習落差。 行動 2｜校校連世界！ 積極推動「一校一國際共學夥伴」計畫，優先協助高雄的國高中建立跨國學校交流夥伴關係，讓國際化融入日常校園生活。",
-    "masked": "將雙語教育預算逐步提高到每年10億元，並導入AI與AR技術建置智慧學習平台縮短學習落差；讓每所學校配對一個國際共學夥伴，優先協助國中與高中建立跨國交流關係。",
-    "plain": "雙語教育預算逐步增加到每年10億元，用AI和AR做學習平台；國中、高中每校配對一所國外學校交流。",
-    "sourceUrl": "https://www.zenolai.tw/policy/education/12",
-    "sourceDate": "2026-09-09",
-    "sourceType": "campaign",
-    "length": 78,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-010",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "economy",
-    "candidateId": "c-kaohsiung-1",
-    "original": "首先，打造傳產升級高雄隊，建立產業媒合平台，盤點半導體、AI 及國防航太需求，帶領在地傳產從單打獨鬥走向組隊接單。 第二，設立高雄產業升級基金，結合中央與民間資源成立輔導團，協助企業投入設備改善與數位轉型，一路走到市場接單。 第三，成立先進材料與智慧製造驗證中心，協助企業符合國際需求，切入全球供應鏈。 第四，推動重大投資在地採購，促成科技大廠與在地傳產合作，帶來更多訂單及工作機會。",
-    "masked": "建立產業媒合平台，盤點半導體、AI與國防航太的需求，協助在地傳產組隊接單；設立升級基金與輔導團支持設備改善和數位轉型；成立驗證中心協助企業符合國際需求；促成重大投資採購在地廠商。",
-    "plain": "建立產業媒合平台，帶傳統產業組隊接半導體、AI、國防航太的訂單；設立升級基金和輔導團；成立驗證中心；大型投資要採購在地廠商。",
-    "sourceUrl": "https://www.zenolai.tw/policy/ai/7",
-    "sourceDate": "2026-09-09",
-    "sourceType": "campaign",
-    "length": 89,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-011",
-    "race": "2026-local.mayor.kaohsiung",
+    "id": "p-taichung-nz8ieb",
+    "race": "2026-local.mayor.taichung",
     "issueId": "childcare",
-    "candidateId": "c-kaohsiung-2",
-    "original": "1. 托育升級：把時間還給爸媽 我們力拚在2030年前，將臨托據點從29處增至60處，且每時段收托人數加倍。另外，推出全台首創「喘息券」制度，結合臨托據點與保母，讓父母能真正得到時間上的喘息與支持。 2. 津貼加碼：把壓力交給政府 我們將生育津貼加碼至第一胎3萬、第二胎4萬、第三胎5萬，結合中央津貼，高雄寶寶最多能領15萬。在育嬰假方面也補足薪資級距，由市府補足現行制度剩餘的2成薪，讓高雄的父母敢生敢請，不再被迫扣薪。",
-    "masked": "在2030年前將臨時托育據點由29處增至60處，每時段收托人數加倍，並發放可用於臨托據點與保母的喘息券；生育津貼第一胎3萬、第二胎4萬、第三胎5萬，育嬰假薪資由市府補足剩餘2成。",
-    "plain": "2030年前臨時托育據點從29處增加到60處，收托人數加倍，並發喘息券；生育津貼第一胎3萬、第二胎4萬、第三胎5萬，育嬰假再補2成薪。",
-    "sourceUrl": "https://kochihen2026.tw/policy/%E5%85%A8%E9%BD%A1%E5%AE%89%E5%BF%83/%E6%89%98%E8%82%B2%E5%8D%87%E7%B4%9A%20%7C%20%E6%B4%A5%E8%B2%BC%E5%8A%A0%E7%A2%BC%20%7C%20%E8%81%B7%E5%A0%B4%E5%B9%B3%E6%AC%8A",
-    "sourceDate": "2026-10-21",
+    "candidateId": "c-taichung-1",
+    "original": "加碼生育津貼，第一胎 4 萬元、第二胎 6 萬元、第三胎 8 萬元，減輕家庭迎接新生命的經濟壓力。改善各區托育資源不均問題，推動 0 至 2 歲公托名額倍增，讓不同區域的家庭都能享有更公平、可近的托育服務。",
+    "masked": "提高生育津貼，第一胎4萬元、第二胎6萬元、第三胎8萬元；並讓0至2歲的公共托育名額增加一倍，改善各區托育資源不均的情形，讓不同區域的家庭都能就近使用。",
+    "plain": "生育津貼要提高：第一胎給4萬元、第二胎給6萬元、第三胎給8萬元；0到2歲的公共托育名額要增加一倍，讓各區的托育資源比較平均，家長不用跑遠。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
     "sourceType": "campaign",
-    "length": 89,
+    "length": 75,
     "guessStats": {
       "answers": 0,
       "correct": 0
     }
   },
   {
-    "id": "p-kaohsiung-012",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "youth",
-    "candidateId": "c-kaohsiung-1",
-    "original": "將「大港青年職場實習及接軌計畫」全面升級！我們翻倍擴大實習規模並嚴格把關職缺，讓大家每次實習都能學到實用技能，並把技職經驗帶回校園。推出雙軌轉正獎勵，一般產業實習後轉正職留任滿 3 個月發給 1 萬元獎勵金；若進入傳統製造、在地零售餐飲、文創青創等產業，再加碼 5,000 元（最高領 1.5 萬元），用政策幫企業招募人才。同時提供在地通勤補助，依實習距離提供最高 2,000 元交通補助，挺跨區通勤的年輕人！",
-    "masked": "將青年實習規模加倍並嚴格審核職缺；實習後轉為正職且留任滿3個月者發給1萬元獎勵金，進入傳統製造、在地零售餐飲或文創青創產業者再加5,000元，最高1.5萬元；另依實習距離補助交通費，最高2,000元。",
-    "plain": "實習名額加倍；實習後轉正職滿3個月領1萬元，進傳統製造、零售餐飲、文創青創再加5,000元，最多1.5萬元；通勤補助最高2,000元。",
-    "sourceUrl": "https://www.zenolai.tw/policy/youth/10",
-    "sourceDate": "2026-09-09",
-    "sourceType": "campaign",
-    "length": 100,
+    "id": "p-newtaipei-ksfwpf",
+    "race": "2026-local.mayor.newtaipei",
+    "issueId": "economy",
+    "candidateId": "c-newtaipei-2",
+    "original": "未來五股、蘆洲、林口、淡水、土城、鶯歌、新店——我要把AI跟高科技的產業鏈拉進這幾個地方。\n我看的不是三年五年，是往後三十年。\n好工作留在新北，人就留在新北。",
+    "masked": "將人工智慧與高科技的產業鏈引進五股、蘆洲、林口、淡水、土城、鶯歌與新店，以未來三十年而不是三五年為目標，讓好工作留在本市。",
+    "plain": "把人工智慧和高科技產業鏈引進七個行政區，眼光看三十年，讓好工作留在本市。",
+    "sourceUrl": "https://www.youtube.com/watch?v=dCLfbO4pJaA",
+    "sourceDate": "2026-08-25",
+    "sourceType": "social",
+    "length": 61,
     "guessStats": {
       "answers": 0,
       "correct": 0
     }
   },
   {
-    "id": "p-kaohsiung-013",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "education",
-    "candidateId": "c-kaohsiung-2",
-    "original": "✅提高教育投資：教科文支出占比由34%提高至38%，全面改善教學環境、擴大幼教與課後照顧。 ✅精緻班級規模：逐年調降班級人數（高中職32人、國中25人、國小 24人以下），增加特教人力，改善資源班師生比，不讓融合教育成為口號。 ✅行政實質減負：砍掉30%非必要公文與報表，推動一校一資訊組長、導入AI行政輔助，並研議調降授課節數，把教學備課與陪伴的時間還給老師。",
-    "masked": "將教科文支出占比由34%提高到38%；逐年降低班級人數至高中職32人、國中25人、國小24人以下，並增加特教人力；刪減30%非必要公文與報表，每校設資訊組長並導入AI行政輔助。",
-    "plain": "教育經費占比從34%提高到38%；班級人數逐年降到高中職32人、國中25人、國小24人以下；公文報表砍30%，每校設資訊組長。",
-    "sourceUrl": "https://kochihen2026.tw/policy/%E6%95%99%E8%82%B2%E5%85%B8%E7%AF%84/%E6%89%93%E9%80%A0%E9%AB%98%E9%9B%84%E6%95%99%E8%82%B2%E6%96%B0%E5%85%B8%E7%AF%84",
-    "sourceDate": "2026-10-21",
+    "id": "p-taichung-jjjgcg",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "economy",
+    "candidateId": "c-taichung-1",
+    "original": "商圈輔導獎勵補助經費提高 3 倍；定期舉辦大型活動，或結合熱門手機遊戲行銷，吸引觀光人潮，活絡商圈經濟。\n鼓勵傳統產業及中小微企業智慧升級，成立產業創新中心，導入 AI 科技與智慧管理，打造創新產業鏈。",
+    "masked": "在北區，將商圈輔導獎勵補助經費提高3倍，並定期舉辦大型活動、結合熱門手機遊戲行銷；在豐原與后里，鼓勵傳統產業及中小微企業智慧升級，成立產業創新中心，導入AI科技與智慧管理。",
+    "plain": "在北區，商圈輔導的獎勵補助經費提高到原來的3倍，定期辦大型活動、和熱門手機遊戲合作宣傳；在豐原與后里，鼓勵傳統產業和中小微企業做智慧升級，設立產業創新中心，導入AI與智慧管理。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
     "sourceType": "campaign",
-    "length": 88,
+    "length": 86,
     "guessStats": {
       "answers": 0,
       "correct": 0
     }
   },
   {
-    "id": "p-kaohsiung-014",
-    "race": "2026-local.mayor.kaohsiung",
-    "issueId": "flood",
-    "candidateId": "c-kaohsiung-1",
-    "original": "面對極端氣候挑戰，導入科技監測與全方位水利整治，保障民生安全： 強化水源保護 ✕ 系統整治河川野溪：確保水資源安全並落實水患治理。 提升蓄洪能量 ✕ 科技監測精準預警：透過大數據與智慧設備掌握即時水情。 擴大防災教育 ✕ 改善地方避難空間：提升社區自救能力與避難設施品質。",
-    "masked": "導入科技監測與水利整治，系統性整治河川與野溪並強化水源保護；提高蓄洪能量，以大數據與智慧設備掌握即時水情提供預警；加強防災教育並改善社區避難空間，提升自救能力與避難設施品質。",
-    "plain": "用科技監測和水利工程整治河川、野溪，保護水源；增加蓄洪量，用大數據和智慧設備提早預警；加強防災教育，改善社區避難空間。",
-    "sourceUrl": "https://www.zenolai.tw/policy/vision/3",
-    "sourceDate": "2026-09-09",
-    "sourceType": "campaign",
-    "length": 87,
-    "guessStats": {
-      "answers": 0,
-      "correct": 0
-    }
-  },
-  {
-    "id": "p-kaohsiung-015",
+    "id": "p-kaohsiung-epgayt",
     "race": "2026-local.mayor.kaohsiung",
     "issueId": "eldercare",
     "candidateId": "c-kaohsiung-1",
@@ -1003,7 +170,228 @@
     }
   },
   {
-    "id": "p-kaohsiung-016",
+    "id": "p-taichung-t4whi8",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "youth",
+    "candidateId": "c-taichung-1",
+    "original": "打造青年創業基地，發展共享辦公空間、創業孵化器、試驗場域與跨域交流平台，協助青年從創意發想、產品驗證到市場拓展。並設立區域創客中心（Makerspace），推動台中成為青年創客之都。",
+    "masked": "打造青年創業基地，發展共享辦公空間、創業孵化器、試驗場域與跨域交流平台，協助青年從創意發想、產品驗證到市場拓展，並設立區域創客中心。",
+    "plain": "設立青年創業基地，提供共享辦公室、創業孵化器、試驗場地和跨領域交流平台，陪年輕人從點子、試做到打進市場；各區再設創客中心。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 66,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-gvs6cz",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "health",
+    "candidateId": "c-taichung-1",
+    "original": "提高女性勞工健康檢查補助，減輕女性照顧自身健康的負擔。乳癌篩檢免費服務擴大納入 30 至 39 歲女性，讓健康風險能夠更早被發現、及早治療。",
+    "masked": "提高女性勞工的健康檢查補助，減輕照顧自身健康的負擔；乳癌篩檢的免費服務擴大納入30至39歲的女性，讓健康風險更早被發現、及早治療。",
+    "plain": "女性勞工的健康檢查補助要提高；30到39歲的女性也可以免費做乳癌篩檢，希望健康問題早點被發現、早點治療。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 65,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-newtaipei-u55rtj",
+    "race": "2026-local.mayor.newtaipei",
+    "issueId": "housing",
+    "candidateId": "c-newtaipei-1",
+    "original": "試辦「青年育兒宅」，讓符合條件的家庭可以長租 20 年，解決許多現在許多新生兒父母居住社宅的擔憂，孩童穩定成長，無後顧之憂。\n六、市府補助，鼓勵包租代管優先租給高齡長者\n推動「長者友善住宅」，由市府透過服務費用加碼、修繕補助加碼等方式，鼓勵包租代管業者優先承租給高齡長者，解決長者承租不易、居住環境不友善的問題。",
+    "masked": "試辦最長可租二十年的育兒住宅，讓符合條件的家庭穩定居住，並加碼服務費用與修繕補助，鼓勵包租代管業者優先把房子租給高齡長者。",
+    "plain": "試辦最長可租二十年的育兒住宅，加碼服務費和修繕補助，鼓勵包租代管業者優先租給高齡長者。",
+    "sourceUrl": "https://chiao.tw/policies/%e9%83%bd%e6%9b%b4%e8%88%87%e4%bd%8f%e5%ae%85%e6%94%bf%e8%a6%8b",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 61,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-42f7xd",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "economy",
+    "candidateId": "c-taichung-2",
+    "original": "參考亞特蘭大與拉斯維加斯的成功經驗，成立跨局處一站式的「臺中市會展經濟推動辦公室」，專責推廣城市品牌並協助會展籌辦。\n系統性建置會展活動招商、供應鏈媒合、城市接待配套、成效追蹤、會展城市交流、產學合作等六大平台。\n推出誘因提供機制、公協會與會議大使計畫、建置全場館與供應鏈資料庫、城市接待方案等八項具體工具，將會展轉化為實質經濟效益。",
+    "masked": "成立跨局處一站式的會展經濟推動辦公室，專責推廣城市品牌並協助會展籌辦；建置招商、供應鏈媒合、成效追蹤等六大平台，並推出八項具體政策工具。",
+    "plain": "成立一個跨局處、一站式的會展推動辦公室，負責推廣城市品牌、協助辦展；建六個平台（招商、供應鏈媒合、成效追蹤等），再搭配八項具體工具，把會展變成實際的經濟收入。",
+    "sourceUrl": "https://taichungway.tw/exhibition-economy-taichung-hub",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 68,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-8fwd8b",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "health",
+    "candidateId": "c-taipei-1",
+    "original": "市府將推出新手家庭特別門診，整合小兒科醫師、護理師、社工師及營養師等專業人員，以聯合門診方式提供家庭支持。服務不只關注嬰幼兒生長發育，也將家長心理健康及親職教養納入評估，每次門診時間最長可達60分鐘，並由市府提供相關補助，預計115年10月開診，讓新手家庭遇到育兒問題時，有更專業、更充足的支持。",
+    "masked": "設立新手家庭特別門診，整合小兒科醫師、護理師、社工師與營養師，以聯合門診提供家庭支持，評估涵蓋嬰幼兒發育、家長心理健康與親職教養，每次最長六十分鐘，並由市府補助。",
+    "plain": "設立新手家庭特別門診，由小兒科醫師、護理師、社工師、營養師聯合看診，評估孩子發育與家長心理健康，每次最長六十分鐘，市府補助。",
+    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=9FF6EE075E94B939",
+    "sourceDate": "2026-08-19",
+    "sourceType": "press-rewritten",
+    "length": 81,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-eceg28",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "childcare",
+    "candidateId": "c-kaohsiung-1",
+    "original": "育兒津貼全面提升：育兒津貼由原本每月 5,000～7,000 元，提升至最高每月 10,000 元。 兒童成長津貼加碼：響應中央 0–18 歲成長津貼政策，高雄 0–6 歲孩童每月再加碼 1,000 元。 廣設公共托育據點：持續增加公托與準公托據點，提升托育量能與品質，並提供每年 60 小時育兒喘息支持（公托/準公托延託券）。",
+    "masked": "將育兒津貼由每月5,000至7,000元提高到最高每月10,000元，0至6歲孩童在中央成長津貼之外每月另補1,000元；增設公共與準公共托育據點，並提供每年60小時的育兒喘息支持，以公共與準公共托育的延託券發放。",
+    "plain": "育兒津貼最高每月1萬元，0到6歲每月再多1,000元；多設公共托育據點，每年有60小時喘息時數。",
+    "sourceUrl": "https://www.zenolai.tw/policy/youth/9",
+    "sourceDate": "2026-09-09",
+    "sourceType": "campaign",
+    "length": 107,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-r2iykt",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "culture",
+    "candidateId": "c-kaohsiung-1",
+    "original": "三、打造「高雄盛事城」，發展多元活動 提高經濟產值 整合旅宿、景點與飲食，推出「高雄盛事城」套票，並策辦創意文化節慶與主題商品，延長旅客停留時間、擴大周邊效益。 未來更將以吸引國際巨星演出、促成國際影視團隊進駐拍攝為目標，讓高雄城市品牌享譽全球。 四、推動「深度體驗旅遊廊帶」，提升回訪率 推動「深度體驗旅遊廊帶」，提出串連歷史、藝陣、客庄、原鄉、農村的「高雄住一晚PLUS」計畫，讓旅客深入不同區域，看見更多元的高雄，提升旅客停留時間與回訪率。 五、打造「智慧低碳旅遊城」 整合捷運、輕軌、單車與觀光船班，推出數位旅遊卡，並建置智慧候車亭、多功能資訊站，推動旗津無人載具試辦等，打造更便利、智慧、低碳的旅遊環境。",
+    "masked": "整合旅宿、景點與餐飲推出套票並辦理節慶活動，延長旅客停留時間；規劃串連歷史、藝陣、客庄、原鄉與農村的深度旅遊路線；整合捷運、輕軌、單車與觀光船班推出數位旅遊卡，並設置智慧候車亭與資訊站。",
+    "plain": "推出旅宿、景點、餐飲套票和節慶活動；規劃串連歷史、藝陣、客庄、原鄉、農村的旅遊路線；捷運、輕軌、單車、觀光船整合成一張數位旅遊卡。",
+    "sourceUrl": "https://www.zenolai.tw/policy/culture/19",
+    "sourceDate": "2026-09-30",
+    "sourceType": "campaign",
+    "length": 93,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-2idrv2",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "transit",
+    "candidateId": "c-taipei-1",
+    "original": "軌道運輸方面，市府也規劃全新的「臺北XY軸捷運」構想。南北向捷運從松山機場向南串聯國父紀念館、大安、公館、中和；東西向軸線則串聯士林大同線、圓山、松山機場及內湖，進一步連結北士科、臺北AI園區、內科及南軟四大產業園區。",
+    "masked": "規劃兩條新的捷運：一條由市區北側向南，串聯國父紀念館、大安、公館與中和；一條東西向，串聯士林、圓山與內湖，並連結四個主要的產業園區。",
+    "plain": "新建兩條捷運：一條由市區北側向南經國父紀念館、大安、公館到中和，一條東西向經士林、圓山到內湖，並連結四個產業園區。",
+    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=8ED4D25BC664CF21",
+    "sourceDate": "2026-10-08",
+    "sourceType": "press-rewritten",
+    "length": 66,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-newtaipei-877vfm",
+    "race": "2026-local.mayor.newtaipei",
+    "issueId": "education",
+    "candidateId": "c-newtaipei-1",
+    "original": "編列假日出勤加班費\n建立教師非上班時間奉派出勤的補償機制，並編列相關預算。凡教師於假日因公帶隊參賽或參加研習 ，都能自由選擇請領加班費或補休。\n教師節禮金調升至 2,000 元\n由現行的 1,000 元調升至 2,000 元，實質回饋教師辛勞。",
+    "masked": "建立教師非上班時間奉派出勤的補償機制並編列預算，讓假日因公帶隊參賽或參加研習的老師可選擇請領加班費或補休，並把教師節禮金由一千元調升為兩千元。",
+    "plain": "讓假日因公帶隊比賽或研習的老師，可選擇領加班費或補休，並把教師節禮金從一千元提高到兩千元。",
+    "sourceUrl": "https://chiao.tw/policies/%e4%b8%83%e5%a4%a7%e6%95%99%e8%82%b2%e6%94%bf%e8%a6%8b",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 71,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-dxvy4x",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "economy",
+    "candidateId": "c-kaohsiung-1",
+    "original": "首先，打造傳產升級高雄隊，建立產業媒合平台，盤點半導體、AI 及國防航太需求，帶領在地傳產從單打獨鬥走向組隊接單。 第二，設立高雄產業升級基金，結合中央與民間資源成立輔導團，協助企業投入設備改善與數位轉型，一路走到市場接單。 第三，成立先進材料與智慧製造驗證中心，協助企業符合國際需求，切入全球供應鏈。 第四，推動重大投資在地採購，促成科技大廠與在地傳產合作，帶來更多訂單及工作機會。",
+    "masked": "建立產業媒合平台，盤點半導體、AI與國防航太的需求，協助在地傳產組隊接單；設立升級基金與輔導團支持設備改善和數位轉型；成立驗證中心協助企業符合國際需求；促成重大投資採購在地廠商。",
+    "plain": "建立產業媒合平台，帶傳統產業組隊接半導體、AI、國防航太的訂單；設立升級基金和輔導團；成立驗證中心；大型投資要採購在地廠商。",
+    "sourceUrl": "https://www.zenolai.tw/policy/ai/7",
+    "sourceDate": "2026-09-09",
+    "sourceType": "campaign",
+    "length": 89,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-newtaipei-dwk9hs",
+    "race": "2026-local.mayor.newtaipei",
+    "issueId": "education",
+    "candidateId": "c-newtaipei-2",
+    "original": "AI 進校園、推動班班 25 人、提高教師免費心理諮商次數——這是我給新北孩子的三根鋼筋。\n老師顧孩子，我來顧老師。",
+    "masked": "讓人工智慧進入校園，推動每班二十五人，並增加教師可使用的免費心理諮商次數，作為給孩子的教育承諾；由市府照顧老師，老師就能專心照顧孩子。",
+    "plain": "讓人工智慧進校園、每班二十五人，並增加老師可用的免費心理諮商次數，由市府照顧老師。",
+    "sourceUrl": "https://www.youtube.com/watch?v=YV5nNjxU2Yo",
+    "sourceDate": "2026-07-04",
+    "sourceType": "social",
+    "length": 67,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-8qpubw",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "safety",
+    "candidateId": "c-taichung-1",
+    "original": "建置科技阻詐預警系統，串聯金融機構、地政、檢警調等單位，即時發現異常交易、可疑金流與高風險案件，及早攔阻詐騙，降低市民財產損失。",
+    "masked": "建置科技阻詐預警系統，串聯金融機構、地政與檢警調等單位，即時發現異常交易、可疑金流與高風險案件，及早攔阻詐騙，降低市民財產損失。",
+    "plain": "建立一套科技預警系統，連結銀行、地政和檢警調，一發現異常交易、可疑金流或高風險案件就提早攔下，減少市民被騙的損失。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 64,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-2b8tp4",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "transit",
+    "candidateId": "c-taipei-2",
+    "original": "接：興建迎風—港墘跨基隆河自行車專用橋，直接銜接民生社區與內湖科技園區。\n養：以鋪面平整度、標線、照明、指標與越堤動線 5 項指標每季評分公開，維護預算與評分連動。\n補與配套：提供 YouBike 2.0E 尖峰時段（08:00-10:00 / 17:00-19:00）前 30 分鐘免費；設置「運動驛站」提供盥洗、置物與租借服務，並以綠建築與容積獎勵鼓勵大樓增設淋浴設施。",
+    "masked": "興建跨河的自行車專用橋，直接銜接住宅社區與科技園區；以鋪面平整度、標線、照明、指標與越堤動線五項指標每季公開評分，維護預算與評分連動；尖峰時段前三十分鐘免費騎乘電動輔助公共自行車。",
+    "plain": "蓋跨河自行車專用橋連住宅社區與科技園區；五項指標每季公開評分，維護預算跟評分連動；尖峰時段前三十分鐘免費騎電動輔助公共自行車。",
+    "sourceUrl": "https://puma.taipei/policies/%E4%BA%A4%E9%80%9A%E6%94%BF%E7%AD%96",
+    "sourceDate": "2026-09-16",
+    "sourceType": "campaign",
+    "length": 90,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-23uahv",
     "race": "2026-local.mayor.kaohsiung",
     "issueId": "eldercare",
     "candidateId": "c-kaohsiung-2",
@@ -1014,6 +402,618 @@
     "sourceDate": "2026-10-21",
     "sourceType": "campaign",
     "length": 78,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-newtaipei-ii2mw8",
+    "race": "2026-local.mayor.newtaipei",
+    "issueId": "eldercare",
+    "candidateId": "c-newtaipei-1",
+    "original": "首先是 65 歲以上長輩裝假牙最高補助 5 萬元，讓長輩不用再為了經濟考量，犧牲健康。再來是敬老卡提升至 1000 點，且剩餘點數將不再每月歸零，效期從 1 個月延長至 1 年，鼓勵長輩多出門走走，在新北旅遊消費！",
+    "masked": "補助六十五歲以上長輩裝假牙最高五萬元，並將長輩福利卡的點數提高為每月一千點，剩餘點數不再每月歸零，效期從一個月改為一年。",
+    "plain": "補助六十五歲以上長輩裝假牙最多五萬元，福利卡每月給一千點，用不完的點數保留一年，不再每月歸零。",
+    "sourceUrl": "https://chiao.tw/policies/%e5%85%ad%e5%a4%a7%e9%95%b7%e5%b9%bc%e7%a6%8f%e5%88%a9%e6%94%bf%e8%a6%8b",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 60,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-zrkt96",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "education",
+    "candidateId": "c-kaohsiung-2",
+    "original": "✅提高教育投資：教科文支出占比由34%提高至38%，全面改善教學環境、擴大幼教與課後照顧。 ✅精緻班級規模：逐年調降班級人數（高中職32人、國中25人、國小 24人以下），增加特教人力，改善資源班師生比，不讓融合教育成為口號。 ✅行政實質減負：砍掉30%非必要公文與報表，推動一校一資訊組長、導入AI行政輔助，並研議調降授課節數，把教學備課與陪伴的時間還給老師。",
+    "masked": "將教科文支出占比由34%提高到38%；逐年降低班級人數至高中職32人、國中25人、國小24人以下，並增加特教人力；刪減30%非必要公文與報表，每校設資訊組長並導入AI行政輔助。",
+    "plain": "教育經費占比從34%提高到38%；班級人數逐年降到高中職32人、國中25人、國小24人以下；公文報表砍30%，每校設資訊組長。",
+    "sourceUrl": "https://kochihen2026.tw/policy/%E6%95%99%E8%82%B2%E5%85%B8%E7%AF%84/%E6%89%93%E9%80%A0%E9%AB%98%E9%9B%84%E6%95%99%E8%82%B2%E6%96%B0%E5%85%B8%E7%AF%84",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 88,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-nyuuz7",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "transit",
+    "candidateId": "c-taichung-2",
+    "original": "將雙十公車升級為「臺中市民搭乘公車運輸全程免費」（含幹線、市區與捷運接駁）。同時由市府帶頭編列預算補貼，實質補足公車駕駛的薪資缺口，透過加薪解決駕駛荒，確保路線不中斷。",
+    "masked": "讓市民搭乘公車全程免費，範圍含幹線、市區與捷運接駁；同時由市府編列預算補貼，補足公車駕駛的薪資缺口，以加薪解決駕駛短缺，確保路線不中斷。",
+    "plain": "市民搭公車全程免費，包含幹線、市區公車和捷運接駁；市府編預算補貼，補足公車司機薪水的缺口，用加薪來解決司機不足，路線才不會中斷。",
+    "sourceUrl": "https://taichungway.tw/smart-transport-public-transit",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 68,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-ij8s2s",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "housing",
+    "candidateId": "c-taichung-1",
+    "original": "加速社會住宅多元興辦，推動 4 年 2,000 戶婚育宅，提供新婚與育兒家庭申請，減輕青年成家初期的居住壓力，讓青年能在台中安心工作、穩定生活、勇敢成家。",
+    "masked": "加速社會住宅多元興辦，在4年內推出2,000戶婚育宅，提供新婚與育兒家庭申請，減輕青年成家初期的居住壓力，讓青年安心工作、穩定生活。",
+    "plain": "加快興辦各種社會住宅，4年內推出2,000戶專給新婚和育兒家庭申請的婚育宅，減輕年輕人剛成家時的住房壓力。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 66,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-zbrgtx",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "education",
+    "candidateId": "c-taichung-2",
+    "original": "在教育局內大刀闊斧成立技職教育專責單位，統籌資源，補足長期缺乏專責統籌的現況。\n大幅增設「職業探索中心」，拉高學子參與職業探索的群科豐富度與頻率。\n讓孩子在國高中階段就能透過實際操作與導師分享，提早把創意與雙手結合，幫年輕學子新增「技職教育」這項驕傲的職涯選項。",
+    "masked": "在教育局內成立技職教育專責單位統籌資源，增設職業探索中心，並讓學生在國高中階段就透過實際操作與導師分享，提早把創意與雙手結合。",
+    "plain": "教育局裡要成立專門負責技職教育的單位來統籌資源；多設幾處職業探索中心；國中、高中的學生就能動手做、聽業師分享，提早接觸技職這條路。",
+    "sourceUrl": "https://taichungway.tw/robot-manufacturing-city-vocational-training",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 63,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-wqafbc",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "housing",
+    "candidateId": "c-taichung-2",
+    "original": "面對全市 30 年以上老屋突破 60 萬棟的挑戰，市府將鎖定老舊住宅與人口密集社區，擴大推動老屋健檢，構築耐災安全的居住環境。\n針對高齡長輩進行屋內「機能延壽」的診斷與補助，從無障礙空間改善做起，朝向「結構機能雙延壽、空間無障礙」的目標前進。",
+    "masked": "全市屋齡30年以上的老屋已突破60萬棟，將鎖定老舊住宅與人口密集社區擴大老屋健檢，並對高齡長輩的屋內機能延壽提供診斷與補助，先從無障礙空間做起。",
+    "plain": "全市30年以上的老房子超過60萬棟，要優先替老舊住宅和人口密集的社區做健檢；高齡長輩家裡的設施改善（先從無障礙空間開始）也提供診斷和補助。",
+    "sourceUrl": "https://taichungway.tw/senior-care-age-friendly-housing",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 72,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-4bmpzf",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "youth",
+    "candidateId": "c-kaohsiung-1",
+    "original": "將「大港青年職場實習及接軌計畫」全面升級！我們翻倍擴大實習規模並嚴格把關職缺，讓大家每次實習都能學到實用技能，並把技職經驗帶回校園。推出雙軌轉正獎勵，一般產業實習後轉正職留任滿 3 個月發給 1 萬元獎勵金；若進入傳統製造、在地零售餐飲、文創青創等產業，再加碼 5,000 元（最高領 1.5 萬元），用政策幫企業招募人才。同時提供在地通勤補助，依實習距離提供最高 2,000 元交通補助，挺跨區通勤的年輕人！",
+    "masked": "將青年實習規模加倍並嚴格審核職缺；實習後轉為正職且留任滿3個月者發給1萬元獎勵金，進入傳統製造、在地零售餐飲或文創青創產業者再加5,000元，最高1.5萬元；另依實習距離補助交通費，最高2,000元。",
+    "plain": "實習名額加倍；實習後轉正職滿3個月領1萬元，進傳統製造、零售餐飲、文創青創再加5,000元，最多1.5萬元；通勤補助最高2,000元。",
+    "sourceUrl": "https://www.zenolai.tw/policy/youth/10",
+    "sourceDate": "2026-09-09",
+    "sourceType": "campaign",
+    "length": 100,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-9h8ebu",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "parks",
+    "candidateId": "c-taipei-1",
+    "original": "增加透水鋪面及建築綠化，降低都市熱島效應。臺北市綠建築標章案件數與等級已連續3年創歷史新高，並位居全國之冠。\n六、推動無菸城市：編列1.6億元\n持續增設指定負壓式吸菸區，並擴大西門町、迪化街、心中山及信義四大商圈無菸範圍，同時導入AI偵測及語音勸導，打造更健康、友善的公共環境。\n七、活化水岸空間：編列6億元\n推動「公館水源區新天地創新再生」及「淡水河水岸空間環境營造」，持續改善河岸環境、活化水岸空間，打造具國際城市特色的水岸風貌。",
+    "masked": "增加透水鋪面與建築綠化，降低都市熱島效應；並推動水源區新天地的創新再生與淡水河水岸空間的環境營造，改善河岸環境、活化水岸空間，打造具國際城市特色的水岸風貌。",
+    "plain": "增加透水鋪面和建築綠化，降低都市熱島效應；推動水源區再生和淡水河水岸環境營造，活化水岸空間。",
+    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=63455203FD0A1669",
+    "sourceDate": "2026-08-12",
+    "sourceType": "press-rewritten",
+    "length": 78,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-9bsmy4",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "eldercare",
+    "candidateId": "c-taipei-1",
+    "original": "此外，自明年起，敬老愛心卡將進一步擴大使用範圍，新增超市、超商、藥局及農會等生活消費通路，規劃每月300點供長輩彈性運用，購買生活必需品；同時也可用於搭乘貓空纜車、藍色公路及觀光雙層巴士等服務，讓點數使用更加多元便利。",
+    "masked": "提供長輩每月三百點的生活消費額度，可在超市、超商、藥局與農會彈性購買生活必需品，也可用來搭乘觀光纜車、河上遊船與觀光雙層巴士。",
+    "plain": "提供長輩每月三百點的生活消費額度，可在超市、超商、藥局、農會買生活用品，也能搭觀光纜車、河上遊船和觀光雙層巴士。",
+    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=54A4E5FD9C772BD8",
+    "sourceDate": "2026-06-22",
+    "sourceType": "press-rewritten",
+    "length": 63,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-newtaipei-keb2ae",
+    "race": "2026-local.mayor.newtaipei",
+    "issueId": "childcare",
+    "candidateId": "c-newtaipei-2",
+    "original": "所以這次的三大親子政策，我從家長最卡的地方下手：\n🚗 好孕專車延長到孩子滿 1 歲——產檢、回診、打預防針，一路有車。\n🧸 運動中心臨托試辦——每週三下午 2 點到晚上 9 點，2 到 12 歲，憑當日消費證明 2 小時免費。你流汗的時候，孩子在同一棟安全玩。\n🏛 室內大型親子館——下雨天、大熱天，孩子都有地方長大。",
+    "masked": "提供產檢、回診與預防針的接送專車，服務期間到孩子滿一歲；試辦運動中心臨托，每週三下午兩點到晚上九點，二到十二歲孩子憑當日消費證明可免費托兩小時；並設置室內大型親子館。",
+    "plain": "提供接送專車到孩子滿一歲，產檢、回診、打針都有車；運動中心試辦臨托，週三下午兩點到晚上九點，二到十二歲憑消費證明免費兩小時；另設室內大型親子館。",
+    "sourceUrl": "https://www.youtube.com/watch?v=6ePMRV5D5_M",
+    "sourceDate": "2026-07-23",
+    "sourceType": "social",
+    "length": 83,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-e2gvwe",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "pedsafety",
+    "candidateId": "c-taichung-2",
+    "original": "鎖定學校、醫院與大眾運輸樞紐周邊，展開人行道鋪面翻新與無障礙坡道優化，檢討行人庇護島，打造無障礙、消弭斷點的全齡友善步行路網。",
+    "masked": "鎖定學校、醫院與大眾運輸樞紐周邊，翻新人行道鋪面、優化無障礙坡道，並檢討行人庇護島，打造無障礙、沒有斷點的全齡步行路網。",
+    "plain": "以學校、醫院和大眾運輸站點周邊為重點，翻新人行道路面、改善無障礙坡道、檢討行人庇護島，讓各年齡的人都能順暢步行、中間不再斷掉。",
+    "sourceUrl": "https://taichungway.tw/smart-transport-walkable-streets",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 60,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-hk7jsp",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "culture",
+    "candidateId": "c-kaohsiung-2",
+    "original": "1. 創造郵輪經濟產值 我們將全力發展郵輪經濟，前兩年挑戰 30億元，四年後更要挑戰高達 50億元 的總產值！ 2. 會展與節慶國際化 打造「亞洲慶典之都」，目標讓國際旅客入境增長 50% 3. 推動長者友善觀光，樂齡漫遊好安心 長輩的笑容是無價之寶！我們將規劃 20條 專屬的「長青之旅」路線，讓長者出遊更安全便利，預估將帶動在地消費成長 10%。 4. 觀光紅利大爆發，創造青年就業 透過全方位的旅遊升級，我們承諾在5年內讓觀光收入成長 30%，並為地方創造 5,000個 嶄新的就業機會，讓年輕人留在家鄉打拼！",
+    "masked": "發展郵輪經濟，前兩年產值挑戰30億元、四年後挑戰50億元；使國際旅客入境人數增長50%；規劃20條長者專屬旅遊路線，預估帶動在地消費成長10%；5年內觀光收入成長30%，創造5,000個就業機會。",
+    "plain": "發展郵輪經濟，前兩年產值30億元、四年後50億元；國際旅客增加50%；規劃20條長輩旅遊路線；5年內觀光收入成長30%，增加5,000個工作。",
+    "sourceUrl": "https://kochihen2026.tw/policy/%E6%96%87%E5%8C%96%E8%A7%80%E5%85%89/%E5%A4%A7%E6%B8%AF%E6%8E%A5%E8%BB%8C%E5%85%A8%E7%90%83",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 98,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-tfctgc",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "flood",
+    "candidateId": "c-kaohsiung-2",
+    "original": "2. 啟動「流域治水總體戰略」 針對典寶溪、二仁溪、曹公新圳等主要流域，從上游、中游到下游整體檢視，釐清河道、堤防、滯洪空間、排水能力及潮位等問題，透過滯洪、分流、河道改善與堤防強化，從源頭降低洪峰壓力。 3. 擴充「高雄滯洪網」：全面改善都市排水 全面盤點雨水下水道、區域排水、箱涵、抽水站及排水路網，找出真正的「卡點」，依照淹水風險排定改善順序。 同時加強推動「城市滯洪」概念，把公園、學校、廣場、地下空間等公共設施納入防洪系統，在不影響平時使用的前提下，持續打造平時是公共空間、暴雨時能夠暫存雨水的多功能滯洪設施。建立一座能夠接住雨水、延緩洪峰的城市。",
+    "masked": "針對主要河川流域從上游到下游整體檢視，以滯洪、分流、河道改善與堤防強化降低洪峰壓力；盤點排水系統並依淹水風險排定改善順序，把公園、學校、廣場與地下空間納入防洪系統，在不影響平時使用下暫存雨水。",
+    "plain": "從上游到下游整體檢視主要河川，用滯洪、分流、河道改善和堤防降低洪峰；依淹水風險排改善順序，讓公園、學校、廣場平時能用、下大雨時能蓄水。",
+    "sourceUrl": "https://kochihen2026.tw/policy/%E5%B1%85%E5%AE%89%E7%A4%BE%E5%AE%89/%E6%B2%BB%E6%B0%B4%E6%94%BF%E8%A6%8B",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 96,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-6cjiim",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "safety",
+    "candidateId": "c-taichung-2",
+    "original": "體恤警消辛勞，放寬並提高健康檢查補助，40 歲以上每年補助 4,500 元，未滿 40 歲提高至每年 3,500 元。\n參考國際與其他城市經驗，成立專責的消防「職業安全衛生室」，編制專人推動風險評估與心理輔導，接住第一線人員的創傷壓力。",
+    "masked": "放寬並提高警消的健康檢查補助，40歲以上每年補助4,500元，未滿40歲提高到每年3,500元；另成立消防職業安全衛生室，由專人推動風險評估與心理輔導。",
+    "plain": "警察和消防員的健檢補助要放寬、提高：40歲以上每年補助4,500元，不到40歲每年3,500元；另外成立消防的職業安全衛生室，專人負責風險評估和心理輔導。",
+    "sourceUrl": "https://taichungway.tw/city-safety-first-responders",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 76,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-8m2gq7",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "economy",
+    "candidateId": "c-kaohsiung-2",
+    "original": "三、服務業億元轉型，成為中小企業最強後盾 高雄的服務業也要升級。推動「服務業億元轉型計畫」，投入資源陪伴中小企業進行數位轉型，成立「數位轉型輔導小組」，結合產官學力量，協助企業導入智慧化系統。 加速引進AI、雲端等科技，發展智慧醫療、遠距教育、智慧物流等新型態服務業，創造更多高薪工作機會；鼓勵在地業者異業結盟，打造一站式電商平台，把高雄品牌推向國際。",
+    "masked": "投入資源陪伴中小企業進行數位轉型，成立由產官學組成的輔導小組協助導入智慧化系統；引進AI與雲端科技發展智慧醫療、遠距教育與智慧物流等服務業，並鼓勵業者異業結盟建置一站式電商平台。",
+    "plain": "幫中小企業做數位轉型，成立產官學輔導小組；用AI和雲端發展智慧醫療、遠距教育、智慧物流；鼓勵業者合作做一站式電商平台。",
+    "sourceUrl": "https://kochihen2026.tw/policy/%E7%94%A2%E6%A5%AD%E5%8D%87%E7%B4%9A/%E5%95%86%E5%9C%88%E5%BE%A9%E8%88%88%E8%88%87%E7%94%A2%E6%A5%AD%E8%BD%89%E5%9E%8B",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 89,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-7bc4cx",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "childcare",
+    "candidateId": "c-taipei-1",
+    "original": "臺北市預計115年9月推出全國首創「新生兒8小時免費電子臨托券」，本市市民家中有115年出生且滿6個月以上未滿1歲之新生兒均可申請，並可彈性使用至幼兒滿2歲前。新生兒爸媽屆時至社會局指定平台便可提出申請，詳情請見社會局官網。\n2-5歲私幼加碼 增加補助並放寬申請排富門檻\n為持續降低家庭幼兒教育支出，自115學年度起，針對設籍臺北市且就讀本市私立幼兒園的5歲幼兒，每名幼兒每學期均額外增加5,000元，依家戶年所得不同，可領每學期7,543元至1萬7,543元，進一步縮小公、私立幼兒園學費差距。",
+    "masked": "發放新生兒八小時免費電子臨托券，對象為一一五年出生、滿六個月未滿一歲的新生兒家庭，可使用到幼兒滿兩歲前；就讀私立幼兒園的五歲幼兒，每學期補助五千元。",
+    "plain": "發放新生兒八小時免費電子臨托券，給一一五年出生、滿六個月未滿一歲的新生兒家庭，用到兩歲前；就讀私立幼兒園的五歲幼兒，每學期補助五千元。",
+    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=9FF6EE075E94B939",
+    "sourceDate": "2026-08-19",
+    "sourceType": "press-rewritten",
+    "length": 74,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-yrmpnb",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "parks",
+    "candidateId": "c-taipei-2",
+    "original": "空間上，運用閒置土地規劃 200 座口袋公園，重新檢討人行道樹種、樹穴、密度、交通與景觀；並在公有建築、商圈、公園與校園推動林蔭栽種，鼓勵私人空間一起投入。",
+    "masked": "運用閒置土地規劃兩百座口袋公園，重新檢討人行道的樹種、樹穴、密度、交通與景觀，並在公有建築、商圈、公園與校園推動林蔭栽種，同時鼓勵私人空間一起投入。",
+    "plain": "用閒置土地蓋兩百座口袋公園，重新檢討人行道的樹種、樹穴和密度，在公有建築、商圈、公園、校園種樹遮蔭，也鼓勵私人空間一起種。",
+    "sourceUrl": "https://puma.taipei/policies/%E9%83%BD%E5%B8%82%E5%BE%AE%E6%A3%AE%E6%9E%97",
+    "sourceDate": "2026-09-07",
+    "sourceType": "campaign",
+    "length": 74,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-56vkdx",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "childcare",
+    "candidateId": "c-kaohsiung-2",
+    "original": "1. 托育升級：把時間還給爸媽 我們力拚在2030年前，將臨托據點從29處增至60處，且每時段收托人數加倍。另外，推出全台首創「喘息券」制度，結合臨托據點與保母，讓父母能真正得到時間上的喘息與支持。 2. 津貼加碼：把壓力交給政府 我們將生育津貼加碼至第一胎3萬、第二胎4萬、第三胎5萬，結合中央津貼，高雄寶寶最多能領15萬。在育嬰假方面也補足薪資級距，由市府補足現行制度剩餘的2成薪，讓高雄的父母敢生敢請，不再被迫扣薪。",
+    "masked": "在2030年前將臨時托育據點由29處增至60處，每時段收托人數加倍，並發放可用於臨托據點與保母的喘息券；生育津貼第一胎3萬、第二胎4萬、第三胎5萬，育嬰假薪資由市府補足剩餘2成。",
+    "plain": "2030年前臨時托育據點從29處增加到60處，收托人數加倍，並發喘息券；生育津貼第一胎3萬、第二胎4萬、第三胎5萬，育嬰假再補2成薪。",
+    "sourceUrl": "https://kochihen2026.tw/policy/%E5%85%A8%E9%BD%A1%E5%AE%89%E5%BF%83/%E6%89%98%E8%82%B2%E5%8D%87%E7%B4%9A%20%7C%20%E6%B4%A5%E8%B2%BC%E5%8A%A0%E7%A2%BC%20%7C%20%E8%81%B7%E5%A0%B4%E5%B9%B3%E6%AC%8A",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 89,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-vhfc2i",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "youth",
+    "candidateId": "c-taichung-2",
+    "original": "市府將主動協助，引進具備全球市場能力的指標性加速器進駐臺中。\n運用升級會展經濟 168 的模式，辦理青創、新創嘉年華，由國際導師一對一帶路，實質媒合海外資金。\n將「舊臺中縣議會」改造成新創孵化基地，協助創業團隊在聚落內形成互助生態系，達成「在地孵化、全球起飛」的目標。",
+    "masked": "主動協助引進具全球市場能力的指標性加速器進駐；辦理青創與新創嘉年華，由國際導師一對一帶路並媒合海外資金；將舊議會大樓改造成新創孵化基地。",
+    "plain": "市府主動協助，引進有全球市場經驗的大型加速器進駐；辦青創、新創嘉年華，由國際導師一對一帶路，幫忙媒合海外資金；把舊議會大樓改成新創團隊的孵化基地。",
+    "sourceUrl": "https://taichungway.tw/exhibition-economy-startup-accelerator",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 68,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-3csu4c",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "health",
+    "candidateId": "c-taichung-2",
+    "original": "推出設籍臺中孕婦施打 RSV（呼吸道融合病毒）疫苗補助，在懷孕後期減免自費施打費用，讓抗體在媽媽肚子裡就能保護寶寶。\n提升產後到宅月嫂補助時數至 40 小時，讓專業月嫂有充裕的時間指導育兒並協助媽媽休養，做女性最體貼的生育神隊友。\n將「健康好孕專車」的使用期限貼心延長至「產後一年」，為媽媽產後回診與寶寶打疫苗的交通路途多一份呵護。",
+    "masked": "補助設籍的孕婦在懷孕後期施打呼吸道融合病毒疫苗並減免自費；將產後到宅月嫂的補助時數提高到40小時；孕產婦專用接送車的使用期限延長到產後一年。",
+    "plain": "設籍本市的孕婦，懷孕後期打呼吸道融合病毒（RSV）疫苗可以減免自費；產後到家的月嫂補助增加到40小時；孕產婦專用接送車可以用到產後一年。",
+    "sourceUrl": "https://taichungway.tw/parenting-friendly-city-maternal-care",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 70,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-ibvck9",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "childcare",
+    "candidateId": "c-taipei-2",
+    "original": "每週固定時數免費臨托：規劃提供滿 6 個月至六歲孩子，每週固定時數免費臨時托育，讓家長有休息、社交與處理個人事務的時間。\n❑ 加碼心理諮商與到宅育兒指導：\n規劃「3＋3」免費心理諮商，銜接中央方案 3 次服務，由市府為產後 12 個月的家長再加碼 3 次；中央方案仍依其適用資格辦理。另將未滿2歲兒童家庭的免費到宅育兒指導擴充至 6 次，提供餵奶、洗澡與居家安全等實際協助。\n❑ 增設夜間托育據點：規劃在夜市、百貨公司等夜間工作場所附近設置托育據點，回應夜間工作家庭的照顧需求。",
+    "masked": "為滿六個月到六歲的孩子提供每週固定時數的免費臨時托育；將未滿兩歲孩子家庭的免費到宅育兒指導增加到六次；並在夜市、百貨公司等夜間工作場所附近設置托育據點。",
+    "plain": "滿六個月到六歲的孩子，每週有固定時數的免費臨托；未滿兩歲孩子的家庭，到宅育兒指導增加到六次；夜市、百貨公司附近設夜間托育據點。",
+    "sourceUrl": "https://puma.taipei/policies/%E5%AE%B6%E5%BA%AD%E4%B8%80%E7%AB%99%E9%80%9A",
+    "sourceDate": "2026-06-28",
+    "sourceType": "campaign",
+    "length": 76,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-psutwf",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "education",
+    "candidateId": "c-taichung-1",
+    "original": "每年編列 1 億元以上預算，支持中小學推動國際交流與合作，並擴充高中職國際文憑及國際學分課程名額。同步推展雙語遠距教學、課後共學、交換生計畫與雙語數位學伴，突破雙語師資限制，讓更多學生有機會接觸國際視野與多元語言環境。",
+    "masked": "每年編列1億元以上的預算，支持中小學推動國際交流與合作，擴充高中職國際文憑及國際學分課程名額，並推展雙語遠距教學、課後共學與交換生計畫。",
+    "plain": "每年至少編1億元，讓中小學做國際交流；高中職的國際文憑和國際學分課程要增加名額；同時辦雙語遠距教學、課後共學和交換生，讓更多學生接觸外語環境。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 68,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-newtaipei-p28rms",
+    "race": "2026-local.mayor.newtaipei",
+    "issueId": "housing",
+    "candidateId": "c-newtaipei-2",
+    "original": "不過，房租讓年輕人睡不著，這個不能放著不管。\n侯友宜市長提的 3.9 萬戶社宅繼續蓋，再加 1.2 萬戶。\n沒有地，就用容積獎勵把回饋回來的社宅，租出去。",
+    "masked": "繼續興建規劃中的三點九萬戶社會住宅，再增加一點二萬戶；沒有土地的地方，就以容積獎勵換取回饋的社宅再出租，減輕年輕人的房租壓力。",
+    "plain": "繼續蓋原規劃的三點九萬戶社宅，再增加一點二萬戶；沒有地的話，用容積獎勵換回社宅再出租。",
+    "sourceUrl": "https://www.youtube.com/watch?v=UlcQ3gczXFc",
+    "sourceDate": "2026-10-14",
+    "sourceType": "social",
+    "length": 63,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-s4p33n",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "health",
+    "candidateId": "c-taipei-2",
+    "original": "中壯年身心與職場後盾：擴大提供50歲以上市民皮蛇疫苗一劑補助；推行涵蓋15至65歲的免費心理諮商計畫（包含產後媽媽額外加碼），減輕中壯年焦慮；實施職場友善2.0與45歲以上透過職務再設計，擴大媒合和訓練資源，也提供創業利息補貼。",
+    "masked": "補助五十歲以上市民接種一劑皮蛇疫苗，提供十五至六十五歲市民免費心理諮商（產後媽媽額外加碼），並以職務再設計協助四十五歲以上者就業，另提供創業利息補貼。",
+    "plain": "補助五十歲以上市民打一劑皮蛇疫苗，十五到六十五歲市民可免費心理諮商（產後媽媽加碼），四十五歲以上者透過職務再設計就業，並有創業利息補貼。",
+    "sourceUrl": "https://puma.taipei/policies/%E7%A4%BE%E7%A6%8F%E6%94%BF%E7%AD%96",
+    "sourceDate": "2026-09-11",
+    "sourceType": "campaign",
+    "length": 75,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-43w8dn",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "eldercare",
+    "candidateId": "c-taichung-1",
+    "original": "提供 65 歲以上長者假牙補助最高 5 萬元，改善口腔健康、飲食品質與生活舒適度，讓長輩能吃得健康、笑得自在，提升整體生活品質。",
+    "masked": "提供65歲以上長者假牙補助，最高5萬元，改善口腔健康、飲食品質與生活舒適度，讓長輩吃得健康、笑得自在，提升整體生活品質。",
+    "plain": "65歲以上的長輩裝假牙，最高可以補助5萬元，希望他們吃得健康、笑得自在，生活品質也跟著變好。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 60,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-88aivp",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "pedsafety",
+    "candidateId": "c-taichung-1",
+    "original": "推動道路設計改善、人行空間優化與校園周邊通學步道改善，優先處理危險路口、行穿線退縮、庇護島與通學動線安全，建立友善行人與兒童的城市交通環境。",
+    "masked": "改善道路設計、優化人行空間與校園周邊通學步道，優先處理危險路口、行穿線退縮、庇護島與通學動線的安全，建立友善行人與兒童的交通環境。",
+    "plain": "改善道路設計和人行空間，也改善學校周邊的通學步道；優先處理危險路口、行人穿越線退縮、庇護島和上下學動線的安全，讓行人與孩子走得放心。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 65,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-7r2mbi",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "education",
+    "candidateId": "c-kaohsiung-1",
+    "original": "行動 1｜預算要倍增！ 雙語教育預算將逐步提高至 每年 10 億元，並全面導入 AI 與 AR 科技建置智慧學習平台，讓科技輔助語言學習，縮短學習落差。 行動 2｜校校連世界！ 積極推動「一校一國際共學夥伴」計畫，優先協助高雄的國高中建立跨國學校交流夥伴關係，讓國際化融入日常校園生活。",
+    "masked": "將雙語教育預算逐步提高到每年10億元，並導入AI與AR技術建置智慧學習平台縮短學習落差；讓每所學校配對一個國際共學夥伴，優先協助國中與高中建立跨國交流關係。",
+    "plain": "雙語教育預算逐步增加到每年10億元，用AI和AR做學習平台；國中、高中每校配對一所國外學校交流。",
+    "sourceUrl": "https://www.zenolai.tw/policy/education/12",
+    "sourceDate": "2026-09-09",
+    "sourceType": "campaign",
+    "length": 78,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-zan23d",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "youth",
+    "candidateId": "c-kaohsiung-2",
+    "original": "1. 就業安心：非典勞動青年轉正計畫 兼職打工、接案雖然自由，但若你想追求更穩定的正職生活，我們推你一把！ 針對畢業後從事非典型工作或待業中的青年，只要你有意願轉正，我們提供專屬津貼： ✅ 輔導津貼： 每次 5,000 元（最多 3 次，最高可領 15,000 元）。 ✅ 轉正獎金： 成功轉正職，再加碼發放 15,000 元！ 最高 3 萬元的實質補助，減輕你的經濟壓力，陪你穩健踏入職場正軌！",
+    "masked": "針對畢業後從事非典型工作或待業的青年，有意轉為正職者提供津貼：輔導津貼每次5,000元，最多3次，最高15,000元；成功轉正職者再發轉正獎金15,000元，合計最高3萬元。",
+    "plain": "畢業後打工、接案或待業的青年，想轉正職可領輔導津貼，每次5,000元最多3次；成功轉正職再領15,000元，合計最高3萬元。",
+    "sourceUrl": "https://kochihen2026.tw/policy/%E6%88%90%E5%B0%B1%E9%9D%92%E5%B9%B4/%E5%8B%87%E6%95%A2%E7%AF%89%E5%A4%A2%E3%80%81%E5%AE%89%E5%BF%83%E6%89%93%E6%8B%9A",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 87,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-pgcaa5",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "education",
+    "candidateId": "c-taipei-1",
+    "original": "市府積極推動「教育革新三箭」，包括導師每週授課節數減少1節、增加專責行政人力以減輕負擔，以及提升教師心理諮商輔導時數與次數。同時，市府也建立教師跨校交流機制、推動優秀教師帶職帶薪出國研究計畫，並規劃於未來3年內逐步調降師生比，讓教師能更專注於教學，也能更用心關照每一位孩子。",
+    "masked": "導師每週授課節數減少一節、增加專責行政人力以減輕負擔、提高教師心理諮商輔導的時數與次數，並建立教師跨校交流機制、推動優秀教師帶職帶薪出國研究，同時在三年內逐步降低師生比。",
+    "plain": "導師每週少授一節課、增加專責行政人力、增加教師心理諮商時數與次數，建立教師跨校交流，讓優秀教師帶職帶薪出國研究，三年內逐步降低師生比。",
+    "sourceUrl": "https://www.gov.taipei/News_Content.aspx?n=2044902FC839D045&sms=72544237BBE4C5F6&s=F12432D6172EE59F",
+    "sourceDate": "2026-08-19",
+    "sourceType": "press-rewritten",
+    "length": 85,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-mu7xvf",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "education",
+    "candidateId": "c-taipei-2",
+    "original": "規劃於117學年度達成國小每班24人、國中25人的目標，並以「減生不減師」為原則，將少子化釋出的空間，轉化為降低班級人數與提升教學品質的機會。同時透過釋出正式教師員額、增加專任輔導教師，並評估透過與爭取各種獎勵方案提高教師留任意願。",
+    "masked": "於一一七學年度達成國小每班二十四人、國中每班二十五人，將少子化釋出的空間用來降低班級人數而不減少教師，並釋出正式教師員額、增加專任輔導教師，提高教師留任意願。",
+    "plain": "一一七學年度達成國小每班二十四人、國中二十五人，人數降低但教師不減少，並釋出正式教師員額、增加專任輔導教師。",
+    "sourceUrl": "https://puma.taipei/policies/%E6%95%99%E8%82%B2%E6%94%BF%E7%AD%96",
+    "sourceDate": "2026-10-02",
+    "sourceType": "campaign",
+    "length": 79,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taipei-k6tsgg",
+    "race": "2026-local.mayor.taipei",
+    "issueId": "eldercare",
+    "candidateId": "c-taipei-2",
+    "original": "長者尊嚴安居與長照突破：將敬老卡與親子同行卡對齊，擴大適用場館、地點及使用範疇（藝文活動、健身房等等）；推出彈性「臨時托老券」並推動在宅醫療以無縫接軌社區安全網；針對長照缺口，藉由都更與退場學校用地增加住宿型機構空間，並引入「鐘點移工」填補夜間照護人力。",
+    "masked": "開放長者福利卡用於藝文活動與健身房，推出彈性臨時托老券並推動在宅醫療，利用都更與停用的學校用地新增住宿型機構，引進鐘點移工補足夜間照護人力。",
+    "plain": "讓長者福利卡可用在藝文活動和健身房，推出臨時托老券、推動在宅醫療，用都更和停用學校用地增設住宿型機構，並用鐘點移工補夜間人力。",
+    "sourceUrl": "https://puma.taipei/policies/%E7%A4%BE%E7%A6%8F%E6%94%BF%E7%AD%96",
+    "sourceDate": "2026-09-11",
+    "sourceType": "campaign",
+    "length": 70,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-taichung-wsjv7d",
+    "race": "2026-local.mayor.taichung",
+    "issueId": "transit",
+    "candidateId": "c-taichung-1",
+    "original": "建構 4+1 轉運中心\n在既有轉運中心規劃基礎上，增設海區轉運中心，串聯台鐵、高鐵、環線捷運、國道客運、市區公車、多元計程車與公共自行車系統，提升轉乘便利性，強化台中公共運輸整體服務效率。",
+    "masked": "在既有規劃的四個轉運中心之外增設一個海區轉運中心，串聯台鐵、高鐵、環線捷運、國道客運、市區公車、多元計程車與公共自行車系統，提升轉乘便利性。",
+    "plain": "在原本規劃的四個轉運中心之外，再增設一個海區轉運中心，把台鐵、高鐵、環線捷運、國道客運、市區公車、計程車和公共自行車串在一起，轉乘更方便。",
+    "sourceUrl": "https://a-chun.tw/future",
+    "sourceDate": "2026-08-20",
+    "sourceType": "campaign",
+    "length": 70,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-newtaipei-ew9fdg",
+    "race": "2026-local.mayor.newtaipei",
+    "issueId": "eldercare",
+    "candidateId": "c-newtaipei-2",
+    "original": "我非常關注長者照顧，因為新北有全國最多的老人人口\n所以我提出敬老卡300點悠遊卡化、主動訪視搭配六大檢查、老屋加裝電梯",
+    "masked": "因應全國老年人口最多的現況，將長輩福利卡的三百點整合進悠遊卡，由市府主動訪視長輩並搭配六大檢查項目，同時推動老屋加裝電梯。",
+    "plain": "把福利卡的三百點放進悠遊卡，主動訪視長輩並搭配六大檢查，推動老屋加裝電梯。",
+    "sourceUrl": "https://www.youtube.com/watch?v=pegf-3545HU",
+    "sourceDate": "2026-10-18",
+    "sourceType": "social",
+    "length": 61,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-newtaipei-hycduv",
+    "race": "2026-local.mayor.newtaipei",
+    "issueId": "culture",
+    "candidateId": "c-newtaipei-1",
+    "original": "自行車道\n每 5 公里設置簡易休息站、智慧駐車間等休憩設施。\n人行道\n重要觀光景點道路全面劃設人行道，增加公廁與飲水機。\n公路\n推動台 62 線延伸金山萬里、三芝輕軌、八里輕軌等計畫。\n公共運具\n全面優化快速公車與共享機車站，不用自己騎車也能自由行。\n研議觀光鐵道\n參考京都丹後鐵道的經驗，規劃從淡水到萬里的「觀光鐵路」，盡收北海岸風景。",
+    "masked": "在自行車道每五公里設置簡易休息站，在重要觀光景點道路全面劃設人行道並增設公廁與飲水機，推動公路延伸與輕軌計畫，並研議規劃從淡水到萬里的觀光鐵路。",
+    "plain": "自行車道每五公里設一個休息站，景點道路都劃人行道、增設公廁和飲水機，推動公路延伸和輕軌，並研議淡水到萬里的觀光鐵路。",
+    "sourceUrl": "https://chiao.tw/policies/%e6%96%b0%e7%9a%87%e5%86%a0%e6%b5%b7%e5%b2%b8%e8%a8%88%e7%95%ab",
+    "sourceDate": "2026-10-21",
+    "sourceType": "campaign",
+    "length": 72,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-4wh29n",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "flood",
+    "candidateId": "c-kaohsiung-1",
+    "original": "面對極端氣候挑戰，導入科技監測與全方位水利整治，保障民生安全： 強化水源保護 ✕ 系統整治河川野溪：確保水資源安全並落實水患治理。 提升蓄洪能量 ✕ 科技監測精準預警：透過大數據與智慧設備掌握即時水情。 擴大防災教育 ✕ 改善地方避難空間：提升社區自救能力與避難設施品質。",
+    "masked": "導入科技監測與水利整治，系統性整治河川與野溪並強化水源保護；提高蓄洪能量，以大數據與智慧設備掌握即時水情提供預警；加強防災教育並改善社區避難空間，提升自救能力與避難設施品質。",
+    "plain": "用科技監測和水利工程整治河川、野溪，保護水源；增加蓄洪量，用大數據和智慧設備提早預警；加強防災教育，改善社區避難空間。",
+    "sourceUrl": "https://www.zenolai.tw/policy/vision/3",
+    "sourceDate": "2026-09-09",
+    "sourceType": "campaign",
+    "length": 87,
+    "guessStats": {
+      "answers": 0,
+      "correct": 0
+    }
+  },
+  {
+    "id": "p-kaohsiung-tbbqf5",
+    "race": "2026-local.mayor.kaohsiung",
+    "issueId": "housing",
+    "candidateId": "c-kaohsiung-1",
+    "original": "居住方面，擴大社會住宅、包租代管、租金補貼與青年友善租屋資訊與通勤支持，減輕青年在高雄工作、生活與成家的壓力，讓大家不只回得來，也住得下來。結合 TOD 大眾運輸導向發展模式，讓捷運、輕軌等大眾運輸與社宅、青創基地、托育資源緊密串聯，建構住、行、育、業共好環境；同時搭配生育補助與公共托育，減輕養育下一代的負擔。",
+    "masked": "增加社會住宅、包租代管與租金補貼的供給，提供青年友善的租屋資訊與通勤支持；以大眾運輸導向開發使捷運、輕軌與社宅、青創基地和托育資源緊密串聯，並搭配生育補助與公共托育。",
+    "plain": "多蓋社會住宅，增加包租代管和租金補貼，提供租屋資訊和通勤支持；社宅、青創基地、托育設在捷運輕軌站附近，並搭配生育補助和公共托育。",
+    "sourceUrl": "https://www.zenolai.tw/policy/youth/10",
+    "sourceDate": "2026-09-09",
+    "sourceType": "campaign",
+    "length": 83,
     "guessStats": {
       "answers": 0,
       "correct": 0
