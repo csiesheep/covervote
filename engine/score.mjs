@@ -14,13 +14,13 @@
 //   7. top = 分數最高的候選人（並列全收），null 不算。
 //   8. verdict(lean, result)：lean 為 null／'undecided'／'private' → 'none'；lean 在 top 裡 → 'same'；否則 'different'。
 //
-// 暫定（issue #1 留言問 orchestrator，裁決前照這樣）：
-//   - 捨入：遠離 0 的對稱捨入（−12.5 → −13、+12.5 → +13），−0 正規化成 0。
-//   - 百分位：nearest-rank（1000 次排序後第 100 與第 900 個）。
+// orchestrator 裁決（#1，回 BE 的提問）：
+//   - 捨入：遠離 0 的對稱捨入（−12.5 → −13、+12.5 → +13），−0 寫成 0；bootstrap 每次重抽用同一個捨入。
+//   - 百分位：nearest-rank（1000 次排序後第 100 與第 900 個），再把 score 夾進 [lo, hi]。
 //   - ratings[id] 為 null 當作跳過。
-//   - top 為空時 verdict 照規則 8 字面回 'different'。
-//
-// 候選人的鍵（candidateId）只當不透明的字串用，引擎不假設它的長相。
+//   - top 為空時 verdict 回 'none'。
+//   - 候選人的鍵：FE 用姓名當 candidateId、傾向也存姓名（cands/、reveal/ 都不帶 id）。
+//     引擎只把它當不透明的字串，不假設長相；同選區姓名不重複由 data/schema.mjs 的 validate() 守。
 
 export const WEIGHT_IMPORTANT = 2;
 export const MIN_PROPOSERS = 2;        // 規則 2
@@ -107,5 +107,6 @@ export function score({ passages = [], ratings = {}, important = [] } = {}, opts
 export function verdict(lean, result){
   if (lean === null || lean === undefined || NO_LEAN.has(lean)) return 'none';
   const top = (result && result.top) || [];
+  if (!top.length) return 'none';   // orchestrator 裁決 #1：沒有任何計分段落，說「不同」是錯的結論
   return top.includes(lean) ? 'same' : 'different';
 }

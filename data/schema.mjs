@@ -46,10 +46,17 @@ export function validate({ elections, races, candidates, passages }){
   }
   const candById = new Map(candidates.map(c => [c.id, c]));
   const numberSeen = new Map();   // `${raceId}#${number}` → candidate id
+  const nameSeen = new Map();     // `${raceId}#${name}` → candidate id
   for (const c of candidates){
     uniq('candidate', c.id);
     if (!raceIds.has(c.raceId)) errs.push(`candidate ${c.id}: raceId ${c.raceId} 不存在`);
     if (!c.name) errs.push(`candidate ${c.id}: 沒有 name`);
+    // 姓名是前端的鍵（orchestrator 裁決 #1：cands/、reveal/ 不帶 id，契合分數與傾向都用姓名對）：同選區不得重複。
+    else {
+      const k = c.raceId + '#' + c.name;
+      if (nameSeen.has(k)) errs.push(`candidate ${c.id}: 姓名「${c.name}」與 ${nameSeen.get(k)} 在 ${c.raceId} 重複（姓名是前端的鍵）`);
+      else nameSeen.set(k, c.id);
+    }
     // number：抽籤後的號次（正整數），抽籤前 null。欄位一定要在：缺欄位和「還沒抽籤」分不出來。
     if (!('number' in c)) errs.push(`candidate ${c.id}: 缺 number（未抽籤寫 null）`);
     else if (c.number !== null){
