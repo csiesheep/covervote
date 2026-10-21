@@ -8,6 +8,7 @@ import { t, initLang, lang, has } from './i18n.js';
 import { TILES, METRO_KEYS, METRO_ETA, CEC_URL } from './config.js';
 import { initInternal, loadState, saveState, freshState, hasProgress } from './store.js';
 import { initSound, isSoundOn, setSound, sfx } from './sound.js';
+import { postGuess, postPlay, getHealth, getStats } from './api.js';
 import { loadRace, loadIssues, fetchReveal, buildPlan, menuOrder, mulberry32, NotFound } from './data.js';
 
 initInternal();
@@ -29,7 +30,7 @@ function bar(left, meta){
   return `<header class="bar"><a class="brand" href="#/"><i></i>${esc(left)}</a><span class="bar-r">${meta ? `<span class="meta num" id="barmeta">${esc(meta)}</span>` : '<span class="meta num" id="barmeta"></span>'}`
     + `<button class="snd" data-act="sound" aria-pressed="${on}" aria-label="${esc(t(on ? 'sound.on' : 'sound.off'))}" title="${esc(t(on ? 'sound.on' : 'sound.off'))}">${on ? ICON_ON : ICON_OFF}</button></span></header>`;
 }
-const footer = () => `<footer class="foot"><a href="#/info/method">${esc(t('foot.method'))}</a><a href="#/info/sources">${esc(t('foot.sources'))}</a><a href="#/info/privacy">${esc(t('foot.privacy'))}</a><a href="#/info/about">${esc(t('foot.about'))}</a></footer>`;
+const footer = healthKey => `<footer class="foot">${healthKey !== undefined ? `<a id="healthlink" href="#/${esc(healthKey || '')}/health"${healthKey ? '' : ' hidden'}>${esc(t('foot.health'))}</a>` : ''}<a href="#/info/method">${esc(t('foot.method'))}</a><a href="#/info/sources">${esc(t('foot.sources'))}</a><a href="#/info/privacy">${esc(t('foot.privacy'))}</a><a href="#/info/about">${esc(t('foot.about'))}</a></footer>`;
 const page = (barHtml, body, foot = '') => `${barHtml}<main id="main" tabindex="-1"><div class="pad">${body}</div>${foot}</main>`;
 const spinner = () => `<div class="spin" role="status">${esc(t('loading'))}</div>`;
 const errorBox = (msg, retryAct = 'reload') => `<div class="errbox" role="alert"><span>${esc(msg)}</span><button class="btn ghost" data-act="${retryAct}">${esc(t('err.retry'))}</button></div>`;
@@ -115,6 +116,7 @@ async function route(seg){
   }
   switch (sub){
     case '': return viewEntry(c);
+    case 'health': return viewHealth(c);
     case 'lean': return viewLean(c);
     case 'play': return viewRound(c, parseInt(seg[2] || '1', 10));
     case 'bonus': return viewBonus(c);
@@ -156,9 +158,25 @@ async function viewHome(){
     <p class="muted">${esc(t('home.sub'))}</p>
     <div class="tiles" role="group" aria-label="${esc(t('home.mapLabel'))}">${tiles}</div>
     <div class="legend"><span><i class="sw"></i>${esc(t('home.legendOn'))}</span><span><i class="sw d"></i>${esc(t('home.legendOff'))}</span></div>
+    <p class="muted num" id="plays" hidden></p>
     <a class="btn" id="startbtn" href="${homePick ? '#/' + homePick : '#/'}" data-act="start" ${homePick ? '' : 'aria-disabled="true"'}>${esc(startLabel())}</a>
     <p class="muted">${esc(t('home.promise'))}</p>`;
-  return { html: page(bar(t('brand'), ''), body, footer()), mount: () => { fillCountdown(ready); } };
+  return { html: page(bar(t('brand'), ''), body, footer(homePick || [...ready.keys()][0] || '')), mount: () => { fillCountdown(ready); fillPlays(ready); } };
+}
+// 「已有 N 局」：局數照常（靜默期也不受影響）；取不到或 0 就不顯示。
+const playsCache = new Map();
+function showPlays(){
+  const el = document.getElementById('plays'); if (!el) return;
+  const n = homePick ? playsCache.get(homePick) : 0;
+  el.hidden = !(n > 0);
+  if (n > 0) el.textContent = t('home.plays', { n });
+}
+function fillPlays(ready){
+  for (const [key, d] of ready){
+    if (playsCache.has(key)) continue;
+    getStats(d.raceId).then(st => { if (Number.isInteger(st?.plays)) playsCache.set(key, st.plays); showPlays(); }).catch(() => {});
+  }
+  showPlays();
 }
 const startLabel = () => homePick ? t('home.startAt', { city: t('tile.' + homePick) }) : t('home.pick');
 
@@ -221,13 +239,14 @@ function viewEntry(c){
       <tr><th>${esc(t('entry.topicsTh'))}</th><td class="num">${esc(topics)}</td></tr>
       <tr><th>${esc(t('entry.passages'))}</th><td class="num">${esc(t('entry.passagesVal', { n: ps.length, avg }))}</td></tr>
       ${meta.join('')}
+      <tr><th>${esc(t('entry.health'))}</th><td><a href="#/${c.key}/health">${esc(t('entry.healthVal'))}</a></td></tr>
     </table>
     ${prog && !c.st.done ? `<a class="btn" href="#/${c.key}/play" data-act="resume">${esc(t('entry.resume'))}</a><button class="btn ghost" data-act="restart">${esc(t('entry.restart'))}</button>`
       : c.st.done ? `<a class="btn" href="#/${c.key}/result">${esc(t('res.meta'))}</a><button class="btn ghost" data-act="restart">${esc(t('res.again'))}</button>`
       : `<a class="btn" href="#/${c.key}/lean">${esc(t('entry.start'))}</a>`}
     <details><summary class="muted">${esc(t('entry.how'))}</summary>
       <ol class="muted" style="padding-left:18px;margin:8px 0 0"><li>${esc(t('entry.how1'))}</li><li>${esc(t('entry.how2'))}</li><li>${esc(t('entry.how3'))}</li><li>${esc(t('entry.how4'))}</li></ol></details>`;
-  return { html: page(bar(t('brand'), t('entry.change')), body, footer()) };
+  return { html: page(bar(t('brand'), t('entry.change')), body, footer(c.key)) };
 }
 
 // ---------------- B1 傾向 ----------------
@@ -264,9 +283,16 @@ function rateButtons(c, p, label){
   return `<div class="rate" role="radiogroup" aria-label="${esc(label)}">${[-2, -1, 0, 1, 2].map(v =>
     `<button type="button" role="radio" aria-checked="${cur === v}" class="${cur === v ? 'on' : ''}" data-act="rate" data-pid="${esc(p.id)}" data-v="${v}"><b>${sgn(v)}</b>${esc(t('rate.' + v))}</button>`).join('')}</div>`;
 }
+// 猜作者的選項：只放這一都「有段落」的人（cands/ 的 inPlay === true；orchestrator 裁決 #6）。
+// 放進沒有段落的人會稀釋猜測、壓低猜中率，遮蔽健康度就失真。cands/ 還沒有 inPlay 欄位（或全是 false）→ 退回全部。
+// 傾向選單照舊放全部候選人（viewLean 用 c.order）。
+function guessNames(c){
+  const inPlay = new Set(c.data.candidates.filter(x => x.inPlay === true).map(x => x.name));
+  return inPlay.size ? c.order.filter(n => inPlay.has(n)) : c.order;
+}
 function guessBlock(c, p){
   const g = c.st.guesses[p.id];
-  const chips = c.order.map(n => `<button type="button" class="chip${g === n ? ' on' : ''}" aria-pressed="${g === n}" data-act="guess" data-pid="${esc(p.id)}" data-v="${esc(n)}">${esc(n)}</button>`).join('')
+  const chips = guessNames(c).map(n => `<button type="button" class="chip${g === n ? ' on' : ''}" aria-pressed="${g === n}" data-act="guess" data-pid="${esc(p.id)}" data-v="${esc(n)}">${esc(n)}</button>`).join('')
     + `<button type="button" class="chip${g === 'unknown' ? ' on' : ''}" aria-pressed="${g === 'unknown'}" data-act="guess" data-pid="${esc(p.id)}" data-v="unknown">${esc(t('play.unknown'))}</button>`;
   return `<details class="guess"${g ? ' open' : ''}><summary><span class="sl">${esc(t('play.guess'))}</span><span class="num">${esc(t('play.guessNote'))}</span></summary><div class="row">${chips}</div></details>`;
 }
@@ -336,10 +362,23 @@ function viewImportant(c){
   return { html: page(bar(raceLabel(c), t('imp.meta')), body) };
 }
 
+// 猜作者：只送「有猜名字」的段落（'unknown' 不送）。同一局只送一次（st.sent.guess）。失敗不擋開票。
+// 一定要在 fetchReveal 之前：先看答案再送「猜測」會灌高猜中率，遮蔽健康度就失真了。
+async function sendGuesses(c){
+  if (c.st.sent.guess) return;
+  const known = new Set(c.data.passages.map(p => p.id));
+  const guesses = Object.entries(c.st.guesses).filter(([id, v]) => known.has(id) && v !== 'unknown').map(([passage, name]) => ({ passage, name }));
+  if (guesses.length){
+    try { await postGuess(c.data.raceId, guesses); } catch { return; }
+  }
+  c.st.sent.guess = true; save(c);
+}
+
 // 唯一會 fetch reveal/ 的地方：玩家按下「開票」。
 async function revealNow(c, btn){
   btn.disabled = true; const label = btn.textContent; btn.textContent = t('imp.revealing');
   try {
+    await sendGuesses(c);   // 必須在 fetchReveal 之前
     await fetchReveal(c.data.raceId);
   } catch (e) {
     btn.disabled = false; btn.textContent = label;
@@ -415,6 +454,45 @@ function guessStats(c, rv){
   return { guessed, correct };
 }
 
+const hasTop = comp => comp.res.top.some(n => comp.res.candidates.find(x => x.candidateId === n)?.score !== null);
+
+// 全國（其實是這個選區）「傾向 vs 契合」：只看後端回的 blackout 與 verdicts，前端不算日期、不算門檻。
+function natlHtml(c){
+  const st = c.stats;
+  if (!st) return { banner: '', box: '' };
+  const name = raceLabel(c);
+  const title = t('natl.title', { race: name });
+  if (st.blackout){
+    const m = /^\d{4}-(\d{2})-(\d{2})$/.exec(c.data.meta.voteDate || '');
+    const reopen = m ? t('blackout.reopen', { md: +m[1] + '/' + +m[2] }) : t('blackout.reopenNoDate');
+    return {
+      banner: `<div class="banner"><b>${esc(t('blackout.title'))}</b><span>${esc(t('blackout.body'))}</span></div>`,
+      box: `<div class="verdict"><div class="eyebrow">${esc(title)}</div><div class="stack center" style="align-items:center;gap:6px;padding:10px 0"><img class="illo" src="assets/empty_state.webp" alt="" width="768" height="768" style="width:120px"><span class="muted">${esc(reopen)}</span></div></div><p class="muted">${esc(t('blackout.health'))} <a href="#/${c.key}/health">${esc(t('foot.health'))}</a></p>`,
+    };
+  }
+  const v = st.verdicts;
+  if (!v) return { banner: '', box: `<div class="verdict"><div class="eyebrow">${esc(title)}</div><p class="muted">${esc(t('natl.few', { n: st.plays }))}</p></div>` };
+  const n = v.same + v.different;
+  const body = n > 0
+    ? `<div class="guessbox" style="border:0;padding:0"><div class="n">${Math.round(v.same / n * 100)}<small>%</small></div><div><b>${esc(t('natl.line', { race: name, p: Math.round(v.same / n * 100) }))}</b><p class="muted">${esc(t('natl.basis', { n }))}</p></div></div>`
+    : `<p class="muted">${esc(t('natl.noLean'))}</p>`;
+  return { banner: '', box: `<div class="verdict"><div class="eyebrow">${esc(title)}</div>${body}</div>` };
+}
+function fillNatl(c){
+  const a = document.getElementById('natl-banner'), b = document.getElementById('natl-box'); if (!a || !b) return;
+  const h = natlHtml(c); a.innerHTML = h.banner; b.innerHTML = h.box;
+}
+// 結果出來之後：送這一局（只有 race + verdict；同一局一次），再讀匯總。
+async function afterResult(c, comp){
+  if (!c.st.sent.play && !c.playBusy && hasTop(comp)){
+    c.playBusy = true;
+    try { await postPlay(c.data.raceId, comp.verdict); c.st.sent.play = true; save(c); } catch {}
+    c.playBusy = false;
+  }
+  try { c.stats = await getStats(c.data.raceId); } catch { c.stats = null; }
+  fillNatl(c);
+}
+
 function resultBody(c, rv, comp){
   const { res, verdict } = comp;
   const byName = new Map(res.candidates.map(x => [x.candidateId, x]));
@@ -445,14 +523,16 @@ function resultBody(c, rv, comp){
   }).join('');
   const gs = guessStats(c, rv);
   const guessHtml = gs.guessed
-    ? `<div class="guessbox"><div class="n">${gs.correct}<small>/${gs.guessed}</small></div><div><b>${esc(t('res.guessTitle', { c: gs.correct }))}</b><p class="muted">${esc(t('res.guessBody', { n: gs.guessed, r: (gs.guessed / c.data.candidates.length).toFixed(1) }))}</p></div></div>`
+    ? `<div class="guessbox"><div class="n">${gs.correct}<small>/${gs.guessed}</small></div><div><b>${esc(t('res.guessTitle', { c: gs.correct }))}</b><p class="muted">${esc(t('res.guessBody', { n: gs.guessed, r: (gs.guessed / guessNames(c).length).toFixed(1) }))}</p></div></div>`
     : `<p class="muted">${esc(t('res.guessNone'))}</p>`;
   return `
+    <div id="natl-banner" style="display:contents"></div>
     <div class="verdict"><div class="eyebrow">${esc(t('res.eyebrow'))}</div>${vsHtml}<p class="muted" style="text-align:center">${esc(msg)}</p><div class="stampmark" aria-hidden="true">${esc(t('res.stamp'))}</div></div>
     <div><div class="eyebrow" style="margin-bottom:6px">${esc(t('res.scoreTitle'))}</div>
       <div class="stack" style="gap:8px">${scoreRows}<div class="scale-lbl"><span></span><span><span>−100</span><span>0</span><span>+100</span></span><span></span></div></div>
       <p class="muted" style="margin-top:6px">${esc(t('res.range'))}</p></div>
     ${guessHtml}
+    <div id="natl-box" style="display:contents"></div>
     <details><summary class="muted">${esc(t('res.adjust'))}</summary><div id="imps" style="margin-top:6px">${impRows(c) || `<p class="muted">${esc(t('imp.none'))}</p>`}</div></details>
     <div class="btns"><a class="btn" href="#/${c.key}/share">${esc(t('res.share'))}</a><button class="btn ghost" data-act="again">${esc(t('res.again'))}</button></div>
     <a class="btn line" href="#/${c.key}/detail">${esc(t('res.detail'))}</a>
@@ -464,7 +544,7 @@ async function viewResult(c){
   try { rv = await fetchReveal(c.data.raceId); } catch { return { html: page(bar(raceLabel(c), t('res.meta')), errorBox(t('imp.err'))) }; }
   try { comp = await compute(c, rv); } catch (e) { console.error(e); return { html: page(bar(raceLabel(c), t('res.meta')), errorBox(t('err.engine'))) }; }
   c.lastComp = { rv, comp };
-  return { html: page(bar(raceLabel(c), t('res.meta')), `<div id="resbody" style="display:contents">${resultBody(c, rv, comp)}</div>`) };
+  return { html: page(bar(raceLabel(c), t('res.meta')), `<div id="resbody" style="display:contents">${resultBody(c, rv, comp)}</div>`), mount: () => { fillNatl(c); afterResult(c, comp); } };
 }
 async function refreshResult(c){
   const rv = await fetchReveal(c.data.raceId);
@@ -473,6 +553,7 @@ async function refreshResult(c){
   const open = el.querySelector('details')?.open;
   el.innerHTML = resultBody(c, rv, comp);
   if (open) el.querySelector('details').open = true;
+  fillNatl(c);
 }
 
 // ---------------- C3 明細 ----------------
@@ -530,35 +611,124 @@ function applyFilter(el){
 function safeUrl(u){ try { const x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : ''; } catch { return ''; } }
 function hostOf(u){ try { return new URL(u).hostname; } catch { return u; } }
 
+// ---------------- D1 遮蔽健康度 ----------------
+const HEALTH_MIN = 30;   // 少於這麼多人作答：寫「樣本還不夠」，不畫條
+async function viewHealth(c){
+  const barHtml = bar(raceLabel(c), t('health.meta'));
+  const back = `<a class="btn ghost" href="#/${c.key}">${esc(t('common.back'))}</a>`;
+  let h;
+  try { h = await getHealth(c.data.raceId); } catch { return { html: page(barHtml, errorBox(t('health.err')) + back, footer(c.key)) }; }
+  const byId = new Map((h.passages || []).map(p => [p.id, p]));
+  // 列的順序：議題照資料出現順序；同議題內照段落 id 排（不用資料檔的順序，免得順序和作者有關）。甲乙丙只是這頁的列號。
+  const issues = [];
+  for (const p of c.data.passages) if (!issues.includes(p.issueId)) issues.push(p.issueId);
+  const rows = [];
+  for (const iss of issues){
+    c.data.passages.filter(p => p.issueId === iss).sort((a, b) => (a.id < b.id ? -1 : 1)).forEach((p, i) => rows.push({ iss, seat: seatOf(i), h: byId.get(p.id) || { answers: 0, correct: 0, rate: null, random: null, flagged: false } }));
+  }
+  const ok = rows.filter(r => r.h.answers >= HEALTH_MIN && typeof r.h.rate === 'number');
+  const sumA = ok.reduce((x, r) => x + r.h.answers, 0), sumC = ok.reduce((x, r) => x + r.h.correct, 0);
+  const rnd = ok.length ? ok.reduce((x, r) => x + r.h.random, 0) / ok.length : null;
+  const pct = v => Math.round(v * 100);
+  const summary = ok.length ? t('health.summary', { x: pct(sumC / sumA), y: pct(rnd) }) : t('health.none');
+  const rowHtml = rows.map(r => {
+    const lbl = `${esc(issueLabel(c, r.iss))} ${esc(r.seat)}${r.h.flagged ? ` <span class="flag">${esc(t('health.flag'))}</span>` : ''}`;
+    if (r.h.answers < HEALTH_MIN || typeof r.h.rate !== 'number') return `<div class="hbar"><span>${lbl}</span><span class="muted" style="grid-column:2/4">${esc(t('health.few'))}</span></div>`;
+    return `<div class="hbar"><span>${lbl}</span><div class="htrack" role="img" aria-label="${esc(t('health.rowAlt', { x: pct(r.h.rate), y: pct(r.h.random) }))}"><i class="${r.h.flagged ? 'hot' : ''}" style="width:${Math.min(100, r.h.rate * 100)}%"></i><u style="left:${r.h.random * 100}%"></u></div><span class="num">${pct(r.h.rate)}%</span></div>`;
+  }).join('');
+  const body = `
+    <h1 class="mid">${esc(t('health.title'))}</h1>
+    <p class="muted">${esc(t('health.sub'))}</p>
+    <div class="row between" style="align-items:baseline"><span class="eyebrow">${esc(t('health.n', { race: raceLabel(c), n: rows.length }))}</span></div>
+    <p class="num" style="font-size:15px;font-weight:600">${esc(summary)}</p>
+    <div class="stack" style="gap:10px">${rowHtml}</div>
+    <p class="muted">${esc(t('health.note'))}</p>
+    ${back}`;
+  return { html: page(barHtml, body, footer(c.key)) };
+}
+
 // ---------------- C4 分享 ----------------
+// 圖卡在瀏覽器用 canvas 畫成 1200×630 PNG：預覽就是會下載的那張。預設不放姓名（owner 裁決 2026-10-21），勾選才放。
 let shareNames = false;
+const OG_W = 1200, OG_H = 630;
+const gameUrl = c => location.origin + location.pathname + '#/' + c.key;
+const shareUrl = gameUrl;
+const siteLabel = () => location.host + location.pathname.replace(/index\.html$/, '').replace(/\/$/, '');
+const loadImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
+
+async function drawCard(canvas, c, info){
+  const ctx = canvas.getContext('2d');
+  const fam = '"LXGW WenKai TC","Kaiti TC","STKaiti",serif', sans = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif', mono = '"IBM Plex Mono",ui-monospace,Consolas,monospace';
+  try { await Promise.race([Promise.all([document.fonts.load(`700 60px ${fam}`, info.sample), document.fonts.load(`400 28px ${sans}`, info.sample), document.fonts.load(`500 28px ${mono}`)]), new Promise(r => setTimeout(r, 2500))]); } catch {}
+  ctx.clearRect(0, 0, OG_W, OG_H);
+  ctx.fillStyle = '#FBF6EA'; ctx.fillRect(0, 0, OG_W, OG_H);
+  try { ctx.drawImage(await loadImg('assets/og_bg.webp'), 0, 0, OG_W, OG_H); } catch {}
+  const X = 72, MAXW = 520, sp = lang() === 'en' ? ' ' : '';
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = '#5E5A54'; ctx.font = `400 28px ${sans}`;
+  ctx.fillText(info.eyebrow, X, 100);
+  // 標題：三行；第二行最後接紅字。字級縮到最寬的一行放得進左半邊。
+  const [a0, a1 = ''] = info.a.split('\n');
+  const lns = [[[a0, 0]], [[a1 ? a1 + sp : '', 0], [info.em + sp, 1]], [[info.b, 0]]];
+  const fit = size => { ctx.font = `700 ${size}px ${fam}`; return Math.max(...lns.map(l => l.reduce((w, [tx]) => w + ctx.measureText(tx).width, 0))); };
+  let size = 80; const w1 = fit(100); size = Math.min(80, Math.floor(100 * MAXW / w1));
+  ctx.font = `700 ${size}px ${fam}`;
+  let y = 100 + size * 1.55;
+  for (const l of lns){
+    let x = X;
+    for (const [tx, hot] of l){ ctx.fillStyle = hot ? '#C4321F' : '#1F1D1B'; ctx.fillText(tx, x, y); x += ctx.measureText(tx).width; }
+    y += size * 1.3;
+  }
+  if (info.names){
+    ctx.fillStyle = '#1F1D1B'; ctx.font = `700 36px ${fam}`;
+    let nm = info.names; while (ctx.measureText(nm).width > MAXW && nm.length > 4) nm = nm.slice(0, -2) + '…';
+    ctx.fillText(nm, X, y - 24);
+  }
+  ctx.fillStyle = '#5E5A54'; ctx.font = `500 28px ${mono}`;
+  ctx.fillText(info.url, X, OG_H - 48);
+  if (info.foot){ ctx.fillStyle = '#1F1D1B'; ctx.font = `500 30px ${mono}`; ctx.fillText(info.foot, X, OG_H - 96); }
+}
+
 async function viewShare(c){
   let rv, comp;
   try { rv = await fetchReveal(c.data.raceId); comp = await compute(c, rv); } catch { return { html: page(bar(raceLabel(c), t('share.meta')), errorBox(t('err.engine'))) }; }
   const gs = guessStats(c, rv);
   const kind = comp.verdict === 'same' ? 'same' : comp.verdict === 'different' ? 'diff' : 'none';
   const top = comp.res.top.filter(n => comp.res.candidates.find(x => x.candidateId === n)?.score !== null).join('、');
-  c.share = { top };
-  const card = () => `<div class="og" role="img" aria-label="${esc(t('share.cardAlt'))}"><div class="col"><div class="eyebrow">${esc(t('share.eyebrow', { race: raceLabel(c) }))}</div>
-    <h3>${lines(t(`share.${kind}.a`))}<span>${esc(t(`share.${kind}.em`))}</span>${esc(t(`share.${kind}.b`))}</h3>
-    ${shareNames && top ? `<div class="nm">${esc(t('share.nameLine', { names: top }))}</div>` : ''}
-    <div class="muted num">${esc(gs.guessed ? t('share.foot', { c: gs.correct, n: gs.guessed }) : t('share.footPlain'))}</div></div><div aria-hidden="true"></div></div>`;
   const body = `
     <h1 class="mid">${esc(t('share.title'))}</h1>
-    <div id="ogwrap">${card()}</div>
+    <canvas id="ogcanvas" class="ogcanvas" width="${OG_W}" height="${OG_H}" role="img" aria-label="${esc(t('share.cardAlt'))}"></canvas>
     <label class="opt" style="cursor:pointer"><input type="checkbox" id="showNames" ${shareNames ? 'checked' : ''}> <span>${esc(t('share.names'))}<small>${esc(t('share.namesSub'))}</small></span></label>
-    <div class="btns"><a class="btn" data-act="line" href="#/${c.key}/share" target="_blank" rel="noopener noreferrer">${esc(t('share.line'))}</a><button class="btn ghost" data-act="copy">${esc(t('share.copy'))}</button></div>
+    <a class="btn" data-act="download" id="dlbtn" download="covervote.png" href="#/${c.key}/share" aria-disabled="true">${esc(t('share.download'))}</a>
+    <div class="btns"><a class="btn ghost" data-act="line" id="linebtn" href="#/${c.key}/share" target="_blank" rel="noopener noreferrer">${esc(t('share.line'))}</a><button class="btn ghost" data-act="copy">${esc(t('share.copy'))}</button></div>
     <a class="btn line" href="#/${c.key}/result">${esc(t('det.back'))}</a>`;
   return {
     html: page(bar(raceLabel(c), t('share.meta')), body),
     mount(el){
-      const line = el.querySelector('[data-act=line]');
-      line.href = 'https://line.me/R/msg/text/?' + encodeURIComponent(t('share.text') + '\n' + shareUrl(c));
-      el.querySelector('#showNames').addEventListener('change', e => { shareNames = e.target.checked; el.querySelector('#ogwrap').innerHTML = card(); });
+      const cv = el.querySelector('#ogcanvas'), dl = el.querySelector('#dlbtn');
+      el.querySelector('#linebtn').href = 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(gameUrl(c));
+      let blobUrl = '', gen = 0, alive = true;
+      const redraw = async () => {
+        const my = ++gen;
+        const info = { eyebrow: t('share.eyebrow', { race: raceLabel(c) }), a: t(`share.${kind}.a`), em: t(`share.${kind}.em`), b: t(`share.${kind}.b`),
+          names: shareNames && top ? t('share.nameLine', { names: top }) : '',
+          foot: gs.guessed ? t('share.foot', { c: gs.correct, n: gs.guessed }) : '', url: siteLabel() };
+        info.sample = info.eyebrow + info.a + info.em + info.b + info.names + info.foot + info.url;
+        await drawCard(cv, c, info);
+        if (my !== gen || !alive) return;
+        cv.toBlob(b => {
+          if (!b || my !== gen || !alive) return;
+          if (blobUrl) URL.revokeObjectURL(blobUrl);
+          blobUrl = URL.createObjectURL(b); dl.href = blobUrl; dl.removeAttribute('aria-disabled');
+        }, 'image/png');
+      };
+      el.querySelector('#showNames').addEventListener('change', e => { shareNames = e.target.checked; dl.setAttribute('aria-disabled', 'true'); redraw(); });
+      dl.addEventListener('click', e => { if (dl.getAttribute('aria-disabled') === 'true') e.preventDefault(); });
+      redraw();
+      return () => { alive = false; if (blobUrl) URL.revokeObjectURL(blobUrl); };
     },
   };
 }
-const shareUrl = c => location.origin + location.pathname + '#/' + c.key;
 
 // ---------------- D4 靜態頁 ----------------
 function viewInfo(tab){
@@ -570,7 +740,7 @@ function viewInfo(tab){
   if (tab === 'sources') content = `<h1 class="mid">${esc(t('info.sources.title'))}</h1><p style="font-size:14px">${esc(t('info.sources.body'))}</p>`;
   if (tab === 'about') content = `<h1 class="mid">${esc(t('info.about.title'))}</h1><p style="font-size:14px">${esc(t('info.about.body'))}</p>`;
   if (tab === 'privacy') content = `<h1 class="mid">${esc(t('info.privacy.title'))}</h1><table><tr><th>${esc(t('info.privacy.th1'))}</th><th>${esc(t('info.privacy.th2'))}</th></tr>`
-    + [1, 2, 3].map(i => `<tr><td>${esc(t('info.privacy.r' + i + 'a'))}</td><td>${esc(t('info.privacy.r' + i + 'b'))}</td></tr>`).join('')
+    + [1, 2, 3, 4].map(i => `<tr><td>${esc(t('info.privacy.r' + i + 'a'))}</td><td>${esc(t('info.privacy.r' + i + 'b'))}</td></tr>`).join('')
     + `</table><p class="muted">${esc(t('info.privacy.fonts'))}</p><p class="muted">${esc(t('info.privacy.note'))}</p>`;
   return { html: page(bar(t('brand'), t('info.meta')), `<div class="row">${chips}</div>${content}<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`, footer()) };
 }
@@ -607,6 +777,8 @@ root.addEventListener('click', async e => {
       homePick = el.dataset.key; sfx('tap');
       setPressed([...root.querySelectorAll('.tile.live')], b => b.dataset.key === homePick);
       const sb = document.getElementById('startbtn'); sb.textContent = startLabel(); sb.removeAttribute('aria-disabled'); sb.href = '#/' + homePick;
+      showPlays();
+      const hl = document.getElementById('healthlink'); if (hl){ hl.href = `#/${homePick}/health`; hl.hidden = false; }
       break;
     }
     case 'start': if (!homePick) e.preventDefault(); break;

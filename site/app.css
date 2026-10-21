@@ -162,13 +162,18 @@ details summary{cursor:pointer}
 .det .orig{font-size:14px;border-left:3px solid var(--rule);padding-left:10px;overflow-wrap:anywhere}
 .src{font-size:12px;color:var(--ink-2);word-break:break-all}
 
-.og{aspect-ratio:1200/630;width:100%;background:#FBF6EA url(assets/og_bg.webp) center/cover;color:#1F1D1B;border:1px solid var(--rule);border-radius:10px;padding:14px 16px;display:grid;grid-template-columns:1.5fr 1fr;gap:10px;position:relative;overflow:hidden}
-.og h3{font-size:19px;line-height:1.3}
-.og .eyebrow,.og .muted{color:#5E5A54}
-.og h3 span{color:#C4321F}
-.og .col{display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-width:0}
-.og .nm{font-family:var(--f-display);font-weight:700;font-size:14px}
 
 .toast{position:fixed;left:50%;bottom:max(20px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--paper);border-radius:8px;padding:8px 14px;font-size:13px;z-index:20;max-width:90vw}
 
 .spin{display:grid;place-items:center;padding:60px 0;color:var(--ink-2);font-size:13px}
+
+/* health（D1）、靜默期（D2）、分享圖卡 */
+.hbar{display:grid;grid-template-columns:1fr 112px 40px;gap:8px;align-items:center;font-size:12px}
+.htrack{height:8px;background:var(--ground);border-radius:4px;position:relative}
+.htrack i{position:absolute;inset:0 auto 0 0;border-radius:4px;background:var(--ink)}
+.htrack i.hot{background:var(--stamp)}
+.htrack u{position:absolute;top:-3px;bottom:-3px;width:1px;background:var(--ink-2);text-decoration:none}
+.flag{font-size:11px;color:var(--stamp);white-space:nowrap}
+.banner{border:1.5px dashed var(--warn);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.banner b{color:var(--warn)}
+.tile.live[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
