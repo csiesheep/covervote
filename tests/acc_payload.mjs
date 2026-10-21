@@ -24,7 +24,7 @@ const races = src('races.json'), candidates = src('candidates.json'), passages =
 
 const ALLOWED_PASSAGE_KEYS = ['id', 'issueId', 'masked', 'plain', 'length'];
 const ALLOWED_TOP_KEYS = ['race', 'passages'];
-const ALLOWED_RACE_KEYS = ['id', 'label'];
+const ALLOWED_RACE_KEYS = ['id', 'label', 'voteDate', 'dataAsOf'];   // voteDate、dataAsOf：orchestrator 裁決 #3，不指向作者
 
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'covervote-acc-'));
 let buildErr = null;
@@ -102,7 +102,7 @@ check('payload 原文裡找不到 original 原文與 sourceUrl', () => {
 // reveal/<raceId>.json  { race, passages: [{ id, candidate: { number, name }, original, sourceUrl, sourceDate, sourceType }] }
 //                       開票時才 fetch。檔案本身公開可抓（orchestrator 裁決：v1 接受，猜作者匯總只收開票前送出的猜測）。
 // STRICT 在 #1 land 時翻成 true。
-const STRICT_1 = false;
+const STRICT_1 = true;   // #1 land（2026-10-21）時翻：之後檔案消失要紅，不是退回 TODO
 const todo1 = what => STRICT_1 ? what : 'TODO: ' + what;
 const readDir = d => { const p = path.join(out, 'covervote', d); return fs.existsSync(p)
   ? Object.fromEntries(fs.readdirSync(p).filter(f => f.endsWith('.json')).map(f => [f, fs.readFileSync(path.join(p, f), 'utf8')])) : null; };
@@ -158,6 +158,34 @@ check('reveal/：每段都在，作者姓名與 data 一致，欄位只有允許
     if (q.original !== p.original) bad.push(`${p.id}: original 不同`);
   }
   return bad.length ? bad.slice(0, 8).join('；') : ok(true, `${passages.length} 段都在，作者一致`);
+});
+
+// orchestrator 裁決（#3 FE 提問）：議題顯示名只有一份——data/issues.json（內容歸 writer、格式歸 BE），
+// build 輸出 covervote/issues.json：[{ id, label }]。FE 不自己放對照表（兩份就是兩份真相）。
+check('issues.json：每個用到的 issueId 都有顯示名，欄位只有 id、label', () => {
+  const f = path.join(out, 'covervote', 'issues.json');
+  if (!fs.existsSync(f)) return todo1('build 還沒有產生 covervote/issues.json');
+  const list = JSON.parse(fs.readFileSync(f, 'utf8'));
+  const r = nonEmpty(passages.length, 'data/passages.json 是空的'); if (r !== true) return r;
+  const bad = [];
+  for (const it of list) for (const k of Object.keys(it)) if (!['id', 'label'].includes(k)) bad.push(`${it.id}.${k}`);
+  const have = new Map(list.map(it => [it.id, it.label]));
+  const used = [...new Set(passages.map(p => p.issueId))];
+  const missing = used.filter(i => !have.get(i));
+  if (missing.length) bad.push(`沒有顯示名：${missing.join('、')}`);
+  return bad.length ? bad.join('；') : ok(true, `${list.length} 個議題，用到的 ${used.length} 個都有顯示名`);
+});
+
+check('race payload 有 voteDate（倒數用），格式 YYYY-MM-DD 且等於選舉日', () => {
+  if (!cands) return todo1('#1 還沒 land');
+  const elections = src('elections.json');
+  const bad = [];
+  for (const rc of races){
+    const j = JSON.parse(texts[rc.id + '.json'] || '{}');
+    const want = elections.find(e => e.id === rc.electionId)?.voteDate;
+    if (j.race?.voteDate !== want) bad.push(`${rc.id}: voteDate ${j.race?.voteDate} ≠ ${want}`);
+  }
+  return bad.length ? bad.join('；') : ok(true, `${races.length} 個選區都帶 voteDate`);
 });
 
 fs.rmSync(out, { recursive: true, force: true });
