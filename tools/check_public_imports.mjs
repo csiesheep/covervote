@@ -18,7 +18,10 @@ const RE = [
 ];
 const missing = [];
 for (const f of files) {
-  const t = readFileSync(f, 'utf8');
+  // JS 先去掉區塊註解與整行註解：註解裡寫「import ... from './x'」會被當成真的 import（BE #1 回報的假陽性）。
+  // 只去整行的 //，行尾註解不動——'https://…' 這種字串裡的 // 不能被當成註解切掉。
+  const raw = readFileSync(f, 'utf8');
+  const t = /\.m?js$/.test(f) ? raw.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '') : raw;
   for (const re of RE) for (const m of t.matchAll(re)) {
     const target = resolve(dirname(f), m[1].split('?')[0]);
     if (!target.startsWith(ROOT)) { missing.push(`${relative(ROOT, f)} → ${m[1]}（在 ${relative(process.cwd(), ROOT) || '.'} 外）`); continue; }
