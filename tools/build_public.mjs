@@ -7,8 +7,9 @@
 //   covervote/race/<raceId>.json     每個選區開票前的題目資料：race { id, label, voteDate, dataAsOf }，
 //                                    段落只有 PUBLIC_PASSAGE_FIELDS
 //   covervote/issues.json            議題顯示名 [{ id, label }]（data/issues.json，FE 不自己放對照表）
-//   covervote/cands/<raceId>.json    開票前的候選人名單 { race, candidates: [{ number, name }] }，照號次、null 排最後
-//                                    （owner 裁決 2026-10-21：獨立檔、只有號次與姓名、不帶任何段落對應）
+//   covervote/cands/<raceId>.json    開票前的候選人名單 { race, candidates: [{ number, name, inPlay }] }，照號次、null 排最後
+//                                    （owner 裁決 2026-10-21：獨立檔、只有號次與姓名、不帶任何段落對應；
+//                                    inPlay = 這一都至少有一段，orchestrator 裁決 #6，猜作者選單只放 inPlay 的人）
 //   covervote/reveal/<raceId>.json   開票檔 { race, passages: [{ id, candidate: { number, name }, original,
 //                                    sourceUrl, sourceDate, sourceType }] }，開票時才 fetch
 //                                    （orchestrator 裁決 #1：檔案公開可抓，v1 接受）
@@ -51,11 +52,15 @@ export const issuesPayload = issues => issues.map(i => ({ id: i.id, label: i.lab
 // 號次小的在前；null（未抽籤）排最後，null 之間照 data/candidates.json 的列順序（sort 是穩定的）。
 const byNumber = (a, b) => (a.number === null) - (b.number === null) || (a.number ?? 0) - (b.number ?? 0);
 
-export function candsPayload(race, candidates){
+// inPlay：這位候選人在這一都至少有一段（orchestrator 裁決 #6：猜作者選單只放有段落的人，
+// 放進沒有段落的人會稀釋猜測、壓低猜中率，讓遮蔽看起來比實際好）。只是布林，不說哪一段是誰的。
+export function candsPayload(race, candidates, passages){
+  if (!Array.isArray(passages)) throw new Error('candsPayload 需要 passages 才算得出 inPlay');
+  const hasPassage = new Set(passages.filter(p => p.race === race.id).map(p => p.candidateId));
   return {
     race: { id: race.id, label: race.label },
     candidates: candidates.filter(c => c.raceId === race.id).sort(byNumber)
-      .map(c => ({ number: c.number, name: c.name })),
+      .map(c => ({ number: c.number, name: c.name, inPlay: hasPassage.has(c.id) })),
   };
 }
 
@@ -85,7 +90,7 @@ export function build(outDir = path.join(ROOT, 'public')){
   const write = (dir, race, obj) => fs.writeFileSync(path.join(site, dir, race.id + '.json'), JSON.stringify(obj) + '\n');
   for (const race of data.races){
     write('race', race, racePayload(race, data.passages, data.elections));
-    write('cands', race, candsPayload(race, data.candidates));
+    write('cands', race, candsPayload(race, data.candidates, data.passages));
     write('reveal', race, revealPayload(race, data.passages, data.candidates));
   }
   fs.writeFileSync(path.join(site, 'issues.json'), JSON.stringify(issuesPayload(data.issues)) + '\n');
