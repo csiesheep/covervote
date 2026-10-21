@@ -27,7 +27,8 @@ const mem = await importOrNull('../worker/memstore.mjs');
 const data = loadData();
 
 const MIN_CELL = 50, FLAG_MIN = 200, FLAG_MARGIN = 0.20;
-const need = () => (api?.handleApi && mem?.memStore) ? null : 'TODO: worker/api.mjs（handleApi）與 worker/memstore.mjs（memStore）還沒有';
+const STRICT_4 = true;   // #4 land（2026-10-21）時翻：之後模組消失要紅，不是 TODO
+const need = () => (api?.handleApi && mem?.memStore) ? null : (STRICT_4 ? '' : 'TODO: ') + 'worker/api.mjs（handleApi）與 worker/memstore.mjs（memStore）不見了';
 
 const BASE = 'https://games.csiesheep.com/covervote/api/';
 const T_BEFORE = new Date('2026-11-10T12:00:00+08:00');
@@ -47,7 +48,6 @@ const call = async (store, method, path, body, now = T_BEFORE, qs = '') => {
 const json = async r => JSON.parse(await r.text());
 
 section('後端端點（#4）');
-
 check('母體：選區至少有 2 段、2 位候選人', () => {
   if (!race) return '母體是空的：data/races.json 沒有選區';
   if (ps.length < 2) return `母體太小：${race} 只有 ${ps.length} 段`;
@@ -119,7 +119,7 @@ if (!need() && ps.length >= 2){
     await call(s, 'POST', 'guess', { race, guesses: [{ passage: a.id, name: name[a.candidateId] }], lean: '某某某', ua: 'x' });
     const keys = s.keys();
     if (!keys.length) return 'store 是空的：play 與 guess 都沒有存任何東西，這條查不出什麼';
-    const leak = keys.filter(k => /某某某|lean|ua/.test(k));
+    const leak = keys.filter(k => /某某某|(^|[:|])(lean|ua)([:|]|$)/.test(k));   // 只認整段的 lean／ua：/ua/ 會撞到 taoyuan（BE #4 回報）
     return leak.length ? `store 的鍵含個人欄位：${leak.join('、')}` : ok(true, `${keys.length} 個鍵，沒有 lean／ua`);
   });
 
@@ -146,6 +146,8 @@ if (!need() && ps.length >= 2){
   });
 }
 
+// section 放在 await 之後、check 之前：放在前面的話，別的檔案（acc_modules）在 await 期間改掉 section，這裡的列會掛錯組名（BE #4 回報）。
+section('後端端點（#4）');
 const show = key => () => need() || (key in results ? results[key] : 'TODO: 母體不足，沒有跑');
 check('猜作者匯總：猜對猜錯分開計；不存在的段落與不在名單的姓名不計', show('guess'));
 check('internal=1 的猜測與局不計', show('internal'));

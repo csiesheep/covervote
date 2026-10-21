@@ -19,7 +19,7 @@
 - **開票前的前端 payload 不得含答案**：`candidateId`、候選人姓名、`original`、`sourceUrl`、`sourceDate`、`sourceType`、`guessStats`
   都不上前端，只有 `data/schema.mjs` 的 `PUBLIC_PASSAGE_FIELDS`。錯了：玩家打開 DevTools 就看得到作者，猜中率量不到遮蔽品質，
   整個遊戲的中立證據失效。守它的是 G1（`tests/acc_payload.mjs`，證偽紀錄在 `docs/guard-log.md`）。
-- **傾向只存瀏覽器**，不上傳個人的傾向。全體「傾向 vs 契合」若要做，只收匯總計數，某格未滿 50 人不顯示。
+- **傾向只存瀏覽器**，不上傳個人的傾向。全體「傾向 vs 契合」只收匯總計數，**選區未滿 50 局時三格都不顯示**（orchestrator 裁決 #4：整體門檻，不逐格判斷——沒有個人資料可推回，逐格隱藏只會讓總和對不起來）。
 - **不用工作階段錄製**（不要 Clarity、Hotjar 之類）；分析只用匯總計數。
 - **選罷法第 53 條**：2026-11-18 00:00（+08:00）起至投票截止，**自動**停止顯示所有與候選人相關的匯總統計（傾向統計、
   各候選人平均契合度）。個人自己的結果、段落猜中率不受影響。日期在 `data/elections.json` 的 `pollBlackoutFrom`，
