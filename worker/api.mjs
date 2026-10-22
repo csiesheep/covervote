@@ -29,6 +29,7 @@
 //   - POST 的順序（#32）：405 → content-type 不是 application/json 415 → 外站 Origin 403 → limiter 拒絕 429 → body 413／400。
 //     前三種都不耗限額、都不計數。
 //   - GET 回應一律 cache-control: no-store：快取會讓 11/17 23:59 的 verdicts 活過 11/18 00:00。
+//   - 任何例外（D1 失敗、逾時…）→ 503 {"error":"unavailable"}、retry-after 30，不再變成 Cloudflare 1101（#47，見 handleApi 上方）。
 //
 // 課堂版（issue #10，orchestrator 裁決：沒有帳號，代碼由老師的頁面在前端產生，後端只認格式）：
 //   - 代碼：6 碼，字元只用 A–Z 去掉 I、O，與 2–9（CLASS_RE）。不是字串、或格式不對 → 班級不計（全站照計），
@@ -73,10 +74,12 @@ const json = (obj, status = 200) => new Response(JSON.stringify(obj), { status, 
 const error = (status, msg, extra = {}) => new Response(JSON.stringify({ error: msg }), { status, headers: { ...HEADERS, ...extra } });
 const noContent = () => new Response(null, { status: 204, headers: { 'cache-control': 'no-store' } });
 
+// 一次請求的所有計數只走一次 incrMany（D1 版是 db.batch，一個交易：全部成功或全部不算）。
+// 沒有 incrMany 的 store 不退回逐鍵 incr：那樣第二個鍵失敗時第一個已經寫進去，就是「寫一半又回 503」（#47）。
 const incrMany = async (store, entries) => {
   if (!entries.length) return;
-  if (store.incrMany) return store.incrMany(entries);
-  for (const [k, n] of entries) await store.incr(k, n);
+  if (typeof store.incrMany !== 'function') throw new TypeError('store 沒有 incrMany（要一次、整批寫入）');
+  return store.incrMany(entries);
 };
 const getMany = async (store, keys) => {
   if (store.getMany) return store.getMany(keys);
@@ -226,9 +229,39 @@ async function getClass(code, race, { store, data, now }){
   return json(out);
 }
 
-export async function handleApi(request, { store, now = new Date(), data, limiter }){
+// 例外 → 503（#47）。2026-10-22 線上所有 /covervote/api/* 回了幾分鐘的 Cloudflare 1101（未捕捉的例外，猜是 D1 暫時失敗），
+// 玩家與 site/api.js 拿到的是一頁 HTML 錯誤。現在：任何例外都回 503 + {"error":"unavailable"}（JSON、no-store、retry-after 30），
+// 回應裡不帶例外的任何內容；console.error 只印一行：固定字串 + 例外類別 + 訊息，訊息先遮掉 IP、段落 id、候選人 id 與姓名
+// （D1 的錯誤訊息不該帶這些，但不賭）。request body 從來不進 log。
+// POST 不會寫一半又回 503：所有計數一次 incrMany（D1 batch = 一個交易）。唯一的例外是 batch 已經提交、回應才失敗——
+// 那一局計了、玩家看到失敗；site/ 一局只送一次（#31，先記 sent 再送），所以不會重送、不會計兩次。
+const UNAVAILABLE = () => new Response(JSON.stringify({ error: 'unavailable' }), { status: 503, headers: { ...HEADERS, 'retry-after': '30' } });
+const IPV4 = /\b\d{1,3}(?:\.\d{1,3}){3}\b/g;
+const IPV6 = /\b(?:[0-9a-f]{0,4}:){2,7}[0-9a-f]{0,4}\b/gi;
+const DATA_ID = /\b[pc]-[a-z0-9-]+/gi;   // 段落 p-<都>-xxxx、候選人 c-<都>-n
+function scrub(msg, data){
+  let s = String(msg ?? '').slice(0, 300).replace(IPV4, '[ip]').replace(IPV6, '[ip]').replace(DATA_ID, '[id]');
+  for (const c of data?.candidates || []) if (c.name) s = s.split(c.name).join('[name]');
+  return s;
+}
+function logFailure(e, data){
+  let kind = 'Error', msg = '';
+  try { kind = String(e?.name || e?.constructor?.name || typeof e); msg = scrub(e?.message ?? e, data); } catch {}
+  console.error(`covervote api: 例外，回 503 — ${kind}: ${msg}`);
+}
+
+export async function handleApi(request, ctx){
   const url = new URL(request.url);
   if (url.pathname !== PREFIX && !url.pathname.startsWith(PREFIX + '/')) return null;
+  try {
+    return await dispatch(request, url, ctx);
+  } catch (e){
+    logFailure(e, ctx?.data);
+    return UNAVAILABLE();
+  }
+}
+
+async function dispatch(request, url, { store, now = new Date(), data, limiter }){
   const route = url.pathname.slice(PREFIX.length + 1);
   const ctx = { store, now, data, internal: url.searchParams.get('internal') === '1' };
 
