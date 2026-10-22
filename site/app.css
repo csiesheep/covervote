@@ -254,7 +254,7 @@ html.embed .pad.home{padding-top:14px;padding-bottom:10px}
 
 /* ---- #35 ---- */
 .tiles{grid-template-columns:repeat(6,minmax(0,1fr))}   /* 格子內的字再長也不撐寬頁面 */
-.score,.scale-lbl{grid-template-columns:calc(88px*var(--fs)) 1fr calc(44px*var(--fs))}   /* 「沒有計分的段落」放得下一行 */
+.score,.scale-lbl{grid-template-columns:calc(88px*var(--fs)) 1fr calc(54px*var(--fs))}   /* 「沒有計分的段落」放得下一行 */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .brand i{background:var(--ink)}}   /* 暗色：品牌圖示本來是黑底黑字看不見 */
 /* 英文版首頁：縣市名長，格內縮字＋必要時折行；圖例與頁尾可折行，不撐寬 */
 html[lang="en"] .home .tile{font-size:calc(9px*var(--fs));line-height:1.1;overflow-wrap:normal;hyphens:manual;text-align:center;letter-spacing:-.01em;padding:0 1px}
@@ -271,3 +271,12 @@ html[data-fs="l"] .home .tile small{line-height:1}
 @media (max-height:620px){html[data-fs="l"] .pad.home{gap:3px;padding-top:4px;padding-bottom:4px}}
 @media (max-height:620px){.home .hero{aspect-ratio:3.4/1}}   /* 375×600 這種矮螢幕：圖再扁一點，不動任何字級 */
 html[data-fs="l"] .home .btn{min-height:52px}
+
+/* ---- #36 結果頁：傾向與最契合的人放大加粗、排前面 ---- */
+.score.focus{font-size:calc(17px*var(--fs));font-weight:700;padding:6px 0}
+.score.focus .nm{font-family:var(--f-display);line-height:1.2}
+.score.focus .num{font-size:calc(20px*var(--fs));text-align:right;font-family:var(--f-num)}
+.score.focus .axis{height:20px}
+.score.focus .axis .b{top:3px;height:14px}
+.score.focus .axis .ci{top:9px}
+.score.focus .conf{font-size:calc(11px*var(--fs));font-weight:400}
