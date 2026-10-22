@@ -44,6 +44,26 @@ check('site/app.js 的路由用 cityKey，href="#/${…}" 沒有未經處理的�
   return ok(true, 'href 裡的路由片段都經過 esc／encodeURIComponent');
 });
 
+// 由來：orch-checker 證偽 #31 時，把主路由 `const key = cityKey(seg[0])` 改成 `seg[0]`，上面兩條都沒紅（只檢查「cityKey(」字樣存在）。
+// 規格：縣市鍵所在的片段——seg[0]，以及班級路由 `#/class/<code>/<city>` 的 seg[2]——只能 (a) 跟字面字串比較、(b) 包在 cityKey(…) 裡。
+//   （seg[1] 是子頁名或班級代碼，各自在 switch 的字面 case／viewClass 的格式檢查裡處理，不在這條範圍；info 頁的 tab 在 viewInfo 內白名單。）
+check('縣市鍵的路由片段只會被比較或過 cityKey（不會繞過白名單）', () => {
+  const src = fs.readFileSync(path.join(ROOT, 'site', 'app.js'), 'utf8');
+  if (!/cityKey\s*\(/.test(src)) return todo(STRICT_31, 'app.js 還沒有呼叫 cityKey');
+  const lines = src.split('\n'); let uses = 0; const bad = [];
+  lines.forEach((ln, i) => {
+    const re = /'class'/.test(ln) ? /seg\[[02]\]/g : /seg\[0\]/g;
+    for (const m of ln.matchAll(re)){
+      uses++;
+      const before = ln.slice(0, m.index), after = ln.slice(m.index + m[0].length);
+      if (/^\s*(===|!==)\s*['"]/.test(after) || /cityKey\(\s*$/.test(before)) continue;
+      bad.push(`第 ${i + 1} 行：${ln.trim().slice(0, 80)}`);
+    }
+  });
+  if (uses < 3) return `app.js 裡縣市鍵片段只出現 ${uses} 次——路由寫法變了，這條要跟著改（母體太小）`;
+  return bad.length ? todo(STRICT_31, `${bad.length} 處縣市鍵沒過 cityKey：${bad.slice(0, 3).join('；')}`) : ok(true, `${uses} 處縣市鍵片段都是比較或 cityKey`);
+});
+
 // ---- 2. 題目檔的段落順序 ----
 const out = fs.mkdtempSync(path.join(os.tmpdir(), 'covervote-sec-'));
 let buildErr = null; try { build(out); } catch (e){ buildErr = e; }
