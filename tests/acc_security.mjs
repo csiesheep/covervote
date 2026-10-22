@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url';
 import { build, loadData } from '../tools/build_public.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const STRICT_31 = false, STRICT_32 = true;
+const STRICT_31 = true, STRICT_32 = true;
 const todo = (strict, msg) => (strict ? '' : 'TODO: ') + msg;
 
 // ---- 1. XSS ----
