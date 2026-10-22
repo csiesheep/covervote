@@ -21,6 +21,7 @@ export default {
   'home.legendOn': '可以玩',
   'home.legendSoon': '整理中＝11/12 公報後',
   'home.free': '免費・不收任何政黨或候選人的錢',
+  'home.more': '更多遊戲',
   'menu.label': '選單',
   'home.legendOff': '這次未收錄',
   'home.pick': '選一個縣市發牌',

@@ -239,8 +239,9 @@ html[data-fs="l"] .rate button{min-height:56px}
 .home .lg-soon{color:var(--stamp)}
 .home .btn{flex:none;min-height:50px;height:50px;border-radius:12px}
 html[data-fs="l"] .home .btn{height:auto;min-height:calc(48px*var(--fs))}
-.homefoot{flex:none;display:flex;justify-content:center;font-size:calc(11px*var(--fs));color:var(--ink-2);white-space:nowrap;line-height:1.25}
-.homefoot span+span:not([hidden])::before{content:"・"}
+.homefoot{flex:none;display:flex;justify-content:center;font-size:calc(11px*var(--fs));color:var(--ink-2);white-space:normal;flex-wrap:wrap;line-height:1.25}
+.homefoot{column-gap:12px}   /* 會折行，不用「・」，避免折行後行首掛一個點 */
+.homefoot .more{color:var(--ink-2);text-decoration:underline;text-underline-offset:2px}   /* 「更多遊戲」低調：同頁尾小字、底線 */
 html[data-fs="l"] .homefoot,html.embed .homefoot{white-space:normal;flex-wrap:wrap;row-gap:2px}   /* 大字級／嵌入放不下一行時才換行 */
 .home-bar{padding-top:max(8px,env(safe-area-inset-top,0px));padding-bottom:7px;min-height:0}
 .home-bar .snd,.home-bar .fsz{height:calc(32px*var(--fs))}
@@ -265,8 +266,8 @@ html[lang="en"] .homefoot{white-space:normal;flex-wrap:wrap;row-gap:2px;text-ali
 html[data-fs="l"] .home .deckwrap{aspect-ratio:5/1}
 html[data-fs="l"] .home .tile{line-height:1.1}
 html[data-fs="l"] .home .tile small{line-height:1}
-@media (max-height:620px){html[data-fs="l"] .pad.home{gap:3px;padding-top:4px;padding-bottom:4px}}
-@media (max-height:620px){.home .deckwrap{aspect-ratio:3.4/1}}   /* 375×600 這種矮螢幕：圖再扁一點，不動任何字級 */
+@media (max-height:620px){html[data-fs="l"] .pad.home{gap:3px;padding-top:4px;padding-bottom:4px}html[data-fs="l"] .home .btn{min-height:44px;padding-top:6px;padding-bottom:6px}}
+@media (max-height:620px){.home .deckwrap{aspect-ratio:4/1}}   /* 375×600 這種矮螢幕：圖再扁一點，不動任何字級 */
 html[data-fs="l"] .home .btn{min-height:52px}
 
 /* ---- #36 結果頁：傾向與最契合的人放大加粗、排前面 ---- */
