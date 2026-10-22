@@ -38,6 +38,18 @@ check('不同 seed → 議題順序不同（50 個 seed 裡第一題至少 3 種
   return ok(true, `第一題 ${firsts.size} 種、順序 ${orders.size} 種`);
 });
 
+// #28：選單順序照 cands/ 的順序（先藍後綠再其他，由 build 排好），不再隨機（owner 2026-10-21：「請向投給誰 先藍後綠再其他」）。
+const STRICT_28P = false;
+check('menuOrder 照 cands/ 給的順序，不隨 seed 變', () => {
+  if (!mod?.menuOrder) return 'site/data.js 沒有 export menuOrder';
+  const cs = [{ name: '丙', number: null }, { name: '甲', number: null }, { name: '乙', number: null }];
+  const want = '丙,甲,乙';
+  const outs = new Set();
+  for (let s = 1; s <= 20; s++) outs.add(mod.menuOrder(cs, null, s * 31).join(','));
+  if (outs.size !== 1 || !outs.has(want)) return (STRICT_28P ? '' : 'TODO: ') + `應永遠是 ${want}（cands/ 的順序），實際 ${outs.size} 種：${[...outs].slice(0, 3).join(' | ')}`;
+  return ok(true, `20 個 seed 都是 ${want}`);
+});
+
 check('每輪的牌序隨 seed 變，且不同輪之間獨立', () => {
   if (!mod?.buildPlan) return 'site/data.js 沒有 export buildPlan';
   const firstSeat = new Set();

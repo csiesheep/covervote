@@ -179,6 +179,30 @@ check('cands/：inPlay 等於「這位候選人在這一都至少有一段」', 
   return ok(true, `${n} 位候選人的 inPlay 都對，其中 ${idle} 位沒有段落`);
 });
 
+// #28：候選人名單的順序（owner 2026-10-21 原話：「請向投給誰 先藍後綠再其他」——傾向投給誰的選單）。
+// data/candidates.json 的 party（內部欄位，不上前端）：'kmt'（藍）、'dpp'（綠）、其他任何值＝其他。
+// 規則：kmt → dpp → 其他；同一組裡號次小的在前、號次 null 的在後，再照 data 的列順序。cands/ 仍然只有 number、name、inPlay。
+const STRICT_28 = false;
+check('cands/ 的順序：先藍、後綠、再其他（組內照號次）', () => {
+  if (!cands) return todo1('build 還沒有產生 covervote/cands/');
+  const noParty = candidates.filter(c => !('party' in c)).map(c => c.name);
+  if (noParty.length) return (STRICT_28 ? '' : 'TODO: ') + `data/candidates.json 還沒有 party：${noParty.slice(0, 6).join('、')}${noParty.length > 6 ? '…' : ''}`;
+  const g = c => c.party === 'kmt' ? 0 : c.party === 'dpp' ? 1 : 2;
+  const bad = [];
+  let checked = 0, discriminating = 0;
+  for (const rc of races){
+    const cs = candidates.map((c, i) => ({ ...c, i })).filter(c => c.raceId === rc.id);
+    const want = cs.slice().sort((a, b) => g(a) - g(b) || (a.number ?? 1e9) - (b.number ?? 1e9) || a.i - b.i).map(c => c.name).join(',');
+    const got = (JSON.parse(cands[rc.id + '.json'] || '{"candidates":[]}').candidates || []).map(c => c.name).join(',');
+    checked++;
+    if (cs.map(c => c.name).join(',') !== want) discriminating++;   // 資料順序本身不是答案時，這一都才分得出對錯
+    if (got !== want) bad.push(`${rc.id}: ${got} ≠ ${want}`);
+  }
+  if (bad.length) return (STRICT_28 ? '' : 'TODO: ') + bad.slice(0, 3).join('；');
+  if (!discriminating) return 'TODO: 母體分不出：每一都的資料順序剛好就是正確順序，照資料順序輸出的錯實作也會綠';
+  return ok(true, `${checked} 都的順序正確（其中 ${discriminating} 都的資料順序與答案不同）`);
+});
+
 check('cands/ 裡沒有任何段落 id 或候選人 id', () => {
   if (!cands) return todo1('build 還沒有產生 covervote/cands/');
   const r = nonEmpty(passages.length, 'data/passages.json 是空的'); if (r !== true) return r;
