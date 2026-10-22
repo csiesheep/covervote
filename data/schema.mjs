@@ -111,8 +111,14 @@ export function validate({ elections, races, candidates, passages, issues }){
       }
     }
   }
+  // 一人一議題一段（審查 #11，issue #32）：前端把「同一議題 ≥2 段」當一輪，引擎只在 ≥2 位不同候選人時計分；
+  // 同一人同議題兩段，玩家會打一輪引擎完全不計的分數。tests/acc_data.mjs 也守，這裡守是為了 build 直接擋下。
+  const oneEach = new Map();   // `${race}|${issueId}|${candidateId}` → 第一段的 id
   for (const p of passages){
     uniq('passage', p.id);
+    const k = `${p.race}|${p.issueId}|${p.candidateId}`;
+    if (oneEach.has(k)) errs.push(`passage ${p.id}: 候選人 ${p.candidateId} 在 ${p.race} 的議題 ${p.issueId} 已經有 ${oneEach.get(k)}（每位候選人每個議題只收一段）`);
+    else oneEach.set(k, p.id);
     const missing = PASSAGE_FIELDS.filter(f => !(f in p));
     if (missing.length) errs.push(`passage ${p.id}: 缺欄位 ${missing.join(', ')}`);
     const extra = Object.keys(p).filter(f => !PASSAGE_FIELDS.includes(f));
