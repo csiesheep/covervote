@@ -7,7 +7,7 @@
 //   covervote/race/<raceId>.json     每個選區開票前的題目資料：race { id, label, voteDate, dataAsOf }，
 //                                    段落只有 PUBLIC_PASSAGE_FIELDS
 //   covervote/issues.json            議題顯示名 [{ id, label }]（data/issues.json，FE 不自己放對照表）
-//   covervote/cands/<raceId>.json    開票前的候選人名單 { race, candidates: [{ number, name, inPlay }] }，照號次、null 排最後
+//   covervote/cands/<raceId>.json    開票前的候選人名單 { race, candidates: [{ number, name, inPlay }] }，先藍、後綠、再其他，組內照號次、null 排最後（#29）
 //                                    （owner 裁決 2026-10-21：獨立檔、只有號次與姓名、不帶任何段落對應；
 //                                    inPlay = 這一都至少有一段，orchestrator 裁決 #6，猜作者選單只放 inPlay 的人）
 //   covervote/reveal/<raceId>.json   開票檔 { race, passages: [{ id, candidate: { number, name }, original,
@@ -52,8 +52,15 @@ export function racePayload(race, passages, elections = []){
 
 export const issuesPayload = issues => issues.map(i => ({ id: i.id, label: i.label }));
 
-// 號次小的在前；null（未抽籤）排最後，null 之間照 data/candidates.json 的列順序（sort 是穩定的）。
+// 名單順序（owner 裁決 2026-10-21，#28／#29：「請向投給誰 先藍後綠再其他」）：
+//   1. party：'kmt'（藍）→ 'dpp'（綠）→ 其他任何值（含還沒填 party 的列）
+//   2. 同一組裡號次小的在前；null（未抽籤）排最後
+//   3. 再照 data/candidates.json 的列順序（Array.prototype.sort 是穩定的）
+// party 只用來排序，不寫進任何前端檔（cands/、reveal/ 都用白名單挑欄位）。
+export const PARTY_RANK = { kmt: 0, dpp: 1 };
+const partyRank = c => Object.hasOwn(PARTY_RANK, c.party) ? PARTY_RANK[c.party] : 2;   // hasOwn：'constructor' 之類不會撈到原型
 const byNumber = (a, b) => (a.number === null) - (b.number === null) || (a.number ?? 0) - (b.number ?? 0);
+export const byMenuOrder = (a, b) => partyRank(a) - partyRank(b) || byNumber(a, b);
 
 // inPlay：這位候選人在這一都至少有一段（orchestrator 裁決 #6：猜作者選單只放有段落的人，
 // 放進沒有段落的人會稀釋猜測、壓低猜中率，讓遮蔽看起來比實際好）。只是布林，不說哪一段是誰的。
@@ -62,7 +69,7 @@ export function candsPayload(race, candidates, passages){
   const hasPassage = new Set(passages.filter(p => p.race === race.id).map(p => p.candidateId));
   return {
     race: { id: race.id, label: race.label },
-    candidates: candidates.filter(c => c.raceId === race.id).sort(byNumber)
+    candidates: candidates.filter(c => c.raceId === race.id).sort(byMenuOrder)
       .map(c => ({ number: c.number, name: c.name, inPlay: hasPassage.has(c.id) })),
   };
 }

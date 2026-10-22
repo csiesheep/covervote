@@ -3,7 +3,7 @@
 // 一場「選舉」(elections.json) 有多個「選區」(races.json)，每個選區有候選人(candidates.json)
 // 與政見段落(passages.json)；段落的 issueId 都要在議題表(issues.json：[{ id, label }])裡。
 // 選舉有 voteDate（YYYY-MM-DD）與 pollBlackoutFrom（帶時區的 ISO 時間，早於投票日；見下方 isIsoWithTz）。
-// 候選人有 number（抽籤後的號次，正整數；未抽籤 null），同選區號次與姓名都不得重複（姓名是前端的鍵）。race id = `<electionId>.<office>.<district>`，所以 2028 總統、立委
+// 候選人有 number（抽籤後的號次，正整數；未抽籤 null），同選區號次與姓名都不得重複（姓名是前端的鍵）；party（政黨代碼，小寫英數）只拿來排名單、不上前端（#29）。race id = `<electionId>.<office>.<district>`，所以 2028 總統、立委
 // 或任何一場補選都只是多加幾列，不用改結構。
 //
 // 段落欄位照 plan 第四節：id, race, issueId, candidateId, original, masked, plain,
@@ -25,6 +25,11 @@ export const PUBLIC_PASSAGE_FIELDS = ['id', 'issueId', 'masked', 'plain', 'lengt
 export const textLength = s => [...String(s).replace(/\s/g, '')].length;
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
+
+// 候選人的 party（#29）：必填、字串、小寫英數。PARTY_REQUIRED 在 writer 把每位候選人的 party 補齊之後翻成 true
+// （orchestrator 決定時機）；在那之前缺 party 不擋，免得 main 在資料補齊前變紅。
+export const PARTY_REQUIRED = false;
+const PARTY_CODE = /^[a-z0-9]+$/;
 
 // 選罷法第 53 條的禁止期起點（elections.json 的 pollBlackoutFrom，orchestrator 裁決 #6）：
 // 必填、帶時區的 ISO 8601 時間（Z 或 ±HH:MM；沒有時區的字串，各地的瀏覽器與 Worker 會各自解讀成不同時刻）、
@@ -90,6 +95,11 @@ export function validate({ elections, races, candidates, passages, issues }){
       if (nameSeen.has(k)) errs.push(`candidate ${c.id}: 姓名「${c.name}」與 ${nameSeen.get(k)} 在 ${c.raceId} 重複（姓名是前端的鍵）`);
       else nameSeen.set(k, c.id);
     }
+    // party：政黨代碼，小寫英數（'kmt'、'dpp'、其他）；只拿來排候選人名單（#29，tools/build_public.mjs 的 byMenuOrder），
+    // 不上任何前端檔。有寫就要合格式；缺欄位只在 PARTY_REQUIRED 之後才擋（writer 補完資料、orchestrator 決定何時翻）。
+    if (!('party' in c)){ if (PARTY_REQUIRED) errs.push(`candidate ${c.id}: 缺 party（政黨代碼，小寫英數；無黨籍也要寫，例 'ind'）`); }
+    else if (typeof c.party !== 'string' || !PARTY_CODE.test(c.party))
+      errs.push(`candidate ${c.id}: party ${JSON.stringify(c.party)} 應為小寫英數字串（例 'kmt'、'dpp'）`);
     // number：抽籤後的號次（正整數），抽籤前 null。欄位一定要在：缺欄位和「還沒抽籤」分不出來。
     if (!('number' in c)) errs.push(`candidate ${c.id}: 缺 number（未抽籤寫 null）`);
     else if (c.number !== null){
