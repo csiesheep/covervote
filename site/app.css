@@ -1,17 +1,17 @@
 /* site/app.css — 選票紙、黑墨、紅色圈選章。顏色、字體、元件照設計稿 covervote-ui.html。FE 所有。 */
+/* #39 C「牌桌」：單一深色主題（刻意）。桌面是深色木桌，字是奶油色；牌（.pcard .opt .det …）是奶油色牌面、深色字，見檔尾的 .card-scope 區。
+   政黨色 --kmt／--dpp／--oth 只能出現在名字已公開的頁面（選傾向、翻牌、結果、明細、資料來源、分享卡）。 */
 :root{
-  --ground:#E9E7E1; --paper:#FAF9F5; --ink:#1F1D1B; --ink-2:#5E5A54; --rule:#D3CFC6;
-  --stamp:#C4321F; --stamp-soft:#F3DCD6; --back:#2A2622; --back-line:#E9E2D3;
-  --ok:#3F6B4E; --warn:#9A6A12;
-  --paper-img:url(assets/paper_texture.webp);
-  --f-display:"LXGW WenKai TC","Kaiti TC","STKaiti","DFKai-SB","BiauKai",serif;
+  --ground:#201A15; --paper:#2B241E; --ink:#F4EFE4; --ink-2:#C9BBA6; --rule:#4A3F35;
+  --stamp:#F0735D; --stamp-soft:#4A2A22; --back:#0E0D0C; --back-line:#6B6253;
+  --ok:#7FB08F; --warn:#E0B25A;
+  --red:#C8321E; --kmt:#2D5DB0; --dpp:#1F9149; --oth:#8C857B;
+  --paper-img:url(assets/table_wood.webp);
+  color-scheme:dark;
+  --f-display:"Noto Serif TC","Songti TC","STSong","Source Han Serif TC","PMingLiU","MingLiU",serif;
   --f-body:"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif;
   --f-num:"IBM Plex Mono",ui-monospace,Consolas,monospace;
 }
-@media (prefers-color-scheme: dark){:root{
-  --ground:#151413; --paper:#211F1D; --ink:#ECE8E0; --ink-2:#A7A198; --rule:#3A3733;
-  --stamp:#E35A43; --stamp-soft:#3F2420; --back:#0E0D0C; --back-line:#6B6253; --ok:#7FB08F; --warn:#D9A74A;
-  --paper-img:none; color-scheme:dark}}
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%;--fs:1.1333}   /* 字體大小（#18）：小 15／中 17／大 20px；所有 px 字級與按鈕高度都乘 --fs */
@@ -25,16 +25,15 @@ a{color:inherit}
 button{font:inherit;color:inherit;cursor:pointer}
 [hidden]{display:none!important}
 
-.app{max-width:480px;min-height:100vh;min-height:100dvh;margin:0 auto;background:var(--paper) var(--paper-img) 0 0/512px repeat;
+.app{max-width:480px;min-height:100vh;min-height:100dvh;margin:0 auto;background:radial-gradient(120% 60% at 50% 0%,rgba(70,56,44,.5) 0%,rgba(43,36,30,0) 70%) no-repeat,var(--paper) var(--paper-img) 0 0/512px repeat;
   border-inline:1px solid var(--rule);display:flex;flex-direction:column}
 @media (max-width:480px){.app{border-inline:0}}
 #main{flex:1;display:flex;flex-direction:column;outline:none}
 
 .bar{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 16px 8px;padding-top:max(10px,env(safe-area-inset-top,0px));
-  font-size:calc(13px*var(--fs));border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:5;background:var(--paper)}
-@media (prefers-color-scheme: light){.bar{background:#FAF9F5ee;backdrop-filter:blur(4px)}}
+  font-size:calc(13px*var(--fs));border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:5;background:#2B241Ef2;flex-wrap:wrap}
 .brand{font-family:var(--f-display);font-weight:700;font-size:calc(17px*var(--fs));letter-spacing:.08em;display:flex;align-items:center;gap:6px;text-decoration:none;min-width:0;white-space:nowrap}
-.brand i{display:inline-block;width:14px;height:18px;background:var(--back);border-radius:2px;box-shadow:3px -2px 0 -1px var(--paper),3px -2px 0 0 var(--ink);flex:none;margin-right:3px}
+.brand i{display:inline-block;width:14px;height:18px;background:url(assets/card_back.webp) center/cover;border-radius:3px;box-shadow:3px -2px 0 -1px var(--paper),3px -2px 0 0 var(--ink-2);flex:none;margin-right:3px}
 .bar-r{display:flex;align-items:center;gap:8px;min-width:0}
 .meta{color:var(--ink-2);font-size:calc(12px*var(--fs));white-space:nowrap}
 .snd{width:calc(32px*var(--fs));height:calc(32px*var(--fs));border:1px solid var(--rule);border-radius:50%;background:transparent;display:grid;place-items:center;padding:0;flex:none}
@@ -79,7 +78,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 
 .cardback{background:var(--back) url(assets/card_back.webp) center/cover no-repeat;border-radius:8px;position:relative;box-shadow:0 0 0 1px var(--rule)}
 .illo{display:block;width:100%;height:auto;border-radius:10px;mix-blend-mode:multiply}
-@media (prefers-color-scheme: dark){.illo{mix-blend-mode:normal;opacity:.92}}
+.illo{mix-blend-mode:normal}
 .deck{display:flex;gap:10px;justify-content:center;padding:6px 0}
 .deck .cardback{width:64px;height:90px}
 .deck .cardback:nth-child(2){transform:translateY(-6px) rotate(2deg)}
@@ -186,7 +185,7 @@ details summary{cursor:pointer}
 
 /* 嵌入模式（?embed=1）：高度跟內容走（不撐滿視窗），不出現橫向捲軸，寬 320–720 都排得下 */
 html.embed,html.embed body{overflow-x:hidden}
-html.embed body{background:var(--paper)}
+html.embed body{background:var(--paper) var(--paper-img) 0 0/512px repeat}
 html.embed .app{min-height:0;max-width:560px;border-inline:0}
 html.embed .pad{padding-top:14px;padding-bottom:14px}
 html.embed .foot.embed-foot{justify-content:center;padding:8px 16px 10px}
@@ -230,7 +229,7 @@ html[data-fs="l"] .rate button{min-height:56px}
    由上到下：頁首 → 扁圖(3:1) → 標語一行 → 方格地圖（每列 27px 起、間距 3px、22 格全在）→ 圖例一行 → 開始鈕 → 最下面一行小字。
    不用 zoom／transform: scale；多出來的高度由地圖列高吃掉。字級「大」允許捲，不破版。 */
 .pad.home{gap:6px;padding-top:8px;padding-bottom:8px}
-.home .hero{width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;flex:none;border-radius:10px;margin:0}
+.home .deckwrap{width:100%;height:auto;aspect-ratio:3/1;object-fit:cover;flex:none;border-radius:10px;margin:0}
 .home .tagline{line-height:1.15;flex:none}
 .home .tiles{flex:1 1 auto;min-height:calc(9*27px + 8*3px);max-height:calc(9*40px + 8*3px);grid-template-rows:repeat(9,minmax(27px,1fr));gap:3px}
 .home .tile{font-size:calc(11.5px*var(--fs));min-width:0;min-height:27px}
@@ -255,7 +254,6 @@ html.embed .pad.home{padding-top:14px;padding-bottom:10px}
 /* ---- #35 ---- */
 .tiles{grid-template-columns:repeat(6,minmax(0,1fr))}   /* 格子內的字再長也不撐寬頁面 */
 .score,.scale-lbl{grid-template-columns:calc(88px*var(--fs)) 1fr calc(54px*var(--fs))}   /* 「沒有計分的段落」放得下一行 */
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .brand i{background:var(--ink)}}   /* 暗色：品牌圖示本來是黑底黑字看不見 */
 /* 英文版首頁：縣市名長，格內縮字＋必要時折行；圖例與頁尾可折行，不撐寬 */
 html[lang="en"] .home .tile{font-size:calc(9px*var(--fs));line-height:1.1;overflow-wrap:normal;hyphens:manual;text-align:center;letter-spacing:-.01em;padding:0 1px}
 html[lang="en"] .home .tile.live{font-size:calc(9px*var(--fs));overflow-wrap:normal;letter-spacing:-.02em}   /* 粗體的 Kaohsiung 不要被折成兩行 */
@@ -265,11 +263,11 @@ html[lang="en"] .home .tile small{font-size:calc(8px*var(--fs))}
 html[lang="en"] .home .legend{flex-wrap:wrap;white-space:normal;row-gap:2px}
 html[lang="en"] .homefoot{white-space:normal;flex-wrap:wrap;row-gap:2px;text-align:center}
 /* 字級「大」：首頁不捲（375×600）靠壓縮圖片與行距，不縮字 */
-html[data-fs="l"] .home .hero{aspect-ratio:5/1}
+html[data-fs="l"] .home .deckwrap{aspect-ratio:5/1}
 html[data-fs="l"] .home .tile{line-height:1.1}
 html[data-fs="l"] .home .tile small{line-height:1}
 @media (max-height:620px){html[data-fs="l"] .pad.home{gap:3px;padding-top:4px;padding-bottom:4px}}
-@media (max-height:620px){.home .hero{aspect-ratio:3.4/1}}   /* 375×600 這種矮螢幕：圖再扁一點，不動任何字級 */
+@media (max-height:620px){.home .deckwrap{aspect-ratio:3.4/1}}   /* 375×600 這種矮螢幕：圖再扁一點，不動任何字級 */
 html[data-fs="l"] .home .btn{min-height:52px}
 
 /* ---- #36 結果頁：傾向與最契合的人放大加粗、排前面 ---- */
@@ -280,3 +278,65 @@ html[data-fs="l"] .home .btn{min-height:52px}
 .score.focus .axis .b{top:3px;height:14px}
 .score.focus .axis .ci{top:9px}
 .score.focus .conf{font-size:calc(11px*var(--fs));font-weight:400}
+
+/* ======== #39 C「牌桌」 ======== */
+h1,h2,h3,.brand{font-weight:900}
+.brand{font-size:calc(14px*var(--fs))}
+.subbar{flex:0 0 100%;order:3;font-family:var(--f-display);font-weight:900;font-size:calc(16px*var(--fs));line-height:1.2;padding-top:2px}
+.btn{background:var(--red);border-color:var(--red);color:#F4EFE4}
+.btn.ghost{background:transparent;border-color:var(--ink);color:var(--ink)}
+.btn.line{background:transparent;border-color:#6B5E50;color:var(--ink)}
+.chip,.toggle,.fsz,.snd{border-color:#6B5E50}
+.chip.on,.toggle button.on{border-color:var(--ink)}
+.tile{border-color:var(--ink-2)}
+.tile.live{border-color:#F4EFE4}
+.tile.live.pick,.tile.live[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#F4EFE4}
+.home .tile small{color:#F08A6E}
+
+/* 牌面：奶油色、深色字（變數在這個範圍內反轉，裡面的元件不用改） */
+.pcard,.opt,.det,.tile.live,.menu{--ink:#1E1C1A;--ink-2:#6E675D;--rule:#D8D0C1;--paper:#F4EFE4;--ground:#E9E3D6;--stamp:#C8321E;--stamp-soft:#F3DCD6;--warn:#8A5A06;--ok:#2E6A44;background:#F4EFE4;color:var(--ink)}
+.pcard,.det{border:1px solid #D8D0C1;box-shadow:0 6px 14px rgba(0,0,0,.35)}
+.opt[aria-checked="true"],.opt.on{border:2px solid var(--red);box-shadow:none}
+.felt,.verdict,.guessbox{border:1px solid var(--rule);border-radius:12px;padding:10px;background:rgba(0,0,0,.18)}
+.verdict{padding:14px}
+.guessbox{padding:12px}
+.opt small{display:flex;align-items:center}
+.ava{border:3px solid var(--p,transparent)}
+
+/* 政黨色：只有名字已公開的頁面才會有帶這些 class 的元素 */
+.kmt{--p:var(--kmt)}.dpp{--p:var(--dpp)}.oth{--p:var(--oth)}
+.pdot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--p,var(--oth));flex:none;margin-right:6px}
+.det{border-top:5px solid var(--p,var(--rule))}
+.score .axis .b{background:var(--p,var(--ink))}
+.score .axis .b.neg{background:var(--p,var(--ink-2));opacity:.55}
+
+/* 牌堆（首頁）與牌背 */
+.deckwrap{position:relative;width:100%;aspect-ratio:3/1;flex:none}
+.deckwrap .cb{position:absolute;bottom:2%;height:84%;aspect-ratio:192/272;left:calc(75% + var(--i)*5.5%);transform:translateX(-50%) rotate(calc(var(--i)*6deg));transform-origin:50% 100%;background:url(assets/card_back.webp) center/cover;border-radius:8px;box-shadow:0 6px 14px rgba(0,0,0,.4)}
+.wordmark{position:absolute;left:0;top:50%;transform:translateY(-50%);margin:0;font-family:var(--f-display);font-weight:900;font-size:min(calc(26px*var(--fs)),8.4vw);line-height:1.1;color:var(--ink);text-shadow:0 2px 10px rgba(0,0,0,.5);max-width:52%}
+.backs{display:flex;justify-content:center;gap:12px}
+.backs .back,.back{display:block;width:60px;aspect-ratio:300/425;border-radius:8px;background:url(assets/card_back.webp) center/cover;box-shadow:0 6px 14px rgba(0,0,0,.35)}
+
+/* 翻開的牌 */
+.face{background:url(assets/card_face.webp) center/100% 100% no-repeat;color:#1E1C1A;--ink:#1E1C1A;--ink-2:#6E675D;aspect-ratio:600/850;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;position:relative;box-shadow:0 6px 14px rgba(0,0,0,.35);text-align:center}
+.face::after{content:"";position:absolute;left:10%;right:10%;bottom:7%;height:5px;border-radius:3px;background:var(--p,var(--oth))}
+.face .ring{width:calc(46px*var(--fs));height:calc(46px*var(--fs));border:3px solid var(--p,var(--oth));border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:900;font-size:calc(22px*var(--fs));color:var(--p,var(--oth))}
+.face .nm{font-family:var(--f-display);font-weight:900;font-size:calc(17px*var(--fs))}
+.face .who{font-size:calc(12px*var(--fs));color:#6E675D;letter-spacing:.08em}
+.face .sc{font-size:calc(15px*var(--fs));margin-bottom:6%}
+.resfaces{display:flex;flex-direction:column;gap:10px}
+.pair{display:flex;flex-wrap:wrap;justify-content:center;gap:14px;padding:4px 10px}
+.pair .face{flex:0 0 calc(50% - 7px);max-width:210px}
+.pair.n1 .face{flex-basis:52%}
+.pair.n3 .face{flex:0 0 calc(33% - 10px)}
+.pair.n3 .face .nm{font-size:calc(13px*var(--fs))}
+.pair .face:nth-child(odd){transform:rotate(-3deg)}
+.pair .face:nth-child(even){transform:rotate(3deg)}
+.flip>div{border-radius:6px}
+.flip{aspect-ratio:600/850}
+.flip .face{background:url(assets/card_face.webp) center/100% 100% no-repeat;color:#1E1C1A;border:0;padding:2px;gap:2px;font-size:calc(9px*var(--fs));box-shadow:none}
+.flip .face .ring{width:calc(26px*var(--fs));height:calc(26px*var(--fs));border-width:2px;font-size:calc(13px*var(--fs))}
+.flip .face b{font-family:var(--f-display);font-size:calc(12px*var(--fs));line-height:1.1}
+.flip .face .fi{font-size:calc(9px*var(--fs));color:#6E675D;line-height:1.1}
+.flip .face::after{height:3px;bottom:6%}
+@media (prefers-reduced-motion:reduce){.pair .face:nth-child(odd),.pair .face:nth-child(even){transform:none}}
