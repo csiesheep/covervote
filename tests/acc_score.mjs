@@ -133,7 +133,7 @@ check('分數超出 −2..2 或不是整數會丟錯', () => {
 });
 
 // #33（orchestrator 裁決）：並列且傾向在 top 裡 → 'tie'（不再算 same，否則全體統計把「平手」灌進 same）。並列但傾向不在 top → 'different'。
-const STRICT_33 = false;   // #33 land 時翻
+const STRICT_33 = true;    // #33 land 時翻
 check('verdict：same / different / none；並列且傾向在 top 裡 → tie（#33）', () => {
   const t = need(); if (t) return t;
   const r = run(BASE);                                    // top = [A]
