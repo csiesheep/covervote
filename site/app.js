@@ -81,9 +81,6 @@ async function getCtx(key){
 function rebuild(c){
   c.plan = buildPlan(c.data.passages, c.st.seed);
   const order = menuOrder(c.data.candidates, c.st.menuOrder, c.st.seed);
-  if (!c.st.menuOrder || c.st.menuOrder.join('|') !== order.join('|')){
-    if (c.data.candidates.some(x => x.number === null || x.number === undefined)){ c.st.menuOrder = order; save(c); }
-  }
   c.order = order;
   c.byName = new Map(c.data.candidates.map(x => [x.name, x]));
 }
