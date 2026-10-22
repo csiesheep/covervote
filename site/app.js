@@ -160,7 +160,7 @@ async function route(seg){
     case 'important': return c.st.done ? redirect(`#/${key}/result`) : viewImportant(c);
     case 'reveal': return c.st.done ? viewReveal(c) : redirect(`#/${key}`);
     case 'result': return c.st.done ? viewResult(c) : redirect(`#/${key}`);
-    case 'detail': return c.st.done ? viewDetail(c) : redirect(`#/${key}`);
+    case 'detail': return redirect(c.st.done ? `#/${key}/reveal` : `#/${key}`);   // 明細頁併入翻牌頁（#44）
     case 'share': return c.st.done ? viewShare(c) : redirect(`#/${key}`);
     default: return viewEntry(c);
   }
@@ -476,39 +476,104 @@ async function revealNow(c, btn){
   }
   c.st.done = true; c.st.seen = true; save(c);
   track('reveal', c.key);
+  c.justRevealed = true;   // 這一次進翻牌頁才播動畫；之後再進來直接顯示翻好的牌
   go(`#/${c.key}/reveal`);
 }
 
 // ---------------- C1 翻牌 ----------------
+const scoreBadge = v => v === undefined ? `<span class="badge skip">${esc(t('rev.skip'))}</span>` : `<span class="badge${v < 0 ? ' neg' : v === 0 ? ' zero' : ''}">${sgn(v)}</span>`;
 async function viewReveal(c){
   let rv;
   try { rv = await fetchReveal(c.data.raceId); } catch { return { html: page(bar(raceLabel(c), t('reveal.meta')), errorBox(t('imp.err'))) }; }
-  if (reduceMotion()) return redirect(`#/${c.key}/result`);
+  const animate = c.justRevealed === true; c.justRevealed = false;
+  if (animate && reduceMotion()) return redirect(`#/${c.key}/result`);
   const items = [];
   c.plan.rounds.forEach(r => r.cards.forEach((p, i) => items.push({ p, seat: seatOf(i), issue: r.issueId })));
   c.plan.bonus.forEach((p, i) => items.push({ p, seat: seatOf(i), issue: p.issueId }));
-  const cardsHtml = items.map(({ p, seat, issue }) => {
+  const cardsHtml = items.map(({ p, seat, issue }, k) => {
     const nm = rv.get(p.id)?.candidate?.name ?? '?';
-    return `<div class="flip"><div class="cardback"></div><div class="face ${grpOf(c, nm)}"><span class="ring">${esc([...nm][0])}</span><b>${esc(nm)}</b><span class="fi">${esc(issueLabel(c, issue))} ${esc(seat)}</span></div></div>`;
+    const v = c.st.ratings[p.id];
+    return `<div class="flip${animate ? '' : ' open'}" data-k="${k}" data-pid="${esc(p.id)}"><div class="cardback"></div><div class="face ${grpOf(c, nm)}"><span class="ring">${esc([...nm][0])}</span><b>${esc(nm)}</b><span class="fi">${esc(issueLabel(c, issue))} ${esc(seat)}</span>${scoreBadge(v)}</div></div>`;
   }).join('');
   const body = `
     <h1 class="mid" style="text-align:center">${esc(t('reveal.title'))}</h1>
     <div class="flipgrid" id="flipgrid">${cardsHtml}</div>
-    <a class="btn ghost" id="flipbtn" href="#/${esc(c.key)}/result">${esc(t('reveal.skip'))}</a>
-    <p class="muted" style="text-align:center">${esc(t('reveal.hint'))}</p>`;
+    <a class="${animate ? 'btn ghost' : 'btn'}" id="flipbtn" href="#/${esc(c.key)}/result">${esc(t(animate ? 'reveal.skip' : 'reveal.see'))}</a>${animate ? `
+    <p class="muted" id="revhint" style="text-align:center">${esc(t('reveal.hint'))}</p>` : ''}`;
+  const openSheet = (el, k, opener) => {
+    const { p, seat, issue } = items[k];
+    const r = rv.get(p.id) || {};
+    const nm = r.candidate?.name ?? '?', g = grpOf(c, nm), v = c.st.ratings[p.id];
+    const src = safeUrl(r.sourceUrl);
+    const typ = has('type.' + r.sourceType) ? t('type.' + r.sourceType) : (r.sourceType || '');
+    const host = document.createElement('div');
+    host.className = 'sheetbg';
+    host.innerHTML = `<div class="sheet ${g}" role="dialog" aria-modal="true" aria-label="${esc(t('rev.dialog', { name: nm }))}">
+      <div class="grab" aria-hidden="true"></div>
+      <div class="shd"><span class="ring">${esc([...nm][0])}</span><div class="who"><b>${esc(nm)}</b><small>${esc(t('group.' + g))}・${esc(issueLabel(c, issue))} ${esc(seat)}</small></div><button type="button" class="x" data-sheet-close aria-label="${esc(t('rev.close'))}">✕</button></div>
+      <div class="lbl">${esc(t('rev.yourScore'))}</div>
+      <div class="bigscale" role="img" aria-label="${esc(v === undefined ? t('rev.skip') : sgn(v) + ' ' + t('rate.' + v))}">${[-2, -1, 0, 1, 2].map(x => `<span class="${v === x ? 'on' : ''}">${sgn(x)}<small>${esc(t('rate.' + x))}</small></span>`).join('')}</div>
+      ${v === undefined ? `<div class="gline">${esc(t('rev.skipped'))}</div>` : ''}
+      <div class="tabs" role="group"><button type="button" aria-pressed="true" data-tab="plain">${esc(t('play.plain'))}</button><button type="button" aria-pressed="false" data-tab="orig">${esc(t('rev.orig'))}</button></div>
+      <p class="txt" data-txt>${esc(p.plain)}</p>
+      <div class="srcline"><span>${esc(t('det.sourceLabel'))}${esc(typ)}${r.sourceDate ? '・' + esc(r.sourceDate) : ''}</span>${src ? `<a href="${esc(src)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(src))} ↗</a>` : ''}</div>
+    </div>`;
+    document.body.appendChild(host);
+    const dlg = host.querySelector('.sheet');
+    const focusables = () => [...dlg.querySelectorAll('button, a[href]')];
+    const close = () => { host.remove(); document.removeEventListener('keydown', onKey, true); if (opener && document.contains(opener)) opener.focus(); };
+    const onKey = ev => {
+      if (ev.key === 'Escape'){ ev.preventDefault(); close(); return; }
+      if (ev.key === 'Tab'){
+        const f = focusables(); if (!f.length) return;
+        const first = f[0], last = f[f.length - 1];
+        if (ev.shiftKey && document.activeElement === first){ ev.preventDefault(); last.focus(); }
+        else if (!ev.shiftKey && document.activeElement === last){ ev.preventDefault(); first.focus(); }
+        else if (!dlg.contains(document.activeElement)){ ev.preventDefault(); first.focus(); }
+      }
+    };
+    document.addEventListener('keydown', onKey, true);
+    host.addEventListener('click', ev => {
+      if (ev.target === host || ev.target.closest('[data-sheet-close]')){ close(); return; }
+      const tb = ev.target.closest('[data-tab]');
+      if (tb){ dlg.querySelectorAll('[data-tab]').forEach(x => x.setAttribute('aria-pressed', String(x === tb))); dlg.querySelector('[data-txt]').textContent = tb.dataset.tab === 'plain' ? p.plain : (r.original || ''); sfx('tap'); }
+    });
+    dlg.querySelector('[data-sheet-close]').focus();
+    return close;
+  };
   return {
     html: page(bar(raceLabel(c), t('reveal.meta')), body),
     mount(el){
       const flips = [...el.querySelectorAll('.flip')];
       const timers = [];
+      let closeSheet = null;
+      const makeClickable = () => flips.forEach(f => {
+        const { p, seat, issue } = items[+f.dataset.k];
+        const v = c.st.ratings[p.id];
+        f.setAttribute('role', 'button'); f.setAttribute('tabindex', '0');
+        f.setAttribute('aria-label', t('rev.card', { issue: issueLabel(c, issue), seat, name: rv.get(p.id)?.candidate?.name ?? '?', score: v === undefined ? t('rev.skip') : sgn(v) }));
+      });
+      const onOpen = ev => {
+        const f = ev.target.closest('.flip[role=button]'); if (!f) return;
+        if (ev.type === 'keydown' && ev.key !== 'Enter' && ev.key !== ' ') return;
+        ev.preventDefault();
+        if (closeSheet) closeSheet();
+        sfx('tap');
+        closeSheet = openSheet(el, +f.dataset.k, f);
+      };
+      el.addEventListener('click', onOpen); el.addEventListener('keydown', onOpen);
+      const cleanup = () => { timers.forEach(clearTimeout); if (closeSheet) closeSheet(); el.removeEventListener('click', onOpen); el.removeEventListener('keydown', onOpen); };
+      if (!animate){ makeClickable(); return cleanup; }
       const gap = Math.min(120, Math.floor(1500 / Math.max(1, flips.length)));
       sfx('shuffle');
       flips.forEach((f, i) => timers.push(setTimeout(() => { f.classList.add('open'); if (i % 3 === 0) sfx('card_flip'); }, 500 + i * gap)));
       timers.push(setTimeout(() => {
         sfx('reveal');
         const b = el.querySelector('#flipbtn'); if (b){ b.textContent = t('reveal.see'); b.className = 'btn'; }
+        const h = el.querySelector('#revhint'); if (h) h.remove();
+        makeClickable();
       }, 500 + flips.length * gap + 400));
-      return () => timers.forEach(clearTimeout);
+      return cleanup;
     },
   };
 }
@@ -640,7 +705,7 @@ function resultBody(c, rv, comp){
     <div id="natl-box" style="display:contents"></div>
     <details><summary class="muted">${esc(t('res.adjust'))}</summary><div id="imps" style="margin-top:6px">${impRows(c) || `<p class="muted">${esc(t('imp.none'))}</p>`}</div></details>
     <div class="btns">${EMBED ? `<a class="btn" href="${esc(gameUrl(c))}" target="_blank" rel="noopener">${esc(t('embed.openResult'))}</a>` : `<a class="btn" href="#/${esc(c.key)}/share">${esc(t('res.share'))}</a>`}<button class="btn ghost" data-act="again">${esc(t('res.again'))}</button></div>
-    <a class="btn line" href="#/${esc(c.key)}/detail">${esc(t('res.detail'))}</a>
+    <a class="btn line" href="#/${esc(c.key)}/reveal">${esc(t('res.detail'))}</a>
     <p class="muted">${esc(t('res.disclaimer'))}</p>`;
 }
 
@@ -663,58 +728,6 @@ async function refreshResult(c){
   fillNatl(c);
 }
 
-// ---------------- C3 明細 ----------------
-let detailFilter = 'all';
-async function viewDetail(c){
-  let rv;
-  try { rv = await fetchReveal(c.data.raceId); } catch { return { html: page(bar(raceLabel(c), t('det.meta')), errorBox(t('imp.err'))) }; }
-  const chips = [`<button class="chip${detailFilter === 'all' ? ' on' : ''}" data-act="dfilter" data-v="all">${esc(t('det.all'))}</button>`]
-    .concat(c.plan.rounds.map(r => `<button class="chip${detailFilter === r.issueId ? ' on' : ''}" data-act="dfilter" data-v="${esc(r.issueId)}">${esc(issueLabel(c, r.issueId))}</button>`)).join('');
-  const det = (p, i, issueTag) => {
-    const r = rv.get(p.id) || {};
-    const name = r.candidate?.name ?? '?';
-    const v = c.st.ratings[p.id];
-    const g = c.st.guesses[p.id];
-    let gtag = `<span class="tag">${esc(t('det.noGuess'))}</span>`, gcls = '';
-    if (g && g !== 'unknown' && !issueTag){
-      if (g === name){ gtag = `<span class="tag ok">${esc(t('det.right'))}</span>`; gcls = 'right'; }
-      else { gtag = `<span class="tag no">${esc(t('det.wrong', { name: g }))}</span>`; gcls = 'wrong'; }
-    }
-    const src = safeUrl(r.sourceUrl);
-    const srcHtml = `<p class="src">${esc(t('det.sourceLabel'))}${src ? `<a href="${esc(src)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(src))}</a>` : ''} · ${esc(r.sourceDate || '')} · ${esc(has('type.' + r.sourceType) ? t('type.' + r.sourceType) : (r.sourceType || ''))}</p>`;
-    return `<div class="det ${grpOf(c, name)}" data-guess="${gcls}"><div class="det-top"><span><i class="pdot"></i><b>${esc(name)}</b> · ${esc(issueTag || seatOf(i))}</span><span class="row" style="gap:4px"><span class="tag">${esc(v === undefined ? t('det.unscored') : t('det.yourScore', { v: sgn(v) }))}</span>${issueTag ? '' : gtag}</span></div>
-      <p class="t">${esc(p.plain)}</p>
-      <div class="orig" hidden>${esc(r.original || '')}</div>${srcHtml}
-      <div class="row"><button class="chip" data-act="orig">${esc(t('det.original'))}</button></div></div>`;
-  };
-  const allNames = c.data.candidates.map(x => x.name);
-  const sections = c.plan.rounds.map(r => {
-    const authors = new Set(r.cards.map(p => rv.get(p.id)?.candidate?.name));
-    const absent = allNames.filter(n => !authors.has(n));
-    return `<section data-issue="${esc(r.issueId)}" class="stack" style="gap:10px"><h2 class="mid">${esc(issueLabel(c, r.issueId))}</h2>${r.cards.map((p, i) => det(p, i)).join('')}${absent.length ? `<p class="muted">${esc(t('det.noPassage', { names: absent.join('、') }))}</p>` : ''}</section>`;
-  }).join('');
-  const bonus = c.plan.bonus.length ? `<section data-issue="__bonus" class="stack" style="gap:10px"><div class="hr"></div><div class="eyebrow">${esc(t('det.bonus'))}</div>${c.plan.bonus.map((p, i) => det(p, i, issueLabel(c, p.issueId))).join('')}</section>` : '';
-  const body = `<div class="row">${chips}</div>${sections}${bonus}<a class="btn line" href="#/${esc(c.key)}/result">${esc(t('det.back'))}</a>`;
-  return {
-    html: page(bar(raceLabel(c), t('det.meta')), body),
-    mount(el){
-      applyFilter(el);
-      if (!('IntersectionObserver' in window)) return;
-      const seen = new Set();
-      const io = new IntersectionObserver(es => es.forEach(e => {
-        if (!e.isIntersecting || seen.has(e.target)) return;
-        const g = e.target.dataset.guess; if (!g) return;
-        seen.add(e.target); sfx(g === 'right' ? 'guess_right' : 'guess_wrong');
-      }), { threshold: 0.8 });
-      el.querySelectorAll('.det[data-guess]').forEach(n => io.observe(n));
-      return () => io.disconnect();
-    },
-  };
-}
-function applyFilter(el){
-  el.querySelectorAll('section[data-issue]').forEach(s => { s.hidden = detailFilter !== 'all' && s.dataset.issue !== detailFilter; });
-  el.querySelectorAll('[data-act=dfilter]').forEach(b => { b.classList.toggle('on', b.dataset.v === detailFilter); });
-}
 function safeUrl(u){ try { const x = new URL(u); return /^https?:$/.test(x.protocol) ? x.href : ''; } catch { return ''; } }
 function hostOf(u){ try { return new URL(u).hostname; } catch { return u; } }
 
@@ -1227,11 +1240,6 @@ root.addEventListener('click', async e => {
       const keep = c.st.menuOrder, lean = c.st.lean, seen = c.st.seen;
       const s = freshState(); Object.assign(c.st, s); c.st.menuOrder = keep; c.st.lean = lean; c.st.seen = seen;
       save(c); rebuild(c); go(`#/${c.key}/lean`); break;
-    }
-    case 'dfilter': detailFilter = el.dataset.v; applyFilter(root); sfx('tap'); break;
-    case 'orig': {
-      const det = el.closest('.det'), o = det.querySelector('.orig'); o.hidden = !o.hidden;
-      el.textContent = t(o.hidden ? 'det.original' : 'det.hideOriginal'); sfx('tap'); break;
     }
     case 'copycode': {
       const code = root.dataset.code || root.querySelector('pre.code')?.textContent || '';
