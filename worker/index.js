@@ -9,7 +9,7 @@
 //
 // Only public/ is uploaded as assets (tools/build_public.mjs); nothing else of the repo is reachable.
 
-import { handleApi } from './api.mjs';
+import { handleApi, isApiPath, unavailable } from './api.mjs';
 import { d1Store } from './d1store.mjs';
 import elections from '../data/elections.json' with { type: 'json' };
 import races from '../data/races.json' with { type: 'json' };
@@ -32,10 +32,18 @@ export default {
       return new Response("Not found", { status: 404 });
     }
 
-    // POST_LIMITER: Workers Rate Limiting binding (wrangler.jsonc `ratelimits`, #32). worker/api.mjs keys it by
-    // CF-Connecting-IP and hands the IP to the binding only — never to D1, a response, or a log line.
-    const api = await handleApi(request, { store: d1Store(env.DB), now: new Date(), data, limiter: env.POST_LIMITER });
-    if (api) return api;
+    if (isApiPath(url.pathname)) {
+      // handleApi turns its own exceptions into 503 JSON (#47); this catch covers what happens before it
+      // (reading bindings off env). It cannot cover the isolate failing to start or a platform error — those stay 1101.
+      try {
+        // POST_LIMITER: Workers Rate Limiting binding (wrangler.jsonc `ratelimits`, #32). worker/api.mjs keys it by
+        // CF-Connecting-IP and hands the IP to the binding only — never to D1, a response, or a log line.
+        const api = await handleApi(request, { store: d1Store(env.DB), now: new Date(), data, limiter: env.POST_LIMITER });
+        if (api) return api;
+      } catch (e) {
+        return unavailable(e, data);
+      }
+    }
 
     return env.ASSETS.fetch(request);
   },
