@@ -90,13 +90,8 @@ export function buildPlan(passages, seed){
   return { rounds, bonus, steps: rounds.length + (bonus.length ? 1 : 0) };
 }
 
-// 傾向與猜作者的選單順序：號次都有就照號次；只要有任何一個 null，就每位玩家隨機排一次、存本機（orchestrator 裁決 #3）。
-export function menuOrder(candidates, saved, seed){
-  const names = candidates.map(c => c.name);
-  const hasNull = candidates.some(c => c.number === null || c.number === undefined);
-  if (!hasNull){
-    return candidates.slice().sort((a, b) => a.number - b.number).map(c => c.name);
-  }
-  if (Array.isArray(saved) && saved.length === names.length && names.every(n => saved.includes(n))) return saved;
-  return shuffled(names, seed);
+// 傾向與猜作者的選單順序：直接照 cands/ 給的順序（BE 在 build 時排好：先藍、後綠、再其他，組內照號次）。
+// 不隨機；舊存檔的 saved 與 seed 一律忽略（owner 2026-10-21：「請向投給誰 先藍後綠再其他」，#30）。
+export function menuOrder(candidates, _saved, _seed){
+  return candidates.map(c => c.name);
 }
