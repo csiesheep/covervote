@@ -164,6 +164,13 @@ export default {
   'reveal.skip': '略過',
   'reveal.see': '看結果',
   'reveal.hint': '點一下可略過',
+  'rev.card': '{issue} {seat}，{name}，你給 {score}。點開看詳細政見',
+  'rev.skip': '跳過',
+  'rev.yourScore': '你給的分數',
+  'rev.skipped': '這段你跳過了，沒有計分。',
+  'rev.orig': '原文',
+  'rev.close': '關閉',
+  'rev.dialog': '{name} 的政見',
 
   // C2 結果
   'res.meta': '開票結果',
@@ -230,19 +237,7 @@ export default {
   'res.eq': '同一人',
 
   // C3 明細
-  'det.meta': '翻牌明細',
-  'det.all': '全部',
-  'det.yourScore': '你給 {v}',
-  'det.unscored': '沒打分',
-  'det.right': '猜對',
-  'det.wrong': '猜錯（你猜{name}）',
-  'det.noGuess': '沒猜',
-  'det.source': '出處',
   'det.sourceLabel': '出處：',
-  'det.original': '看原文',
-  'det.hideOriginal': '收起原文',
-  'det.noPassage': '此議題未提出政見：{names}',
-  'det.bonus': '加分題（不計分）',
   'det.back': '回結果',
   'type.gazette': '公報',
   'type.campaign': '競選來源',

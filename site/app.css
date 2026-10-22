@@ -132,7 +132,7 @@ details summary{cursor:pointer}
 .x2.on{border-color:var(--stamp);color:var(--stamp);background:var(--stamp-soft)}
 
 /* reveal */
-.flipgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;perspective:600px}
+.flipgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;perspective:600px}
 .flip{aspect-ratio:5/7;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.3,.7,.2,1)}
 .flip.open{transform:rotateY(180deg)}
 .flip>div{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:8px}
@@ -343,3 +343,38 @@ h1,h2,h3,.brand{font-weight:900}
 /* #42：傾向和契合不一樣時，「你傾向」那張牌變暗（降飽和＋降亮度）；名字仍是深色大字，對比見 handover。同樣不單靠顏色：≠ 與說明句照舊。 */
 .face.dim{filter:saturate(.35) brightness(.7)}
 .face.dim .ring,.face.dim .who{color:#1E1C1A}   /* 變暗後小字與姓氏仍用深色，對比 ≥ 7:1 */
+
+/* ======== #44 翻牌頁：4×3、每張牌一個分數章、點牌拉出抽屜 ======== */
+.flip .face{gap:calc(1px*var(--fs));padding:calc(6px*var(--fs)) 2px calc(8px*var(--fs));justify-content:space-evenly}
+.flip .face .ring{width:calc(24px*var(--fs));height:calc(24px*var(--fs));font-size:calc(12px*var(--fs))}
+.flip .face b{overflow-wrap:anywhere;text-align:center}
+.flip .face .fi{text-align:center;overflow-wrap:anywhere}
+.badge{min-width:calc(32px*var(--fs));padding:0 calc(6px*var(--fs));border-radius:999px;font-family:var(--f-num);font-weight:900;font-size:calc(12px*var(--fs));line-height:1.5;text-align:center;background:#C8321E;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}
+.badge.neg{background:#5B524A}
+.badge.zero{background:#6F685E}
+.badge.skip{background:transparent;color:#6E675D;border:1px dashed #A99F8E;font-family:var(--f-body);font-weight:500;font-size:calc(10px*var(--fs))}
+.flip .face{aspect-ratio:auto;min-height:0;overflow:hidden}   /* aspect-ratio 讓牌被內容撐高，會和旁邊的牌不一樣高 */
+html[data-fs="l"] .flip{aspect-ratio:600/1000}   /* 字級大：牌高一點，字不縮 */
+.flip[role="button"]{cursor:pointer}
+.flip[role="button"]:focus-visible{outline:2px solid #F3C94B;outline-offset:2px}
+.sheetbg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:30}
+.sheet{--ink:#1E1C1A;--ink-2:#6E675D;--rule:#D8D0C1;--paper:#F4EFE4;--stamp:#C8321E;background:#F4EFE4;color:var(--ink);border-radius:18px 18px 0 0;width:100%;max-width:480px;max-height:82%;overflow-y:auto;padding:10px 16px calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;border-top:6px solid var(--p,var(--oth))}
+.sheet .grab{width:40px;height:4px;border-radius:2px;background:var(--rule);margin:0 auto 4px}
+.sheet .shd{display:flex;align-items:center;gap:10px}
+.sheet .ring{width:calc(42px*var(--fs));height:calc(42px*var(--fs));border:3px solid var(--p);border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:900;font-size:calc(20px*var(--fs));color:var(--p);flex:none}
+.sheet .who{display:flex;flex-direction:column;min-width:0}
+.sheet .who b{font-family:var(--f-display);font-size:calc(20px*var(--fs))}
+.sheet .who small{font-size:calc(12px*var(--fs));color:var(--ink-2)}
+.sheet .x{margin-left:auto;border:1px solid var(--rule);background:transparent;border-radius:999px;width:calc(40px*var(--fs));height:calc(40px*var(--fs));font-size:calc(16px*var(--fs));flex:none;color:var(--ink)}
+.sheet .lbl{font-size:calc(11px*var(--fs));letter-spacing:.12em;color:var(--ink-2)}
+.sheet .bigscale{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.sheet .bigscale span{border:1px solid var(--rule);border-radius:8px;text-align:center;padding:6px 0;font-size:calc(13px*var(--fs));font-weight:700;line-height:1.3;color:var(--ink-2)}
+.sheet .bigscale span small{display:block;font-weight:500;font-size:calc(10px*var(--fs))}
+.sheet .bigscale span.on{background:#C8321E;border-color:#C8321E;color:#fff}
+.sheet .gline{font-size:calc(13px*var(--fs))}
+.sheet .tabs{display:flex;border:1px solid var(--rule);border-radius:10px;overflow:hidden;width:max-content}
+.sheet .tabs button{border:0;background:transparent;padding:6px 14px;font-size:calc(13px*var(--fs));min-height:calc(36px*var(--fs));color:var(--ink)}
+.sheet .tabs button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.sheet .txt{font-size:calc(14px*var(--fs));line-height:1.75;white-space:pre-line;margin:0;overflow-wrap:anywhere}
+.sheet .srcline{font-size:calc(12px*var(--fs));color:var(--ink-2);border-top:1px dashed var(--rule);padding-top:8px;display:flex;flex-direction:column;gap:2px}
+.sheet .srcline a{color:var(--ink);word-break:break-all}
