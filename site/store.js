@@ -39,6 +39,7 @@ const randomSeed = () => {
 // lean：姓名 | 'undecided' | 'private' | null；guesses[passageId]：姓名 | 'unknown'
 export function freshState(){
   return { v: 1, seed: randomSeed(), lean: null, ratings: {}, guesses: {}, important: [], menuOrder: null, done: false,
+           seen: false,   // 這支瀏覽器在這個選區開過票（看過答案）。跨「再玩一次」保留；有它就不再送 guess（#31）
            sent: { guess: false, play: false } };   // 這一局的猜作者／局有沒有已經送出（同一局只送一次；再玩一次 = freshState，旗標歸零）
 }
 
@@ -54,7 +55,9 @@ export function loadState(raceId){
     if (Array.isArray(j.important)) s.important = j.important.filter(x => typeof x === 'string');
     if (Array.isArray(j.menuOrder)) s.menuOrder = j.menuOrder.filter(x => typeof x === 'string');
     s.done = j.done === true;
+    s.seen = j.seen === true || s.done;
     if (j.sent && typeof j.sent === 'object') s.sent = { guess: j.sent.guess === true, play: j.sent.play === true };
+    else if (s.done) s.sent = { guess: true, play: true };   // 舊存檔沒有 sent 旗標又已開票：不補送（#31）
   } catch {}
   return s;
 }

@@ -1,6 +1,6 @@
 // site/data.js — 取得選區資料與分組。FE 所有。
 // 開票前只讀 race/<id>.json 與 cands/<id>.json。reveal/ 只在 fetchReveal() 裡，由「開票」按鈕呼叫。
-import { raceIdOf } from './config.js';
+import { raceIdOf, cityKey } from './config.js';
 
 export class NotFound extends Error {}
 
@@ -28,6 +28,7 @@ async function getJson(path){
 
 const cache = new Map();
 export function loadRace(key){
+  if (!cityKey(key)) return Promise.reject(new NotFound(String(key)));   // 外來字串不能進抓檔路徑
   if (!cache.has(key)){
     const p = (async () => {
       const raceId = raceIdOf(key);

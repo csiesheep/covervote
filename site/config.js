@@ -29,6 +29,9 @@ export const TILES = [
   { key: 'kaohsiung', area: '8/4', metro: true },
   { key: 'pingtung', area: '9/4' },
 ];
+// 網址（或任何外來字串）裡的縣市鍵：只認 TILES 裡的鍵，其他一律 null（#31：鍵會進 href 與抓檔路徑，不能信）。
+const TILE_KEYS = new Set(TILES.map(t => t.key));
+export const cityKey = raw => (typeof raw === 'string' && TILE_KEYS.has(raw) ? raw : null);
 export const METRO_KEYS = TILES.filter(t => t.metro).map(t => t.key);
 // 六都資料預計公開的日期（只顯示在「整理中」畫面）
 export const METRO_ETA = "11/1";
