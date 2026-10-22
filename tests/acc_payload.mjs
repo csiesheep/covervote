@@ -182,7 +182,7 @@ check('cands/：inPlay 等於「這位候選人在這一都至少有一段」', 
 // #28：候選人名單的順序（owner 2026-10-21 原話：「請向投給誰 先藍後綠再其他」——傾向投給誰的選單）。
 // data/candidates.json 的 party（內部欄位，不上前端）：'kmt'（藍）、'dpp'（綠）、其他任何值＝其他。
 // 規則：kmt → dpp → 其他；同一組裡號次小的在前、號次 null 的在後，再照 data 的列順序。cands/ 仍然只有 number、name、inPlay。
-const STRICT_28 = false;
+const STRICT_28 = true;   // #28–30 land 時翻
 check('cands/ 的順序：先藍、後綠、再其他（組內照號次）', () => {
   if (!cands) return todo1('build 還沒有產生 covervote/cands/');
   const noParty = candidates.filter(c => !('party' in c)).map(c => c.name);

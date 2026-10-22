@@ -28,7 +28,7 @@ const DATE = /^\d{4}-\d{2}-\d{2}$/;
 
 // 候選人的 party（#29）：必填、字串、小寫英數。PARTY_REQUIRED 在 writer 把每位候選人的 party 補齊之後翻成 true
 // （orchestrator 決定時機）；在那之前缺 party 不擋，免得 main 在資料補齊前變紅。
-export const PARTY_REQUIRED = false;
+export const PARTY_REQUIRED = true;
 const PARTY_CODE = /^[a-z0-9]+$/;
 
 // 選罷法第 53 條的禁止期起點（elections.json 的 pollBlackoutFrom，orchestrator 裁決 #6）：

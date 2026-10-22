@@ -39,7 +39,7 @@ check('不同 seed → 議題順序不同（50 個 seed 裡第一題至少 3 種
 });
 
 // #28：選單順序照 cands/ 的順序（先藍後綠再其他，由 build 排好），不再隨機（owner 2026-10-21：「請向投給誰 先藍後綠再其他」）。
-const STRICT_28P = false;
+const STRICT_28P = true;   // #30 land 時翻
 check('menuOrder 照 cands/ 給的順序，不隨 seed 變', () => {
   if (!mod?.menuOrder) return 'site/data.js 沒有 export menuOrder';
   const cs = [{ name: '丙', number: null }, { name: '甲', number: null }, { name: '乙', number: null }];
