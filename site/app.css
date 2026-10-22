@@ -257,7 +257,7 @@ html.embed .pad.home{padding-top:14px;padding-bottom:10px}
 .score,.scale-lbl{grid-template-columns:calc(88px*var(--fs)) 1fr calc(44px*var(--fs))}   /* 「沒有計分的段落」放得下一行 */
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .brand i{background:var(--ink)}}   /* 暗色：品牌圖示本來是黑底黑字看不見 */
 /* 英文版首頁：縣市名長，格內縮字＋必要時折行；圖例與頁尾可折行，不撐寬 */
-html[lang="en"] .home .tile{font-size:calc(9px*var(--fs));line-height:1.1;overflow-wrap:anywhere;text-align:center;letter-spacing:-.01em}
+html[lang="en"] .home .tile{font-size:calc(9px*var(--fs));line-height:1.1;overflow-wrap:normal;hyphens:manual;text-align:center;letter-spacing:-.01em;padding:0 1px}
 html[lang="en"] .home .tile.live{font-size:calc(9px*var(--fs));overflow-wrap:normal;letter-spacing:-.02em}   /* 粗體的 Kaohsiung 不要被折成兩行 */
 html[lang="en"] .homefoot span+span:not([hidden])::before,html[data-fs="l"] .homefoot span+span:not([hidden])::before{content:none}   /* 會折行的頁尾不用「・」，避免折行後行首掛著一個點 */
 html[lang="en"] .homefoot,html[data-fs="l"] .homefoot{column-gap:12px}

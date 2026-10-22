@@ -179,13 +179,17 @@ async function readyMetros(){
   return ready;
 }
 
+// 英文縣市名放不進格子時只准在音節處折行（軟連字號，折了會顯示「-」），不准斷在字中間（#35）。只用在格子裡的顯示字，aria-label 與按鈕文字用原字。
+const SOFT = { 'Lienchiang': 'Lien­chiang', 'Changhua': 'Chang­hua', 'Kaohsiung': 'Kao­hsiung', 'Taichung': 'Tai­chung', 'Taitung': 'Tai­tung', 'Pingtung': 'Ping­tung', 'Taoyuan': 'Tao­yuan', 'Hsinchu': 'Hsin­chu', 'Hsinchu C.': 'Hsin­chu C.', 'Keelung': 'Kee­lung' };
+const tileText = key => { const n = t('tile.' + key); return lang() === 'en' && SOFT[n] ? SOFT[n] : n; };
+
 async function viewHome(){
   const ready = await readyMetros();
   const last = lastCity();
   if (homePick !== null && !ready.has(homePick)) homePick = null;
   if (homePick === null && last && ready.has(last)) homePick = last;
   const tiles = TILES.map(tl => {
-    const name = esc(t('tile.' + tl.key));
+    const name = esc(tileText(tl.key));
     if (ready.has(tl.key)) return `<button class="tile live${homePick === tl.key ? ' pick' : ''}" style="grid-area:${tl.area}" data-act="pick" data-key="${esc(tl.key)}" aria-pressed="${homePick === tl.key}">${name}</button>`;
     if (tl.metro) return `<a class="tile soon" style="grid-area:${tl.area}" href="#/${esc(tl.key)}" aria-label="${esc(t('tile.' + tl.key) + ' ' + t('home.soon'))}"><span>${name}<small>${esc(t('home.soon'))}</small></span></a>`;
     return `<a class="tile" style="grid-area:${tl.area}" href="#/${esc(tl.key)}">${name}</a>`;
