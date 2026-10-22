@@ -1,5 +1,5 @@
 // worker/security_selftest.mjs — BE 自己的檢查：issue #32（程式審查的後端項）裡 tests/acc_security.mjs 沒涵蓋的邊。BE 所有。
-//   node worker/security_selftest.mjs     （npm run test:be 之後也跑得到：node worker/security_selftest.mjs）
+//   node worker/security_selftest.mjs     （還沒接進 npm run test:be：package.json 不在 #32 的範圍）
 // import 時什麼都不跑（tests/acc_modules.js 會 import worker/ 底下每個檔）。
 // 期望值從 issue #32 與 tests/acc_security.mjs 檔頭的文字抄：415、403、429、8 KB、`https://games.csiesheep.com`、
 // 「沒有 Origin 照常」、「以 CF-Connecting-IP 當鍵、只交給綁定、不寫進任何儲存、不記錄」、「一人一議題一段」、
@@ -118,7 +118,10 @@ export async function run(){
   });
   await t('limiter 本身丟例外 → 放行（fail open，計數照常），不回 500', async () => {
     const s = memStore();
-    const r = await call(post('play', playBody, { ip: IP }), s, { limiter: { limit: async () => { throw new Error('x'); } } });
+    const warn = console.warn; const printed = []; console.warn = (...a) => printed.push(a.join(' '));
+    let r; try { r = await call(post('play', playBody, { ip: IP }), s, { limiter: { limit: async () => { throw new Error('x'); } } }); }
+    finally { console.warn = warn; }
+    if (printed.length !== 1) return `應印一行固定的警告，印了 ${printed.length} 行`;
     const n = await plays(s);
     return (r.status === 204 && n === 1) || `status ${r.status}、計了 ${n} 局`;
   });
