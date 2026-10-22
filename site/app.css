@@ -340,3 +340,7 @@ h1,h2,h3,.brand{font-weight:900}
 .flip .face .fi{font-size:calc(9px*var(--fs));color:#6E675D;line-height:1.1}
 .flip .face::after{height:3px;bottom:6%}
 @media (prefers-reduced-motion:reduce){.pair .face:nth-child(odd),.pair .face:nth-child(even){transform:none}}
+
+/* #42：傾向和契合不一樣時，「你傾向」那張牌變暗（降飽和＋降亮度）；名字仍是深色大字，對比見 handover。同樣不單靠顏色：≠ 與說明句照舊。 */
+.face.dim{filter:saturate(.35) brightness(.7)}
+.face.dim .ring,.face.dim .who{color:#1E1C1A}   /* 變暗後小字與姓氏仍用深色，對比 ≥ 7:1 */
