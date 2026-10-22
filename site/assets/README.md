@@ -42,3 +42,14 @@ Z-Image-Turbo（ComfyUI 範本 `image_z_image_turbo`，節點 57 的 text／widt
 ## 重做
 
 prompt／seed／尺寸如上，同一範本同一組參數會得到同一張。後製參數寫在上面各節。
+
+## og.jpg（1200×630，約 120 KB，#40）
+
+沒有用模型生圖，全由 Pillow 把本目錄現成素材與文字疊起來：
+
+- 背景：`table_wood.webp` 平鋪到 1200×630，對比放大 1.9 倍（縮圖時才看得出木紋），再加偏右的暗角（中心約 68%、最暗 45%）讓左側文字穩。
+- 牌：`card_face.webp`（270×382、順時針 -9°、下緣疊一條朱紅 #C8321E 色條，等於網站用 CSS 做的那條）在前；`card_back.webp`（放大到 270×382、補 18px 圓角）兩張在後，角度 +3°、+14°，皆帶柔影；朱紅菱形留在可見處。
+- 文字（程式疊，不是模型畫）：標題「蓋牌投票箱」96px、副標「名字蓋起來，你會投給誰？」38px、網址 `games.csiesheep.com/covervote` 28px。
+  標題字型 `C:\Windows\Fonts\NotoSerifTC-VF.ttf`（Noto Serif TC 可變字型，字重 900）；副標與網址 `NotoSansTC-VF.ttf`（Noto Sans TC，字重 500）。
+  顏色奶油 #F4EFE4（網址 #D8CFBD），標題下一條朱紅短線，文字皆帶黑色偏移柔影。
+- 輸出：JPEG quality 86、progressive。檢查：藍色偏重的像素 0、綠色偏重的像素 10（JPEG 雜訊，肉眼無色）；圖中沒有人臉、政黨標誌，牌上無字。
