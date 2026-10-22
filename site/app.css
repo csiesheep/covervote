@@ -251,3 +251,23 @@ html[data-fs="l"] .homefoot,html.embed .homefoot{white-space:normal;flex-wrap:wr
 .menu a{display:flex;align-items:center;min-height:44px;padding:0 14px;border-radius:8px;text-decoration:none;font-size:calc(15px*var(--fs))}
 .menu a:hover,.menu a:focus-visible{background:var(--stamp-soft)}
 html.embed .pad.home{padding-top:14px;padding-bottom:10px}
+
+/* ---- #35 ---- */
+.tiles{grid-template-columns:repeat(6,minmax(0,1fr))}   /* 格子內的字再長也不撐寬頁面 */
+.score,.scale-lbl{grid-template-columns:calc(88px*var(--fs)) 1fr calc(44px*var(--fs))}   /* 「沒有計分的段落」放得下一行 */
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .brand i{background:var(--ink)}}   /* 暗色：品牌圖示本來是黑底黑字看不見 */
+/* 英文版首頁：縣市名長，格內縮字＋必要時折行；圖例與頁尾可折行，不撐寬 */
+html[lang="en"] .home .tile{font-size:calc(9px*var(--fs));line-height:1.1;overflow-wrap:anywhere;text-align:center;letter-spacing:-.01em}
+html[lang="en"] .home .tile.live{font-size:calc(9px*var(--fs));overflow-wrap:normal;letter-spacing:-.02em}   /* 粗體的 Kaohsiung 不要被折成兩行 */
+html[lang="en"] .homefoot span+span:not([hidden])::before,html[data-fs="l"] .homefoot span+span:not([hidden])::before{content:none}   /* 會折行的頁尾不用「・」，避免折行後行首掛著一個點 */
+html[lang="en"] .homefoot,html[data-fs="l"] .homefoot{column-gap:12px}
+html[lang="en"] .home .tile small{font-size:calc(8px*var(--fs))}
+html[lang="en"] .home .legend{flex-wrap:wrap;white-space:normal;row-gap:2px}
+html[lang="en"] .homefoot{white-space:normal;flex-wrap:wrap;row-gap:2px;text-align:center}
+/* 字級「大」：首頁不捲（375×600）靠壓縮圖片與行距，不縮字 */
+html[data-fs="l"] .home .hero{aspect-ratio:5/1}
+html[data-fs="l"] .home .tile{line-height:1.1}
+html[data-fs="l"] .home .tile small{line-height:1}
+@media (max-height:620px){html[data-fs="l"] .pad.home{gap:3px;padding-top:4px;padding-bottom:4px}}
+@media (max-height:620px){.home .hero{aspect-ratio:3.4/1}}   /* 375×600 這種矮螢幕：圖再扁一點，不動任何字級 */
+html[data-fs="l"] .home .btn{min-height:52px}

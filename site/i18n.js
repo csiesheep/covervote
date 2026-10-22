@@ -17,6 +17,7 @@ export function initLang(){
 }
 export const lang = () => cur;
 export function t(key, params){
+  if (params && params.n === 1 && has(key + '.one')) key += '.one';   // n === 1 用單數鍵（#34 的 *.one）
   let s = PACKS[cur][key];
   if (s === undefined) s = PACKS['zh-Hant'][key];
   if (s === undefined) return key;
