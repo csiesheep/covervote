@@ -23,6 +23,14 @@
     "binding": "ASSETS",
     "run_worker_first": ["/covervote", "/covervote/api/*"]
   },
+  // Rate limit for POST /covervote/api/guess and /play (issue #32; worker/api.mjs `limited`).
+  // Keyed by CF-Connecting-IP; the IP goes to this binding only (Cloudflare's transient per-location counter),
+  // never to D1 or logs. 300 per 60 s (orchestrator 裁決 #32: 「同意 limit 300/period 60，只在 wrangler.jsonc 一處」):
+  // a class of 30 behind one school NAT sends 60 POSTs in the minute the teacher says 開票. period must be 10 or 60.
+  // namespace_id is an account-wide integer chosen by us; no other csiesheep Worker uses ratelimits today.
+  "ratelimits": [
+    { "name": "POST_LIMITER", "namespace_id": "3201", "simple": { "limit": 300, "period": 60 } }
+  ],
   // Aggregate counters for /covervote/api/* (worker/api.mjs, worker/d1store.mjs).
   // Creating the database is a deploy step and belongs to the orchestrator: create it,
   // paste its id here, then `wrangler d1 migrations apply covervote --remote`.

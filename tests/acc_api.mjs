@@ -3,7 +3,7 @@
 // 規格（owner 2026-10-21 定案，TEAM.md「產品不可協商的約束」）：
 //   - 不上傳個人傾向；全體「傾向 vs 契合」只收匯總計數，未滿 50 局不顯示（MIN_CELL）。
 //   - 選罷法第 53 條：pollBlackoutFrom（data/elections.json）起到投票截止（voteDate 16:00 +08:00）止，
-//     不回傳任何與候選人支持有關的匯總（same/different/none）；局數、段落猜中率照常。
+//     不回傳任何與候選人支持有關的匯總（same/different/none/tie）；局數、段落猜中率照常。
 //   - `internal=1` 的請求一律不計（線上檢查不灌數字）。
 //   - 遮蔽健康度：每段 answers、correct、rate、random（1/該選區有段落的候選人數）；
 //     answers ≥ 200 且 rate > random + 0.20 → flagged（plan 第三節）。
@@ -14,7 +14,7 @@
 //                         incr／get 可以回 Promise，正式環境的 D1 版本一定是非同步的；keys() 只有 memStore 需要）
 //   data = loadData()（tools/build_public.mjs），now = Date 物件。
 //   POST /covervote/api/guess        body { race, guesses: [{ passage, name }] } → 204
-//   POST /covervote/api/play         body { race, verdict: 'same'|'different'|'none' } → 204
+//   POST /covervote/api/play         body { race, verdict: 'same'|'different'|'none'|'tie' }（tie：#33） → 204
 //   GET  /covervote/api/health/<race> → { race, passages: [{ id, answers, correct, rate, random, flagged }] }
 //   GET  /covervote/api/stats/<race>  → { race, plays, blackout, verdicts? }   verdicts = { same, different, none }，
 //        blackout 時或 plays < 50 時沒有 verdicts 這個鍵。
