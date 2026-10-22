@@ -10,6 +10,7 @@ import './acc_data.mjs';
 import './acc_api.mjs';
 import './acc_class.mjs';
 import './acc_plan.mjs';
+import './acc_security.mjs';
 import { R, summary } from './harness.js';
 
 const s = summary();
