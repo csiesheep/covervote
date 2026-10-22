@@ -136,8 +136,8 @@ export default {
   'speak.btn': '🔊 唸給我聽',
   'speak.stop': '■ 停止',
   'speak.result': '🔊 唸結果給我聽',
-  'speak.resSame': '你傾向{lean}，最契合的是{top}。{msg}',
-  'speak.resTop': '最契合的是{top}。{msg}',
+  'speak.resSame': '你傾向{lean}。{label}：{top}。{msg}',
+  'speak.resTop': '{label}：{top}。{msg}',
   'speak.resNone': '{msg}',
 
   // B3 加分題
@@ -212,6 +212,13 @@ export default {
   'res.adjust': '調整重要議題',
   'res.stamp': '開',
   'res.neq': '不是同一人',
+  'res.tie': '並列',
+  'res.tieMsg': '名字蓋起來，你的人和另一位一樣契合。',
+  'res.topNeg': '相對最接近',
+  'res.negNote': '你對每位候選人的平均都是負分，這裡列的是「相對最接近」的人，不代表你認同他們的政見。',
+  'natl.tie': '其中 {p}% 是平手：你的人和另一位一樣契合。',
+  'share.tie.a': '名字蓋起來，\n我原本想投的人', 'share.tie.em': '平手', 'share.tie.b': '另一位一樣契合',
+  'share.nameLineNeg': '相對最接近：{names}',
   'res.eq': '同一人',
 
   // C3 明細
@@ -297,7 +304,7 @@ export default {
   'info.about.body': '蓋牌投票是一個小遊戲：先說你想投誰，再遮住名字給每段政見打分，開票時看你傾向的人和你契合的人是不是同一個。契合分數只反映你這局打的分，不是對任何候選人的評價，也不是投票建議。免費：玩家、老師、媒體嵌入都不用付費。不收任何政黨或候選人的錢。',
   "foot.media": "給媒體",
   "embed.full": "蓋牌投票 · 完整版 ↗",
-  "embed.openResult": "在新分頁開啟完整結果 ↗",
+  "embed.openResult": "在新分頁玩完整版 ↗",
   "media.meta": "給媒體",
   "media.title": "把一局放進你的文章",
   "media.lead": "新聞網站可以把蓋牌投票嵌進文章：讀者在文章裡直接玩一局，遮住名字給政見打分，開票時看自己傾向的人和契合的人是不是同一個。",
@@ -346,6 +353,7 @@ export default {
   "class.vTitle": "傾向 vs 契合",
   "class.v.same": "同一個人",
   "class.v.different": "不同人",
+  "class.v.tie": "平手",
   "class.v.none": "無從比較",
   "class.vNote": "全班 {n} 局。蓋住名字之後，選的人還是原本想投的人嗎？",
   "class.vNote.one": "全班 {n} 局。蓋住名字之後，選的人還是原本想投的人嗎？",

@@ -13,6 +13,8 @@
 //   6. 可能範圍 [lo, hi]：bootstrap 1000 次、取第 10 與第 90 百分位，再保證 lo ≤ score ≤ hi。
 //   7. top = 分數最高的候選人（並列全收），null 不算。
 //   8. verdict(lean, result)：lean 為 null／'undecided'／'private' → 'none'；lean 在 top 裡 → 'same'；否則 'different'。
+//      orchestrator 裁決（#33）：top 有 ≥ 2 人且含 lean → 'tie'（「你的人跟另一位一樣契合」不是「名字蓋起來你還是選他」，
+//      算進 same 會把全體統計的 same 灌高）。top 只有 1 人照舊 same／different；不含 lean 的並列照舊 'different'。
 //
 // orchestrator 裁決（#1，回 BE 的提問）：
 //   - 捨入：遠離 0 的對稱捨入（−12.5 → −13、+12.5 → +13），−0 寫成 0；bootstrap 每次重抽用同一個捨入。
@@ -108,5 +110,6 @@ export function verdict(lean, result){
   if (lean === null || lean === undefined || NO_LEAN.has(lean)) return 'none';
   const top = (result && result.top) || [];
   if (!top.length) return 'none';   // orchestrator 裁決 #1：沒有任何計分段落，說「不同」是錯的結論
-  return top.includes(lean) ? 'same' : 'different';
+  if (!top.includes(lean)) return 'different';
+  return top.length >= 2 ? 'tie' : 'same';   // orchestrator 裁決 #33：並列且含傾向是「一樣契合」，不是 same
 }

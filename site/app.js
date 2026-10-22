@@ -5,7 +5,7 @@
 //  - 傾向、分數、猜作者只存本機（store.js）。不載入錄製腳本；Google Analytics 只在 analytics.js 的條件下載入，事件不帶任何政治資料（#21）。
 //  - 分數一律呼叫 engine/score.mjs，FE 不自己算。候選人的鍵是姓名。
 import { t, initLang, lang, has } from './i18n.js';
-import { raceIdOf, cityKey, MIN_CLASS, TILES, METRO_KEYS, METRO_ETA, CEC_URL, FULL_URL } from './config.js';
+import { raceIdOf, cityKey, MIN_CLASS, TILES, METRO_KEYS, CEC_URL, FULL_URL } from './config.js';
 import { initInternal, initClass, initFontSize, fontSize, setFontSize, FS_SIZES, classCode, newClassCode, loadClasses, saveClasses, CLASS_RE, isEmbed, loadState, saveState, freshState, hasProgress } from './store.js';
 import { initSound, isSoundOn, setSound, sfx } from './sound.js';
 import { hasVoice, syncSpeak, toggleSpeak, stopSpeaking } from './speech.js';
@@ -85,8 +85,8 @@ function rebuild(c){
   c.byName = new Map(c.data.candidates.map(x => [x.name, x]));
 }
 const save = c => saveState(c.data.raceId, c.st);
-const issueLabel = (c, id) => c.issues.get(id) || id;
-const raceLabel = c => c.data.meta.label || c.key;
+const issueLabel = (c, id) => (has('issue.' + id) ? t('issue.' + id) : c.issues.get(id) || id);
+const raceLabel = c => (has('race.' + c.key) ? t('race.' + c.key) : c.data.meta.label || c.key);
 const hasNumbers = c => c.data.candidates.every(x => Number.isInteger(x.number));
 const textMode = () => { try { return localStorage.getItem('covervote:text') === 'masked' ? 'masked' : 'plain'; } catch { return 'plain'; } };
 function setTextMode(m){ try { localStorage.setItem('covervote:text', m); } catch {} }
@@ -129,9 +129,9 @@ async function route(seg){
   if (seg.length === 0) return viewHome();
   if (seg[0] === 'info') return viewInfo(seg[1] || 'method', seg[2] || '');
   if (seg[0] === 'embed') return viewMedia();
-  if (seg[0] === 'class') return viewClass(seg[1] || '', cityKey(seg[2]) || '');
+  if (seg[0] === 'class') return viewClass(seg[1] || '', METRO_KEYS.includes(cityKey(seg[2])) ? cityKey(seg[2]) : '');
   const key = cityKey(seg[0]), sub = seg[1] || '';
-  if (!key) return viewMissing(null);   // 不在 TILES 的鍵一律走「未收錄」，不碰抓檔也不進樣板
+  if (!key || !METRO_KEYS.includes(key)) return viewMissing(key);   // 非六都：不發 race／cands 請求   // 不在 TILES 的鍵一律走「未收錄」，不碰抓檔也不進樣板
   let c;
   try { c = await getCtx(key); }
   catch (e) {
@@ -143,7 +143,14 @@ async function route(seg){
     case '': return viewEntry(c);
     case 'health': return viewHealth(c);
     case 'lean': return viewLean(c);
-    case 'play': return c.st.done ? redirect(`#/${key}/result`) : viewRound(c, parseInt(seg[2] || '1', 10));
+    case 'play': {
+      if (c.st.done) return redirect(`#/${key}/result`);
+      if (!c.plan.rounds.length) return viewRound(c, 1);
+      if (seg[2] === undefined) return redirect(resumeHash(c));
+      const k = normRound(c, seg[2]);
+      if (String(k) !== seg[2]) return redirect(`#/${key}/play/${k}`);   // 越界／壞的輪次：修正網址
+      return viewRound(c, k);
+    }
     case 'bonus': return c.st.done ? redirect(`#/${key}/result`) : viewBonus(c);
     case 'important': return c.st.done ? redirect(`#/${key}/result`) : viewImportant(c);
     case 'reveal': return c.st.done ? viewReveal(c) : redirect(`#/${key}`);
@@ -172,13 +179,17 @@ async function readyMetros(){
   return ready;
 }
 
+// 英文縣市名放不進格子時只准在音節處折行（軟連字號，折了會顯示「-」），不准斷在字中間（#35）。只用在格子裡的顯示字，aria-label 與按鈕文字用原字。
+const SOFT = { 'Lienchiang': 'Lien­chiang', 'Changhua': 'Chang­hua', 'Kaohsiung': 'Kao­hsiung', 'Taichung': 'Tai­chung', 'Taitung': 'Tai­tung', 'Pingtung': 'Ping­tung', 'Taoyuan': 'Tao­yuan', 'Hsinchu': 'Hsin­chu', 'Hsinchu C.': 'Hsin­chu C.', 'Keelung': 'Kee­lung' };
+const tileText = key => { const n = t('tile.' + key); return lang() === 'en' && SOFT[n] ? SOFT[n] : n; };
+
 async function viewHome(){
   const ready = await readyMetros();
   const last = lastCity();
   if (homePick !== null && !ready.has(homePick)) homePick = null;
   if (homePick === null && last && ready.has(last)) homePick = last;
   const tiles = TILES.map(tl => {
-    const name = esc(t('tile.' + tl.key));
+    const name = esc(tileText(tl.key));
     if (ready.has(tl.key)) return `<button class="tile live${homePick === tl.key ? ' pick' : ''}" style="grid-area:${tl.area}" data-act="pick" data-key="${esc(tl.key)}" aria-pressed="${homePick === tl.key}">${name}</button>`;
     if (tl.metro) return `<a class="tile soon" style="grid-area:${tl.area}" href="#/${esc(tl.key)}" aria-label="${esc(t('tile.' + tl.key) + ' ' + t('home.soon'))}"><span>${name}<small>${esc(t('home.soon'))}</small></span></a>`;
     return `<a class="tile" style="grid-area:${tl.area}" href="#/${esc(tl.key)}">${name}</a>`;
@@ -262,7 +273,7 @@ async function viewMissing(key){
     const body = `
       <img class="illo" src="assets/empty_state.webp" alt="" width="768" height="768" style="width:180px">
       <h1 class="mid">${esc(t('soon.title', { city }))}</h1>
-      <p class="muted">${esc(t('soon.body', { md: METRO_ETA }))}</p>
+      <p class="muted">${esc(t('soon.body'))}</p>
       ${first ? `<a class="btn" href="#/${esc(first)}">${esc(t('soon.playOther', { city: t('tile.' + first) }))}</a>` : ''}
       <a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`;
     return { html: page(bar(t('brand'), t('entry.change')), `<div class="stack center" style="gap:14px;align-items:center">${body}</div>`, footer()) };
@@ -298,7 +309,7 @@ function viewEntry(c){
       ${meta.join('')}
       <tr><th>${esc(t('entry.health'))}</th><td><a href="#/${esc(c.key)}/health">${esc(t('entry.healthVal'))}</a></td></tr>
     </table>
-    ${prog && !c.st.done ? `<a class="btn" href="#/${esc(c.key)}/play" data-act="resume">${esc(t('entry.resume'))}</a><button class="btn ghost" data-act="restart">${esc(t('entry.restart'))}</button>`
+    ${prog && !c.st.done ? `<a class="btn" href="${resumeHash(c)}" data-act="resume">${esc(t('entry.resume'))}</a><button class="btn ghost" data-act="restart">${esc(t('entry.restart'))}</button>`
       : c.st.done ? `<a class="btn" href="#/${esc(c.key)}/result">${esc(t('res.meta'))}</a><button class="btn ghost" data-act="restart">${esc(t('res.again'))}</button>`
       : `<a class="btn" href="#/${esc(c.key)}/lean">${esc(t('entry.start'))}</a>`}
     <details><summary class="muted">${esc(t('entry.how'))}</summary>
@@ -385,6 +396,16 @@ function viewRound(c, n){
     <div class="btns"><a class="btn ghost" href="${n > 1 ? `#/${esc(c.key)}/play/${n - 1}` : `#/${esc(c.key)}/lean`}" style="flex:0 0 38%">${esc(t('play.back'))}</a><a class="btn" id="nextbtn" data-act="next-round" data-n="${n}" href="${nextHash(c, n)}" ${roundDone(c, r) ? '' : 'aria-disabled="true"'}>${esc(last ? t('play.nextLast') : t('play.next'))}</a></div>
     <p class="muted" style="text-align:center" id="roundhint">${roundDone(c, r) ? '' : esc(t('play.hint')) + ' · '}<button class="linkbtn" data-act="skip-round" data-n="${n}">${esc(t('play.skip'))}</button></p>`;
   return { html: page(bar(raceLabel(c), `${n} / ${c.plan.steps}`), body), mount: () => { sfx('card_deal'); } };
+}
+// 輪次編號正規化：非整數、小於 1 → 1；超過 → 最後一輪
+function normRound(c, raw){
+  const n = /^[0-9]+$/.test(String(raw)) ? parseInt(raw, 10) : 1;
+  return Math.min(Math.max(n, 1), c.plan.rounds.length);
+}
+// 「繼續」：接到第一個還沒做完的輪次；全做完就接到加分題／重要議題
+function resumeHash(c){
+  const i = c.plan.rounds.findIndex(r => !roundDone(c, r));
+  return i >= 0 ? `#/${c.key}/play/${i + 1}` : nextHash(c, c.plan.rounds.length);
 }
 const roundDone = (c, r) => r.cards.every(p => c.st.ratings[p.id] !== undefined);
 const nextHash = (c, n) => n < c.plan.rounds.length ? `#/${esc(c.key)}/play/${n + 1}` : c.plan.bonus.length ? `#/${esc(c.key)}/bonus` : `#/${esc(c.key)}/important`;
@@ -533,9 +554,10 @@ function natlHtml(c){
   }
   const v = st.verdicts;
   if (!v) return { banner: '', box: `<div class="verdict"><div class="eyebrow">${esc(title)}</div><p class="muted">${esc(t('natl.few', { n: st.plays }))}</p></div>` };
-  const n = v.same + v.different;
+  const tie = v.tie || 0;
+  const n = v.same + v.different + tie;   // 平手自成一列、算進分母（#35）
   const body = n > 0
-    ? `<div class="guessbox" style="border:0;padding:0"><div class="n">${Math.round(v.same / n * 100)}<small>%</small></div><div><b>${esc(t('natl.line', { race: name, p: Math.round(v.same / n * 100) }))}</b><p class="muted">${esc(t('natl.basis', { n }))}</p></div></div>`
+    ? `<div class="guessbox" style="border:0;padding:0"><div class="n">${Math.round(v.same / n * 100)}<small>%</small></div><div><b>${esc(t('natl.line', { race: name, p: Math.round(v.same / n * 100) }))}</b>${tie ? `<p class="muted">${esc(t('natl.tie', { p: Math.round(tie / n * 100) }))}</p>` : ''}<p class="muted">${esc(t('natl.basis', { n }))}</p></div></div>`
     : `<p class="muted">${esc(t('natl.noLean'))}</p>`;
   return { banner: '', box: `<div class="verdict"><div class="eyebrow">${esc(title)}</div>${body}</div>` };
 }
@@ -561,21 +583,25 @@ function resultBody(c, rv, comp){
   const topNames = res.top.filter(n => byName.get(n)?.score !== null);
   const topText = topNames.join('、');
   const st = c.st;
+  // 所有候選人都是負分：不說「最契合」，說「相對最接近」（#35）
+  const allNeg = topNames.length > 0 && byName.get(topNames[0]).score < 0;
+  const topLabel = t(allNeg ? 'res.topNeg' : 'res.top');
   let vsHtml, msg;
   if (verdict === 'none' && !topNames.length){
     vsHtml = `<div class="vs solo"><div class="who"><b>${esc(t('res.tooFew'))}</b></div></div>`;
     msg = t('res.tooFewSub');
-  } else if (verdict === 'same' || verdict === 'different'){
-    vsHtml = `<div class="vs"><div class="who">${esc(t('res.lean'))}<b>${esc(st.lean)}</b></div><div class="neq" role="img" aria-label="${esc(t(verdict === 'same' ? 'res.eq' : 'res.neq'))}">${verdict === 'same' ? '=' : '≠'}</div><div class="who">${esc(t('res.top'))}<b>${esc(topText)}</b></div></div>`;
-    msg = t(verdict === 'same' ? 'res.sameMsg' : 'res.diffMsg');
+  } else if (verdict === 'same' || verdict === 'different' || verdict === 'tie'){
+    const sym = verdict === 'same' ? ['=', 'res.eq'] : verdict === 'tie' ? ['≈', 'res.tie'] : ['≠', 'res.neq'];
+    vsHtml = `<div class="vs"><div class="who">${esc(t('res.lean'))}<b>${esc(st.lean)}</b></div><div class="neq" role="img" aria-label="${esc(t(sym[1]))}">${sym[0]}</div><div class="who">${esc(topLabel)}<b>${esc(topText)}</b></div></div>`;
+    msg = t(verdict === 'same' ? 'res.sameMsg' : verdict === 'tie' ? 'res.tieMsg' : 'res.diffMsg');
   } else {
-    vsHtml = `<div class="vs solo"><div class="who">${esc(t('res.top'))}<b>${esc(topText)}</b></div></div>`;
+    vsHtml = `<div class="vs solo"><div class="who">${esc(topLabel)}<b>${esc(topText)}</b></div></div>`;
     msg = t('res.noneMsg');
   }
   // 結果頁已經開票，名字本來就在畫面上；唸的是「傾向 vs 契合」那一句。
   const sayRes = verdict === 'none' && !topNames.length ? t('speak.resNone', { msg: t('res.tooFew') + t('res.tooFewSub') })
-    : verdict === 'same' || verdict === 'different' ? t('speak.resSame', { lean: st.lean, top: topText, msg })
-    : t('speak.resTop', { top: topText, msg });
+    : verdict === 'same' || verdict === 'different' || verdict === 'tie' ? t('speak.resSame', { lean: st.lean, label: topLabel, top: topText, msg: msg + (allNeg ? t('res.negNote') : '') })
+    : t('speak.resTop', { label: topLabel, top: topText, msg: msg + (allNeg ? t('res.negNote') : '') });
   const rows = c.data.candidates.map(cd => ({ name: cd.name, r: byName.get(cd.name) }))
     .sort((a, b) => (b.r?.score ?? -1e9) - (a.r?.score ?? -1e9) || c.order.indexOf(a.name) - c.order.indexOf(b.name));
   const scoreRows = rows.map(({ name, r }) => {
@@ -593,7 +619,7 @@ function resultBody(c, rv, comp){
     : `<p class="muted">${esc(t('res.guessNone'))}</p>`;
   return `
     <div id="natl-banner" style="display:contents"></div>
-    <div class="verdict"><div class="eyebrow">${esc(t('res.eyebrow'))}</div>${vsHtml}<p class="muted" style="text-align:center">${esc(msg)}</p><div class="speakrow" style="text-align:center">${speakBtn(t('speak.result'), `data-text="${esc(sayRes)}"`)}</div><div class="stampmark" aria-hidden="true">${esc(t('res.stamp'))}</div></div>
+    <div class="verdict"><div class="eyebrow">${esc(t('res.eyebrow'))}</div>${vsHtml}<p class="muted" style="text-align:center">${esc(msg)}</p>${allNeg ? `<p class="muted" style="text-align:center">${esc(t('res.negNote'))}</p>` : ''}<div class="speakrow" style="text-align:center">${speakBtn(t('speak.result'), `data-text="${esc(sayRes)}"`)}</div><div class="stampmark" aria-hidden="true">${esc(t('res.stamp'))}</div></div>
     <div><div class="eyebrow" style="margin-bottom:6px">${esc(t('res.scoreTitle'))}</div>
       <div class="stack" style="gap:8px">${scoreRows}<div class="scale-lbl"><span></span><span><span>−100</span><span>0</span><span>+100</span></span><span></span></div></div>
       <p class="muted" style="margin-top:6px">${esc(t('res.range'))}</p></div>
@@ -642,7 +668,7 @@ async function viewDetail(c){
       else { gtag = `<span class="tag no">${esc(t('det.wrong', { name: g }))}</span>`; gcls = 'wrong'; }
     }
     const src = safeUrl(r.sourceUrl);
-    const srcHtml = `<p class="src">${esc(t('det.source'))}：${src ? `<a href="${esc(src)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(src))}</a>` : ''} · ${esc(r.sourceDate || '')} · ${esc(has('type.' + r.sourceType) ? t('type.' + r.sourceType) : (r.sourceType || ''))}</p>`;
+    const srcHtml = `<p class="src">${esc(t('det.sourceLabel'))}${src ? `<a href="${esc(src)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(src))}</a>` : ''} · ${esc(r.sourceDate || '')} · ${esc(has('type.' + r.sourceType) ? t('type.' + r.sourceType) : (r.sourceType || ''))}</p>`;
     return `<div class="det" data-guess="${gcls}"><div class="det-top"><span><b>${esc(name)}</b> · ${esc(issueTag || seatOf(i))}</span><span class="row" style="gap:4px"><span class="tag">${esc(v === undefined ? t('det.unscored') : t('det.yourScore', { v: sgn(v) }))}</span>${issueTag ? '' : gtag}</span></div>
       <p class="t">${esc(p.plain)}</p>
       <div class="orig" hidden>${esc(r.original || '')}</div>${srcHtml}
@@ -783,9 +809,9 @@ async function viewClass(code, city){
         let vHtml;
         const v = j.verdicts;
         if (v){
-          const tot = (v.same || 0) + (v.different || 0) + (v.none || 0);
+          const tot = (v.same || 0) + (v.different || 0) + (v.tie || 0) + (v.none || 0);
           const row = (k, n) => `<div class="hbar"><span>${esc(t('class.v.' + k))}</span><div class="htrack"><i style="width:${tot ? n / tot * 100 : 0}%"></i></div><span class="num">${tot ? pct(n / tot) : 0}%</span></div>`;
-          vHtml = `<div class="stack" style="gap:10px">${row('same', v.same || 0)}${row('different', v.different || 0)}${row('none', v.none || 0)}</div><p class="muted">${esc(t('class.vNote', { n: tot }))}</p>`;
+          vHtml = `<div class="stack" style="gap:10px">${row('same', v.same || 0)}${row('different', v.different || 0)}${row('tie', v.tie || 0)}${row('none', v.none || 0)}</div><p class="muted">${esc(t('class.vNote', { n: tot }))}</p>`;
         } else if (j.blackout === true || (j.blackout === undefined && plays >= MIN_CLASS)){
           // 有 ≥ 5 局卻沒有 verdicts = 靜默期（選罷法第 53 條）；日期由後端決定，這裡不算
           vHtml = `<div class="banner"><b>${esc(t('blackout.title'))}</b><span>${esc(t('class.blackoutBody'))}</span></div>`;
@@ -793,7 +819,7 @@ async function viewClass(code, city){
           vHtml = `<p class="muted">${esc(t('class.few', { n: plays, min: MIN_CLASS }))}</p>`;
         }
         box.innerHTML = `
-          <div class="verdict"><div class="eyebrow">${esc(t('class.playsLabel'))}</div><div class="clsbig num" style="letter-spacing:0">${plays}<small> ${esc(t('class.playsUnit'))}</small></div></div>
+          <div class="verdict"><div class="eyebrow">${esc(t('class.playsLabel'))}</div><div class="clsbig num" style="letter-spacing:0">${plays}<small> ${esc(t('class.playsUnit', { n: plays }))}</small></div></div>
           <div class="verdict"><div class="eyebrow">${esc(t('class.guessTitle'))}</div>${guessHtml}</div>
           <div class="verdict"><div class="eyebrow">${esc(t('class.vTitle'))}</div>${vHtml}</div>`;
         shown = true;
@@ -860,8 +886,10 @@ async function viewShare(c){
   let rv, comp;
   try { rv = await fetchReveal(c.data.raceId); comp = await compute(c, rv); } catch { return { html: page(bar(raceLabel(c), t('share.meta')), errorBox(t('err.engine'))) }; }
   const gs = guessStats(c, rv);
-  const kind = comp.verdict === 'same' ? 'same' : comp.verdict === 'different' ? 'diff' : 'none';
-  const top = comp.res.top.filter(n => comp.res.candidates.find(x => x.candidateId === n)?.score !== null).join('、');
+  const kind = comp.verdict === 'same' ? 'same' : comp.verdict === 'different' ? 'diff' : comp.verdict === 'tie' ? 'tie' : 'none';
+  const topArr = comp.res.top.filter(n => comp.res.candidates.find(x => x.candidateId === n)?.score !== null);
+  const top = topArr.join('、');
+  const shareNeg = topArr.length > 0 && comp.res.candidates.find(x => x.candidateId === topArr[0]).score < 0;
   const body = `
     <h1 class="mid">${esc(t('share.title'))}</h1>
     <canvas id="ogcanvas" class="ogcanvas" width="${OG_W}" height="${OG_H}" role="img" aria-label="${esc(t('share.cardAlt'))}"></canvas>
@@ -878,7 +906,7 @@ async function viewShare(c){
       const redraw = async () => {
         const my = ++gen;
         const info = { eyebrow: t('share.eyebrow', { race: raceLabel(c) }), a: t(`share.${kind}.a`), em: t(`share.${kind}.em`), b: t(`share.${kind}.b`),
-          names: shareNames && top ? t('share.nameLine', { names: top }) : '',
+          names: shareNames && top ? t(shareNeg ? 'share.nameLineNeg' : 'share.nameLine', { names: top }) : '',
           foot: gs.guessed ? t('share.foot', { c: gs.correct, n: gs.guessed }) : '', url: siteLabel() };
         info.sample = info.eyebrow + info.a + info.em + info.b + info.names + info.foot + info.url;
         await drawCard(cv, c, info);
@@ -924,7 +952,7 @@ async function viewInfo(tab, focus){
     + [1, 2, 3, 4].map(i => `<tr><td>${esc(t('info.privacy.r' + i + 'a'))}</td><td>${esc(t('info.privacy.r' + i + 'b'))}</td></tr>`).join('')
     + `</table><p class="muted">${esc(t('info.privacy.fonts'))}</p><p class="muted">${esc(t('info.privacy.note'))}</p>`
     + `<button type="button" class="btn ghost" data-act="optout" aria-pressed="${isOptedOut()}">${esc(t('info.privacy.optout'))}</button><p class="muted" role="status" id="optoutmsg">${isOptedOut() ? esc(t('info.privacy.optoutOn')) : ''}</p>`;
-  return { html: page(bar(t('brand'), t('info.meta')), `<div class="row">${chips}</div>${content}<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`, footer()),
+  return { html: page(bar(t('brand'), has('info.meta.' + tab) ? t('info.meta.' + tab) : t('info.meta')), `<div class="row">${chips}</div>${content}<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`, footer()),
     mount: () => { if (tab === 'sources' && focus){ const el = document.getElementById('cov-' + focus); if (el) el.scrollIntoView(); } } };
 }
 
@@ -945,7 +973,7 @@ async function viewMedia(){
   const ready = await readyMetros();
   const key = [...ready.keys()][0] || 'taipei';
   const code = embedSnippet(key);
-  const src = location.pathname + '?embed=1#/' + key;
+  const src = location.pathname + '?embed=1&internal=1#/' + key;   // 預覽 iframe 不計入統計
   const body = `
     <h1 class="mid">${esc(t('media.title'))}</h1>
     <p>${esc(t('media.lead'))}</p>
@@ -1097,8 +1125,7 @@ root.addEventListener('click', async e => {
       if (!c) break;
       e.preventDefault();
       const n = parseInt(el.dataset.n, 10), r = c.plan.rounds[n - 1];
-      r.cards.forEach(p => { delete c.st.ratings[p.id]; delete c.st.guesses[p.id]; });
-      save(c); go(nextHash(c, n)); break;
+      go(nextHash(c, n)); break;   // 只往下走：已打的分不清（#35 M2）；沒打分的段落本來就不計
     }
     case 'next-round': {
       if (el.getAttribute('aria-disabled') === 'true') e.preventDefault();

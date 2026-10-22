@@ -33,8 +33,6 @@ export const TILES = [
 const TILE_KEYS = new Set(TILES.map(t => t.key));
 export const cityKey = raw => (typeof raw === 'string' && TILE_KEYS.has(raw) ? raw : null);
 export const METRO_KEYS = TILES.filter(t => t.metro).map(t => t.key);
-// 六都資料預計公開的日期（只顯示在「整理中」畫面）
-export const METRO_ETA = "11/1";
 export const CEC_URL = 'https://www.cec.gov.tw/';
 // 嵌入模式的「完整版」連結（TEAM.md 部署一節的網址）
 export const FULL_URL = 'https://games.csiesheep.com/covervote/';

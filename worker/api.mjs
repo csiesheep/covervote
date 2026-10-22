@@ -7,10 +7,12 @@
 //     limiter  選填，{ limit({ key }) → Promise<{ success }> }：正式環境是 Workers Rate Limiting 綁定（#32），沒給就不限速
 //
 //   POST /covervote/api/guess          { race, guesses: [{ passage, name }] } → 204
-//   POST /covervote/api/play           { race, verdict: 'same'|'different'|'none' } → 204
+//   POST /covervote/api/play           { race, verdict: 'same'|'different'|'none'|'tie' } → 204
 //   GET  /covervote/api/health/<race>  → { race, passages: [{ id, answers, correct, rate, random, flagged }] }
-//   GET  /covervote/api/stats/<race>   → { race, plays, blackout, verdicts? }
+//   GET  /covervote/api/stats/<race>   → { race, plays, blackout, verdicts? }   verdicts = { same, different, none, tie }
 //   GET  /covervote/api/class/<code>/<race> → { class, race, plays, blackout, guesses: { answers, correct }, verdicts? }（#10）
+//   verdict 'tie'（orchestrator 裁決 #33）：並列第一且含玩家傾向。舊的 same／different／none 照收（向下相容），
+//   舊計數不動、不遷移；tie 跟其他三種同一個門檻、同一個禁止期。
 //   POST guess／play 的 body 可以多一個選填的 `class`（班級代碼）：格式對的才另外計入班級，全站照常計。
 //
 // 規則（TEAM.md「產品不可協商的約束」、tests/acc_api.mjs 檔頭）：
@@ -39,7 +41,7 @@ const PREFIX = '/covervote/api';
 const MAX_BODY = 8 * 1024;
 const MIN_PLAYS = 50;
 const FLAG_MIN = 200, FLAG_MARGIN = 0.20;
-const VERDICTS = ['same', 'different', 'none'];
+const VERDICTS = ['same', 'different', 'none', 'tie'];   // tie：#33
 const POLL_CLOSE = 'T16:00:00+08:00'; // 投票截止：投票日當天 16:00（臺灣時間）
 
 export const KEY = {
@@ -172,7 +174,7 @@ async function postGuess(body, { store, data, internal }){
 async function postPlay(body, { store, data, internal }){
   const race = data.races.find(r => r.id === body?.race);
   if (!race) return error(400, '不認得的選區');
-  if (!VERDICTS.includes(body.verdict)) return error(400, 'verdict 要是 same／different／none');
+  if (!VERDICTS.includes(body.verdict)) return error(400, 'verdict 要是 same／different／none／tie');
   const entries = [[KEY.plays(race.id), 1], [KEY.verdict(race.id, body.verdict), 1]];
   const code = classCode(body.class);
   if (code) entries.push([ckey('plays', code, race.id), 1], [ckey('verdict', code, race.id, body.verdict), 1]);
