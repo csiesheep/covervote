@@ -131,7 +131,7 @@ const todo1 = what => STRICT_1 ? what : 'TODO: ' + what;
 const readDir = d => { const p = path.join(out, 'covervote', d); return fs.existsSync(p)
   ? Object.fromEntries(fs.readdirSync(p).filter(f => f.endsWith('.json')).map(f => [f, fs.readFileSync(path.join(p, f), 'utf8')])) : null; };
 const cands = readDir('cands'), reveal = readDir('reveal');
-const CAND_TOP = ['race', 'candidates'], CAND_KEYS = ['number', 'name', 'inPlay'];   // inPlay：orchestrator 裁決 #6
+const CAND_TOP = ['race', 'candidates'], CAND_KEYS = ['number', 'name', 'inPlay', 'group'];   // inPlay：orchestrator 裁決 #6；group：#37
 const REVEAL_TOP = ['race', 'passages'], REVEAL_KEYS = ['id', 'candidate', 'original', 'sourceUrl', 'sourceDate', 'sourceType'];
 
 section('候選人名單檔與開票檔（#1）');
@@ -201,6 +201,31 @@ check('cands/ 的順序：先藍、後綠、再其他（組內照號次）', () 
   if (bad.length) return (STRICT_28 ? '' : 'TODO: ') + bad.slice(0, 3).join('；');
   if (!discriminating) return 'TODO: 母體分不出：每一都的資料順序剛好就是正確順序，照資料順序輸出的錯實作也會綠';
   return ok(true, `${checked} 都的順序正確（其中 ${discriminating} 都的資料順序與答案不同）`);
+});
+
+// #37（owner 2026-10-21：「重新設計每一頁的 UI…可以用顏色或是comfyUI 生圖，表示政黨」，選 C）。orchestrator 裁決：
+// cands/ 每位候選人帶粗分組 group ∈ {kmt, dpp, oth}——只分三色，小黨與無黨籍一律 oth，細的黨名（data 的 party）不得出現在任何前端檔。
+// cands/ 的名字本來就公開，帶 group 不洩漏哪一段是誰寫的（race/ 仍不得有任何政黨資訊，見 G1）。
+const STRICT_37 = false;   // #37 land 時翻
+check('cands/：每位候選人有 group（kmt／dpp／oth），細黨名不外流', () => {
+  if (!cands) return todo1('build 還沒有產生 covervote/cands/');
+  const want = c => c.party === 'kmt' ? 'kmt' : c.party === 'dpp' ? 'dpp' : 'oth';
+  const fine = [...new Set(candidates.map(c => c.party).filter(x => x && x !== 'kmt' && x !== 'dpp'))];
+  const bad = []; let n = 0, oth = 0;
+  for (const rc of races){
+    const t = cands[rc.id + '.json'] || '{"candidates":[]}';
+    for (const f of fine) if (t.includes('"' + f + '"')) bad.push(`${rc.id}: 出現細黨名 ${f}`);
+    for (const c of JSON.parse(t).candidates || []){
+      const d = candidates.find(x => x.raceId === rc.id && x.name === c.name); if (!d) continue;
+      n++; if (want(d) === 'oth') oth++;
+      if (c.group === undefined){ bad.push(`${c.name} 沒有 group`); continue; }
+      if (c.group !== want(d)) bad.push(`${c.name}: group ${c.group} ≠ ${want(d)}`);
+    }
+  }
+  if (!n || !oth || !fine.length) return 'TODO: 母體不足：要有候選人、有 oth、且 data 有細黨名才分得出「把細黨名直接輸出」的錯實作';
+  const onlyMissing = bad.length && bad.every(b => b.endsWith('沒有 group'));
+  if (bad.length) return (STRICT_37 || !onlyMissing ? '' : 'TODO: ') + bad.slice(0, 4).join('；');
+  return ok(true, `${n} 位候選人的 group 正確（其中 ${oth} 位 oth；${fine.length} 種細黨名都沒出現）`);
 });
 
 check('cands/ 裡沒有任何段落 id 或候選人 id', () => {
