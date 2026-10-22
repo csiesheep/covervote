@@ -25,6 +25,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { validate, PUBLIC_PASSAGE_FIELDS } from '../data/schema.mjs';
 
@@ -38,10 +39,17 @@ export function loadData(){
 
 const pick = (obj, keys) => Object.fromEntries(keys.map(k => [k, obj[k]]));
 
+// 段落順序（審查 #2，issue #32）：照 sha256(段落 id) 排，跟作者、跟 data/passages.json 的列順序都無關。
+// 資料檔是 writer 一位候選人一位候選人填的，照列順序輸出時每個議題的第一段幾乎都是同一人，DevTools 裡就能把段落分成兩組。
+// 不直接照 id 字串排：id 現在是亂碼，但哪天改成 p-taipei-c1-01 這種有序的 id，字串排序就又按作者分組了；雜湊不會。
+// 固定的雜湊、不用亂數：同一份資料每次 build 出一樣的位元組（部署後要逐位元組比對）。
+const orderKey = id => createHash('sha256').update(String(id)).digest('hex');
+export const payloadOrder = ps => ps.map(p => [orderKey(p.id), p]).sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0).map(x => x[1]);
+
 // race 帶 voteDate（該場選舉的投票日，倒數用）與 dataAsOf（這個選區段落 sourceDate 的最大值；沒有段落 → null）。
 // 兩者都不指向作者（orchestrator 裁決 #3）。
 export function racePayload(race, passages, elections = []){
-  const ps = passages.filter(p => p.race === race.id);
+  const ps = payloadOrder(passages.filter(p => p.race === race.id));
   const election = elections.find(e => e.id === race.electionId);
   const dataAsOf = ps.reduce((m, p) => (m === null || p.sourceDate > m) ? p.sourceDate : m, null);
   return {

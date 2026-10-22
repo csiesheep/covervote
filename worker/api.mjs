@@ -1,9 +1,10 @@
 // worker/api.mjs — /covervote/api/*：猜作者匯總、局數與「傾向 vs 契合」匯總、選罷法第 53 條自動下架。BE 所有（issue #4）。
 //
-//   handleApi(request, { store, now, data }) → Response | null（不是 /covervote/api/ 就回 null，交給靜態檔）
-//     store  worker/memstore.mjs 或 worker/d1store.mjs（incr/get；有 incrMany/getMany 就用，少打幾次 D1）
-//     now    Date；正式環境是 new Date()，注入是為了測試能模擬 11/20
-//     data   { elections, races, candidates, passages }（loadData() 的形狀；Worker 用 import 打包）
+//   handleApi(request, { store, now, data, limiter }) → Response | null（不是 /covervote/api/ 就回 null，交給靜態檔）
+//     store    worker/memstore.mjs 或 worker/d1store.mjs（incr/get；有 incrMany/getMany 就用，少打幾次 D1）
+//     now      Date；正式環境是 new Date()，注入是為了測試能模擬 11/20
+//     data     { elections, races, candidates, passages }（loadData() 的形狀；Worker 用 import 打包）
+//     limiter  選填，{ limit({ key }) → Promise<{ success }> }：正式環境是 Workers Rate Limiting 綁定（#32），沒給就不限速
 //
 //   POST /covervote/api/guess          { race, guesses: [{ passage, name }] } → 204
 //   POST /covervote/api/play           { race, verdict: 'same'|'different'|'none' } → 204
@@ -21,8 +22,10 @@
 //     局數、段落猜中率不受影響。
 //   - verdicts 未滿 MIN_PLAYS 局不回傳。
 //   - 遮蔽健康度：random = 1 / 該選區有段落的候選人數；answers ≥ FLAG_MIN 且 rate > random + FLAG_MARGIN → flagged。
-//   - 防濫用：body > 8 KB → 413；一次 guess 的筆數 > 該選區段落數 → 400；method 不對 → 405。
+//   - 防濫用：body > 8 KB → 413（沒有 content-length 也是讀到超過就停）；一次 guess 的筆數 > 該選區段落數 → 400；method 不對 → 405。
 //     同一個請求裡同一段只算第一筆（一局每段只猜一次）。
+//   - POST 的順序（#32）：405 → content-type 不是 application/json 415 → 外站 Origin 403 → limiter 拒絕 429 → body 413／400。
+//     前三種都不耗限額、都不計數。
 //   - GET 回應一律 cache-control: no-store：快取會讓 11/17 23:59 的 verdicts 活過 11/18 00:00。
 //
 // 課堂版（issue #10，orchestrator 裁決：沒有帳號，代碼由老師的頁面在前端產生，後端只認格式）：
@@ -91,13 +94,54 @@ export function inBlackout(race, elections, now){
   return t >= from && t < until;
 }
 
+// 有 content-length 就先看它；沒有（chunked）就邊讀邊數，超過 MAX_BODY 立刻 cancel、回 413，不整包讀進記憶體（審查 #13）。
 async function readBody(request){
   const len = Number(request.headers.get('content-length'));
   if (Number.isFinite(len) && len > MAX_BODY) return { status: 413 };
-  const buf = await request.arrayBuffer();
-  if (buf.byteLength > MAX_BODY) return { status: 413 };
+  const parts = []; let size = 0;
+  if (request.body){
+    const reader = request.body.getReader();
+    for (;;){
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.byteLength;
+      if (size > MAX_BODY){ await reader.cancel().catch(() => {}); return { status: 413 }; }
+      parts.push(value);
+    }
+  }
+  const buf = new Uint8Array(size); let off = 0;
+  for (const p of parts){ buf.set(p, off); off += p.byteLength; }
   try { return { body: JSON.parse(new TextDecoder().decode(buf)) }; }
   catch { return { status: 400, msg: 'body 不是 JSON' }; }
+}
+
+// POST 的前置檢查（審查 #5，issue #32）。都在讀 body、碰 limiter 之前做，不花任何成本：
+//   content-type 的 media type 不是 application/json → 415。text/plain、form 是 CORS 的 simple request，
+//     外站頁面不經 preflight 就能讓訪客的瀏覽器送出；要求 application/json，跨站就一定要 preflight，而這裡不回 CORS 標頭。
+//   帶 Origin 但不是本站 → 403。本站 = ALLOWED_ORIGIN，或跟請求網址同源（本機 wrangler dev 的 http://localhost:8787；
+//     orchestrator 裁決 #32：「同意放行同源＋games.csiesheep.com」）。外站頁面送不出等於目標站的 Origin。
+//     沒有 Origin（curl、舊瀏覽器）照常。
+const ALLOWED_ORIGIN = 'https://games.csiesheep.com';
+const mediaType = v => String(v || '').split(';')[0].trim().toLowerCase();
+function precheck(request, url){
+  if (mediaType(request.headers.get('content-type')) !== 'application/json') return error(415, 'content-type 要是 application/json');
+  const origin = request.headers.get('origin');
+  if (origin !== null && origin !== ALLOWED_ORIGIN && origin !== url.origin) return error(403, '不收外站的請求');
+  return null;
+}
+
+// 限速（issue #32）：ctx.limiter 是 Workers Rate Limiting 綁定（wrangler.jsonc 的 ratelimits；數字只寫在那裡），
+// 鍵是 CF-Connecting-IP。IP 只交給綁定（Cloudflare 的暫態計數），不進 store、不進任何回應、不 console 輸出（TEAM.md：不記 IP）。
+// 拒絕 → 429、不計。綁定本身壞掉 → 放行（fail open：限速壞掉不該讓真玩家的局數消失），只印一行固定字串。
+async function limited(request, limiter){
+  if (!limiter) return false;
+  try {
+    const { success } = await limiter.limit({ key: request.headers.get('cf-connecting-ip') || 'no-ip' });
+    return success === false;
+  } catch {
+    console.warn('covervote api: limiter 失敗，放行');
+    return false;
+  }
 }
 
 async function postGuess(body, { store, data, internal }){
@@ -180,7 +224,7 @@ async function getClass(code, race, { store, data, now }){
   return json(out);
 }
 
-export async function handleApi(request, { store, now = new Date(), data }){
+export async function handleApi(request, { store, now = new Date(), data, limiter }){
   const url = new URL(request.url);
   if (url.pathname !== PREFIX && !url.pathname.startsWith(PREFIX + '/')) return null;
   const route = url.pathname.slice(PREFIX.length + 1);
@@ -188,6 +232,9 @@ export async function handleApi(request, { store, now = new Date(), data }){
 
   if (route === 'guess' || route === 'play'){
     if (request.method !== 'POST') return error(405, 'method 不對', { allow: 'POST' });
+    const pre = precheck(request, url);
+    if (pre) return pre;
+    if (await limited(request, limiter)) return error(429, '太頻繁了，稍後再試', { 'retry-after': '60' });
     const r = await readBody(request);
     if (r.status === 413) return error(413, `body 超過 ${MAX_BODY} bytes`);
     if (r.status) return error(r.status, r.msg);

@@ -32,7 +32,9 @@ export default {
       return new Response("Not found", { status: 404 });
     }
 
-    const api = await handleApi(request, { store: d1Store(env.DB), now: new Date(), data });
+    // POST_LIMITER: Workers Rate Limiting binding (wrangler.jsonc `ratelimits`, #32). worker/api.mjs keys it by
+    // CF-Connecting-IP and hands the IP to the binding only — never to D1, a response, or a log line.
+    const api = await handleApi(request, { store: d1Store(env.DB), now: new Date(), data, limiter: env.POST_LIMITER });
     if (api) return api;
 
     return env.ASSETS.fetch(request);
