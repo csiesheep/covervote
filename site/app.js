@@ -205,7 +205,7 @@ async function viewHome(){
     <div class="tiles" role="group" aria-label="${esc(t('home.mapLabel'))}">${tiles}</div>
     <div class="legend"><span><i class="sw"></i>${esc(t('home.legendOn'))}</span><span><i class="sw d"></i>${esc(t('home.legendOff'))}</span><span class="lg-soon">${esc(t('home.legendSoon'))}</span></div>
     <a class="btn" id="startbtn" href="${homePick ? '#/' + homePick : '#/'}" data-act="start" ${homePick ? '' : 'aria-disabled="true"'}>${esc(startLabel())}</a>
-    <p class="homefoot"><span id="homecount"></span><span>${esc(t('home.free'))}</span><span id="plays" hidden></span></p>`;
+    <p class="homefoot"><span id="homecount"></span><span>${esc(t('home.free'))}</span>${EMBED ? '' : `<span><a class="more" href="https://games.csiesheep.com/">${esc(t('home.more'))}</a></span>`}<span id="plays" hidden></span></p>`;
   return { html: page(bar(t('brand'), '', true, homePick || [...ready.keys()][0] || 'taipei'), body, '', 'home'), mount: () => { fillCountdown(ready); fillPlays(ready); return mountMenu(); } };
 }
 // 「≡」選單：開啟時焦點進第一個連結；Esc 關並回到按鈕；點外面、Tab 離開也關。

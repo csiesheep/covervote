@@ -19,6 +19,7 @@ export default {
   'home.legendOn': 'Playable',
   'home.legendSoon': 'Soon = after the Nov 12 gazette',
   'home.free': 'Free. No money from any party or candidate.',
+  'home.more': 'More games',
   'menu.label': 'Menu',
   'home.legendOff': 'Not included this time',
   'home.pick': 'Pick a city to deal',
