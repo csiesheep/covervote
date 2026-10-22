@@ -7,9 +7,10 @@
 //   covervote/race/<raceId>.json     每個選區開票前的題目資料：race { id, label, voteDate, dataAsOf }，
 //                                    段落只有 PUBLIC_PASSAGE_FIELDS
 //   covervote/issues.json            議題顯示名 [{ id, label }]（data/issues.json，FE 不自己放對照表）
-//   covervote/cands/<raceId>.json    開票前的候選人名單 { race, candidates: [{ number, name, inPlay }] }，先藍、後綠、再其他，組內照號次、null 排最後（#29）
+//   covervote/cands/<raceId>.json    開票前的候選人名單 { race, candidates: [{ number, name, inPlay, group }] }，先藍、後綠、再其他，組內照號次、null 排最後（#29）
 //                                    （owner 裁決 2026-10-21：獨立檔、只有號次與姓名、不帶任何段落對應；
-//                                    inPlay = 這一都至少有一段，orchestrator 裁決 #6，猜作者選單只放 inPlay 的人）
+//                                    inPlay = 這一都至少有一段，orchestrator 裁決 #6，猜作者選單只放 inPlay 的人；
+//                                    group ∈ kmt／dpp／oth，政黨色用，orchestrator 裁決 #37，細的 party 值不上前端）
 //   covervote/reveal/<raceId>.json   開票檔 { race, passages: [{ id, candidate: { number, name }, original,
 //                                    sourceUrl, sourceDate, sourceType }] }，開票時才 fetch
 //                                    （orchestrator 裁決 #1：檔案公開可抓，v1 接受）
@@ -20,6 +21,7 @@
 //                                    帶 no-transform 的回應它不改寫。只列 HTML 的網址，其他檔維持預設快取。
 //
 // 開票前的 payload（race/、cands/）不得含任何能指出作者的東西（tests/acc_payload.mjs 守這條）。
+// 政黨只以粗分組 group 出現在 cands/（名字本來就公開，不洩漏哪一段是誰的）；race/、reveal/ 沒有任何政黨資訊（#37）。
 // 三種檔都用白名單一欄一欄挑，不用展開整列：資料表多一欄，不會自己跑上前端。
 
 import fs from 'node:fs';
@@ -64,9 +66,13 @@ export const issuesPayload = issues => issues.map(i => ({ id: i.id, label: i.lab
 //   1. party：'kmt'（藍）→ 'dpp'（綠）→ 其他任何值（含還沒填 party 的列）
 //   2. 同一組裡號次小的在前；null（未抽籤）排最後
 //   3. 再照 data/candidates.json 的列順序（Array.prototype.sort 是穩定的）
-// party 只用來排序，不寫進任何前端檔（cands/、reveal/ 都用白名單挑欄位）。
+// 細的 party 值不寫進任何前端檔（cands/、reveal/ 都用白名單挑欄位）；cands/ 只帶由它算出的粗分組 group（#37）。
 export const PARTY_RANK = { kmt: 0, dpp: 1 };
 const partyRank = c => Object.hasOwn(PARTY_RANK, c.party) ? PARTY_RANK[c.party] : 2;   // hasOwn：'constructor' 之類不會撈到原型
+
+// 粗分組（orchestrator 裁決 #37：只分三組 kmt／dpp／oth，小黨、無黨籍一律 oth）。前端用它上政黨色；
+// 細黨名不外流，免得替小黨標錯、或讓前端各自配色。跟 PARTY_RANK 同一個判斷：排序的「其他」就是 oth。
+export const partyGroup = c => Object.hasOwn(PARTY_RANK, c.party) ? c.party : 'oth';
 const byNumber = (a, b) => (a.number === null) - (b.number === null) || (a.number ?? 0) - (b.number ?? 0);
 export const byMenuOrder = (a, b) => partyRank(a) - partyRank(b) || byNumber(a, b);
 
@@ -78,7 +84,7 @@ export function candsPayload(race, candidates, passages){
   return {
     race: { id: race.id, label: race.label },
     candidates: candidates.filter(c => c.raceId === race.id).sort(byMenuOrder)
-      .map(c => ({ number: c.number, name: c.name, inPlay: hasPassage.has(c.id) })),
+      .map(c => ({ number: c.number, name: c.name, inPlay: hasPassage.has(c.id), group: partyGroup(c) })),
   };
 }
 
