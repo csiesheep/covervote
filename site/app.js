@@ -41,10 +41,11 @@ const menuHtml = hk => `<button class="snd menu-btn" data-act="menu" aria-expand
 function bar(left, meta, menu, hk = 'taipei'){
   if (EMBED) return '';
   const on = isSoundOn();
-  return `<header class="bar${menu ? ' home-bar' : ''}"><a class="brand" href="#/"><i></i>${esc(left)}</a><span class="bar-r">${menu ? '' : meta ? `<span class="meta num" id="barmeta">${esc(meta)}</span>` : '<span class="meta num" id="barmeta"></span>'}`
+  const sub = left && left !== t('brand') ? `<div class="subbar">${esc(left)}</div>` : '';
+  return `<header class="bar${menu ? ' home-bar' : ''}"><a class="brand" href="#/" aria-label="${esc(t('brand.home'))}"><i></i>${esc(t('brand'))}</a><span class="bar-r">${menu ? '' : meta ? `<span class="meta num" id="barmeta">${esc(meta)}</span>` : '<span class="meta num" id="barmeta"></span>'}`
     + `<button class="fsz" data-act="fontsize" aria-label="${esc(t('font.label', { size: t('font.' + fontSize()) }))}">${esc(t('font.btn'))}<small>${esc(t('font.' + fontSize()))}</small></button>`
     + (menu ? menuHtml(hk) : '')
-    + `<button class="snd" data-act="sound" aria-pressed="${on}" aria-label="${esc(t(on ? 'sound.on' : 'sound.off'))}" title="${esc(t(on ? 'sound.on' : 'sound.off'))}">${on ? ICON_ON : ICON_OFF}</button></span></header>`;
+    + `<button class="snd" data-act="sound" aria-pressed="${on}" aria-label="${esc(t(on ? 'sound.on' : 'sound.off'))}" title="${esc(t(on ? 'sound.on' : 'sound.off'))}">${on ? ICON_ON : ICON_OFF}</button></span>${sub}</header>`;
 }
 const footer = healthKey => EMBED
   ? `<footer class="foot embed-foot"><a href="${FULL_URL}" target="_blank" rel="noopener">${esc(t('embed.full'))}</a></footer>`
@@ -86,6 +87,10 @@ function rebuild(c){
 }
 const save = c => saveState(c.data.raceId, c.st);
 const issueLabel = (c, id) => (has('issue.' + id) ? t('issue.' + id) : c.issues.get(id) || id);
+// 政黨粗分組（cands/ 的 group：kmt／dpp／oth；#37）。只在名字已公開的頁面使用：選傾向、開票翻牌、結果、明細、資料來源、分享卡。
+const grpCls = g => (g === 'kmt' || g === 'dpp' ? g : 'oth');
+const grpOf = (c, name) => grpCls(c.byName.get(name)?.group);
+const faceHtml = (c, name, label, score) => `<div class="face ${grpOf(c, name)}"><span class="who">${esc(label)}</span><span class="ring">${esc([...name][0])}</span><span class="nm">${esc(name)}</span>${score === null || score === undefined ? '' : `<b class="sc num">${sgn(score)}</b>`}</div>`;
 const raceLabel = c => (has('race.' + c.key) ? t('race.' + c.key) : c.data.meta.label || c.key);
 const hasNumbers = c => c.data.candidates.every(x => Number.isInteger(x.number));
 const textMode = () => { try { return localStorage.getItem('covervote:text') === 'masked' ? 'masked' : 'plain'; } catch { return 'plain'; } };
@@ -195,7 +200,7 @@ async function viewHome(){
     return `<a class="tile" style="grid-area:${tl.area}" href="#/${esc(tl.key)}">${name}</a>`;
   }).join('');
   const body = `
-    <img class="illo hero" src="assets/hero.webp" alt="${esc(t('home.heroAlt'))}" width="1152" height="384" fetchpriority="high" decoding="async">
+    <div class="deckwrap" role="img" aria-label="${esc(t('home.heroAlt'))}">${[-2, -1, 0, 1, 2].map(i => `<i class="cb" style="--i:${i}"></i>`).join('')}<p class="wordmark">${esc(t('brand'))}</p></div>
     <h1 class="big tagline" style="--tl:${lang() === 'en' ? 24.2 : 12.3}">${esc(t('home.title'))}</h1>
     <div class="tiles" role="group" aria-label="${esc(t('home.mapLabel'))}">${tiles}</div>
     <div class="legend"><span><i class="sw"></i>${esc(t('home.legendOn'))}</span><span><i class="sw d"></i>${esc(t('home.legendOff'))}</span><span class="lg-soon">${esc(t('home.legendSoon'))}</span></div>
@@ -325,7 +330,7 @@ function viewLean(c){
     const cand = c.byName.get(name);
     const on = c.st.lean === name;
     const no = Number.isInteger(cand.number) ? `<small>${esc(t('lean.no', { n: cand.number }))}</small>` : '';
-    return `<button class="opt" role="radio" aria-label="${esc(name + (Number.isInteger(cand.number) ? ", " + t("lean.no", { n: cand.number }) : ""))}" aria-checked="${on}" data-act="lean" data-v="${esc(name)}"${collapsed && i >= 3 ? ' data-more hidden' : ''}><span class="ava" aria-hidden="true">${esc([...name][0])}</span><span>${esc(name)}${no}</span></button>`;
+    return `<button class="opt" role="radio" aria-label="${esc(name + (Number.isInteger(cand.number) ? ", " + t("lean.no", { n: cand.number }) : ""))}" aria-checked="${on}" data-act="lean" data-v="${esc(name)}"${collapsed && i >= 3 ? ' data-more hidden' : ''}><span class="ava ${grpCls(cand.group)}" aria-hidden="true">${esc([...name][0])}</span><span>${esc(name)}<small><i class="pdot ${grpCls(cand.group)}"></i>${esc(t('group.' + grpCls(cand.group)))}</small>${no}</span></button>`;
   };
   const rest = names.length - 3;
   const body = `
@@ -391,6 +396,7 @@ function viewRound(c, n){
   const last = n === rounds.length;
   const body = `
     ${roundSteps(c, n - 1)}
+    <div class="backs" aria-hidden="true"><i class="back"></i><i class="back"></i></div>
     <div class="issuerow"><h1 class="mid">${esc(issueLabel(c, r.issueId))}</h1>${toggleHtml()}</div>
     ${r.cards.map((p, i) => cardHtml(c, p, i, { guess: true })).join('')}
     <div class="btns"><a class="btn ghost" href="${n > 1 ? `#/${esc(c.key)}/play/${n - 1}` : `#/${esc(c.key)}/lean`}" style="flex:0 0 38%">${esc(t('play.back'))}</a><a class="btn" id="nextbtn" data-act="next-round" data-n="${n}" href="${nextHash(c, n)}" ${roundDone(c, r) ? '' : 'aria-disabled="true"'}>${esc(last ? t('play.nextLast') : t('play.next'))}</a></div>
@@ -431,11 +437,13 @@ function impRows(c){
     return `<div class="wt"><span>${esc(issueLabel(c, r.issueId))}</span><button class="x2${on ? ' on' : ''}" data-act="x2" data-issue="${esc(r.issueId)}" aria-pressed="${on}">${esc(t('imp.x2'))}</button></div>`;
   }).join('');
 }
+const handNote = c => t('imp.hand', { n: [...c.plan.rounds.flatMap(r => r.cards), ...c.plan.bonus].filter(p => c.st.ratings[p.id] !== undefined).length, k: c.st.important.length });
 function viewImportant(c){
   const body = `
     <h1 class="mid">${esc(t('imp.title'))}</h1>
     <p class="muted">${esc(t('imp.sub'))}</p>
     <div id="imps">${impRows(c) || `<p class="muted">${esc(t('imp.none'))}</p>`}</div>
+    <div class="felt small" id="handnote">${esc(handNote(c))}</div>
     <div id="revealerr"></div>
     <button class="btn" id="revealbtn" data-act="reveal">${esc(t('imp.reveal'))}</button>
     <a class="btn ghost" href="${c.plan.bonus.length ? `#/${esc(c.key)}/bonus` : `#/${esc(c.key)}/play/${Math.max(1, c.plan.rounds.length)}`}">${esc(t('play.back'))}</a>`;
@@ -481,7 +489,7 @@ async function viewReveal(c){
   c.plan.bonus.forEach((p, i) => items.push({ p, seat: seatOf(i), issue: p.issueId }));
   const cardsHtml = items.map(({ p, seat, issue }) => {
     const nm = rv.get(p.id)?.candidate?.name ?? '?';
-    return `<div class="flip"><div class="cardback"></div><div class="face"><b>${esc(nm)}</b>${esc(issueLabel(c, issue))} ${esc(seat)}</div></div>`;
+    return `<div class="flip"><div class="cardback"></div><div class="face ${grpOf(c, nm)}"><span class="ring">${esc([...nm][0])}</span><b>${esc(nm)}</b><span class="fi">${esc(issueLabel(c, issue))} ${esc(seat)}</span></div></div>`;
   }).join('');
   const body = `
     <h1 class="mid" style="text-align:center">${esc(t('reveal.title'))}</h1>
@@ -591,11 +599,13 @@ function resultBody(c, rv, comp){
     vsHtml = `<div class="vs solo"><div class="who"><b>${esc(t('res.tooFew'))}</b></div></div>`;
     msg = t('res.tooFewSub');
   } else if (verdict === 'same' || verdict === 'different' || verdict === 'tie'){
-    const sym = verdict === 'same' ? ['=', 'res.eq'] : verdict === 'tie' ? ['≈', 'res.tie'] : ['≠', 'res.neq'];
-    vsHtml = `<div class="vs"><div class="who">${esc(t('res.lean'))}<b>${esc(st.lean)}</b></div><div class="neq" role="img" aria-label="${esc(t(sym[1]))}">${sym[0]}</div><div class="who">${esc(topLabel)}<b>${esc(topText)}</b></div></div>`;
+    const scoreOf = n => { const x = byName.get(n); return x && x.score !== null ? x.score : null; };
+    const others = topNames.filter(n => n !== st.lean).slice(0, 3);
+    const cards = verdict === 'same' ? [faceHtml(c, st.lean, t('res.lean'), scoreOf(st.lean))] : [faceHtml(c, st.lean, t('res.lean'), scoreOf(st.lean)), ...others.map(n => faceHtml(c, n, topLabel + (verdict === 'tie' ? '（' + t('res.tie') + '）' : ''), scoreOf(n)))];
+    vsHtml = `<div class="pair n${cards.length}" aria-label="${esc(t(verdict === 'same' ? 'res.eq' : verdict === 'tie' ? 'res.tie' : 'res.neq'))}">${cards.join('')}</div>`;
     msg = t(verdict === 'same' ? 'res.sameMsg' : verdict === 'tie' ? 'res.tieMsg' : 'res.diffMsg');
   } else {
-    vsHtml = `<div class="vs solo"><div class="who">${esc(topLabel)}<b>${esc(topText)}</b></div></div>`;
+    vsHtml = `<div class="pair n${Math.min(3, topNames.length)}">${topNames.slice(0, 3).map(n => faceHtml(c, n, topLabel, byName.get(n)?.score ?? null)).join('')}</div>`;
     msg = t('res.noneMsg');
   }
   // 結果頁已經開票，名字本來就在畫面上；唸的是「傾向 vs 契合」那一句。
@@ -611,12 +621,12 @@ function resultBody(c, rv, comp){
   const scoreRows = rows.map(({ name, r }) => {
     const fc = focus.has(name) ? ' focus' : '';
     if (!r || r.score === null){
-      return `<div class="score${fc}"><span class="nm">${esc(name)}<br><span class="conf">${esc(t('res.noKey'))}</span></span><div class="axis"></div><span class="num">—</span></div>`;
+      return `<div class="score${fc} ${grpOf(c, name)}"><span class="nm">${esc(name)}<br><span class="conf">${esc(t('res.noKey'))}</span></span><div class="axis"></div><span class="num">—</span></div>`;
     }
     const s = r.score;
     const bar = s >= 0 ? `left:50%;width:${s / 2}%` : `left:${50 + s / 2}%;width:${-s / 2}%`;
     const ci = `left:${50 + r.lo / 2}%;width:${Math.max(0.6, (r.hi - r.lo) / 2)}%`;
-    return `<div class="score${fc}"><span class="nm">${esc(name)}${r.lowConfidence ? `<br><span class="conf">${esc(t('res.low', { n: r.n }))}</span>` : ''}</span><div class="axis"><i class="b${s < 0 ? ' neg' : ''}" style="${bar}"></i><i class="ci" style="${ci}"></i></div><span class="num">${sgn(s)}</span></div>`;
+    return `<div class="score${fc} ${grpOf(c, name)}"><span class="nm">${esc(name)}${r.lowConfidence ? `<br><span class="conf">${esc(t('res.low', { n: r.n }))}</span>` : ''}</span><div class="axis"><i class="b${s < 0 ? ' neg' : ''}" style="${bar}"></i><i class="ci" style="${ci}"></i></div><span class="num">${sgn(s)}</span></div>`;
   }).join('');
   const gs = guessStats(c, rv);
   const guessHtml = gs.guessed
@@ -624,8 +634,8 @@ function resultBody(c, rv, comp){
     : `<p class="muted">${esc(t('res.guessNone'))}</p>`;
   return `
     <div id="natl-banner" style="display:contents"></div>
-    <div class="verdict"><div class="eyebrow">${esc(t('res.eyebrow'))}</div>${vsHtml}<p class="muted" style="text-align:center">${esc(msg)}</p>${allNeg ? `<p class="muted" style="text-align:center">${esc(t('res.negNote'))}</p>` : ''}<div class="speakrow" style="text-align:center">${speakBtn(t('speak.result'), `data-text="${esc(sayRes)}"`)}</div><div class="stampmark" aria-hidden="true">${esc(t('res.stamp'))}</div></div>
-    <div><div class="eyebrow" style="margin-bottom:6px">${esc(t('res.scoreTitle'))}</div>
+    <div class="resfaces"><div class="eyebrow">${esc(t('res.eyebrow'))}</div>${vsHtml}<p class="muted" style="text-align:center">${esc(msg)}</p>${allNeg ? `<p class="muted" style="text-align:center">${esc(t('res.negNote'))}</p>` : ''}<div class="speakrow" style="text-align:center">${speakBtn(t('speak.result'), `data-text="${esc(sayRes)}"`)}</div></div>
+    <div class="felt"><div class="eyebrow" style="margin-bottom:6px">${esc(t('res.scoreTitle'))}</div>
       <div class="stack" style="gap:8px">${scoreRows}<div class="scale-lbl"><span></span><span><span>−100</span><span>0</span><span>+100</span></span><span></span></div></div>
       ${noPolicy.length ? `<p class="muted" style="margin-top:6px">${esc(noPolicy.includes(st.lean) ? t('res.noPolicyLean', { n: noPolicy.length, lean: st.lean }) : t('res.noPolicy', { n: noPolicy.length }))} <a href="#/info/sources/${esc(c.key)}">${esc(t('res.noPolicySrc'))}</a></p>` : ''}
       <p class="muted" style="margin-top:6px">${esc(t('res.range'))}</p></div>
@@ -675,7 +685,7 @@ async function viewDetail(c){
     }
     const src = safeUrl(r.sourceUrl);
     const srcHtml = `<p class="src">${esc(t('det.sourceLabel'))}${src ? `<a href="${esc(src)}" target="_blank" rel="noopener noreferrer">${esc(hostOf(src))}</a>` : ''} · ${esc(r.sourceDate || '')} · ${esc(has('type.' + r.sourceType) ? t('type.' + r.sourceType) : (r.sourceType || ''))}</p>`;
-    return `<div class="det" data-guess="${gcls}"><div class="det-top"><span><b>${esc(name)}</b> · ${esc(issueTag || seatOf(i))}</span><span class="row" style="gap:4px"><span class="tag">${esc(v === undefined ? t('det.unscored') : t('det.yourScore', { v: sgn(v) }))}</span>${issueTag ? '' : gtag}</span></div>
+    return `<div class="det ${grpOf(c, name)}" data-guess="${gcls}"><div class="det-top"><span><i class="pdot"></i><b>${esc(name)}</b> · ${esc(issueTag || seatOf(i))}</span><span class="row" style="gap:4px"><span class="tag">${esc(v === undefined ? t('det.unscored') : t('det.yourScore', { v: sgn(v) }))}</span>${issueTag ? '' : gtag}</span></div>
       <p class="t">${esc(p.plain)}</p>
       <div class="orig" hidden>${esc(r.original || '')}</div>${srcHtml}
       <div class="row"><button class="chip" data-act="orig">${esc(t('det.original'))}</button></div></div>`;
@@ -855,37 +865,65 @@ const shareUrl = gameUrl;
 const siteLabel = () => location.host + location.pathname.replace(/index\.html$/, '').replace(/\/$/, '');
 const loadImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
 
+const GRP_COLOR = { kmt: '#2D5DB0', dpp: '#1F9149', oth: '#8C857B' };
+// 分享卡（C 牌桌）：深色木桌、奶油牌面。預設（沒勾姓名）牌上不放姓名、政黨色改成中性灰；勾了才放姓氏圈與政黨色（名字公開才有政黨色）。
 async function drawCard(canvas, c, info){
   const ctx = canvas.getContext('2d');
-  const fam = '"LXGW WenKai TC","Kaiti TC","STKaiti",serif', sans = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif', mono = '"IBM Plex Mono",ui-monospace,Consolas,monospace';
-  try { await Promise.race([Promise.all([document.fonts.load(`700 60px ${fam}`, info.sample), document.fonts.load(`400 28px ${sans}`, info.sample), document.fonts.load(`500 28px ${mono}`)]), new Promise(r => setTimeout(r, 2500))]); } catch {}
+  const fam = '"Noto Serif TC","Songti TC","STSong","Source Han Serif TC",serif', sans = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif', mono = '"IBM Plex Mono",ui-monospace,Consolas,monospace';
+  try { await Promise.race([Promise.all([document.fonts.load(`900 60px ${fam}`, info.sample), document.fonts.load(`400 28px ${sans}`, info.sample), document.fonts.load(`500 28px ${mono}`)]), new Promise(r => setTimeout(r, 2500))]); } catch {}
   ctx.clearRect(0, 0, OG_W, OG_H);
-  ctx.fillStyle = '#FBF6EA'; ctx.fillRect(0, 0, OG_W, OG_H);
-  try { ctx.drawImage(await loadImg('assets/og_bg.webp'), 0, 0, OG_W, OG_H); } catch {}
+  ctx.fillStyle = '#2B241E'; ctx.fillRect(0, 0, OG_W, OG_H);
+  try { const wood = await loadImg('assets/table_wood.webp'); ctx.fillStyle = ctx.createPattern(wood, 'repeat'); ctx.fillRect(0, 0, OG_W, OG_H); } catch {}
+  const grad = ctx.createRadialGradient(OG_W / 2, 0, 40, OG_W / 2, 0, OG_W * 0.8); grad.addColorStop(0, 'rgba(70,56,44,.55)'); grad.addColorStop(1, 'rgba(43,36,30,0)');
+  ctx.fillStyle = grad; ctx.fillRect(0, 0, OG_W, OG_H);
   const X = 72, MAXW = 520, sp = lang() === 'en' ? ' ' : '';
   ctx.textBaseline = 'alphabetic';
-  ctx.fillStyle = '#5E5A54'; ctx.font = `400 28px ${sans}`;
+  ctx.fillStyle = '#C9BBA6'; ctx.font = `400 28px ${sans}`;
   ctx.fillText(info.eyebrow, X, 100);
-  // 標題：三行；第二行最後接紅字。字級縮到最寬的一行放得進左半邊。
   const [a0, a1 = ''] = info.a.split('\n');
   const lns = [[[a0, 0]], [[a1 ? a1 + sp : '', 0], [info.em + sp, 1]], [[info.b, 0]]];
-  const fit = size => { ctx.font = `700 ${size}px ${fam}`; return Math.max(...lns.map(l => l.reduce((w, [tx]) => w + ctx.measureText(tx).width, 0))); };
+  const fit = size => { ctx.font = `900 ${size}px ${fam}`; return Math.max(...lns.map(l => l.reduce((w, [tx]) => w + ctx.measureText(tx).width, 0))); };
   let size = 80; const w1 = fit(100); size = Math.min(80, Math.floor(100 * MAXW / w1));
-  ctx.font = `700 ${size}px ${fam}`;
+  ctx.font = `900 ${size}px ${fam}`;
   let y = 100 + size * 1.55;
   for (const l of lns){
     let x = X;
-    for (const [tx, hot] of l){ ctx.fillStyle = hot ? '#C4321F' : '#1F1D1B'; ctx.fillText(tx, x, y); x += ctx.measureText(tx).width; }
+    for (const [tx, hot] of l){ ctx.fillStyle = hot ? '#F08A6E' : '#F4EFE4'; ctx.fillText(tx, x, y); x += ctx.measureText(tx).width; }
     y += size * 1.3;
   }
   if (info.names){
-    ctx.fillStyle = '#1F1D1B'; ctx.font = `700 36px ${fam}`;
+    ctx.fillStyle = '#F4EFE4'; ctx.font = `700 36px ${fam}`;
     let nm = info.names; while (ctx.measureText(nm).width > MAXW && nm.length > 4) nm = nm.slice(0, -2) + '…';
     ctx.fillText(nm, X, y - 24);
   }
-  ctx.fillStyle = '#5E5A54'; ctx.font = `500 28px ${mono}`;
+  ctx.fillStyle = '#C9BBA6'; ctx.font = `500 28px ${mono}`;
   ctx.fillText(info.url, X, OG_H - 48);
-  if (info.foot){ ctx.fillStyle = '#1F1D1B'; ctx.font = `500 30px ${mono}`; ctx.fillText(info.foot, X, OG_H - 96); }
+  if (info.foot){ ctx.fillStyle = '#F4EFE4'; ctx.font = `500 30px ${mono}`; ctx.fillText(info.foot, X, OG_H - 96); }
+  // 右側的牌：翻開的牌（最多兩張）。沒有姓名時牌面空白、下緣灰條。
+  let face = null, back = null;
+  try { face = await loadImg('assets/card_face.webp'); } catch {}
+  try { back = await loadImg('assets/card_back.webp'); } catch {}
+  const faces = info.faces && info.faces.length ? info.faces.slice(0, 2) : [null];
+  const CW = 270, CH = Math.round(CW * 850 / 600);
+  const slots = faces.length === 1 ? [{ x: 860, y: 100, r: 0.03 }] : [{ x: 700, y: 120, r: -0.07 }, { x: 930, y: 90, r: 0.05 }];
+  if (back && faces.length === 1) { ctx.save(); ctx.translate(690, 140); ctx.rotate(-0.1); ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 24; ctx.drawImage(back, 0, 0, CW * 0.8, CH * 0.8); ctx.restore(); }
+  faces.forEach((f, i) => {
+    const sl = slots[i];
+    ctx.save(); ctx.translate(sl.x + CW / 2, sl.y + CH / 2); ctx.rotate(sl.r);
+    ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 28; ctx.shadowOffsetY = 10;
+    if (face) ctx.drawImage(face, -CW / 2, -CH / 2, CW, CH); else { ctx.fillStyle = '#F4EFE4'; ctx.fillRect(-CW / 2, -CH / 2, CW, CH); }
+    ctx.shadowColor = 'transparent';
+    const col = f && f.grp ? GRP_COLOR[f.grp] : '#8C857B';
+    ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(-CW * 0.4, CH * 0.36, CW * 0.8, 12, 6); ctx.fill();
+    if (f && f.ring){
+      ctx.strokeStyle = col; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(0, -20, 52, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = col; ctx.font = `900 58px ${fam}`; ctx.textAlign = 'center'; ctx.fillText(f.ring, 0, 0);
+      ctx.fillStyle = '#1E1C1A'; ctx.font = `900 34px ${fam}`; ctx.fillText(f.name, 0, 96);
+    }
+    if (f && f.label){ ctx.fillStyle = '#6E675D'; ctx.font = `500 22px ${sans}`; ctx.textAlign = 'center'; ctx.fillText(f.label, 0, -CH * 0.34); }
+    ctx.textAlign = 'left';
+    ctx.restore();
+  });
 }
 
 async function viewShare(c){
@@ -895,6 +933,11 @@ async function viewShare(c){
   const kind = comp.verdict === 'same' ? 'same' : comp.verdict === 'different' ? 'diff' : comp.verdict === 'tie' ? 'tie' : 'none';
   const topArr = comp.res.top.filter(n => comp.res.candidates.find(x => x.candidateId === n)?.score !== null);
   const top = topArr.join('、');
+  const lean = c.st.lean;
+  const shareFaces = [];
+  if (comp.verdict !== 'none' && typeof lean === 'string' && c.byName.has(lean)) shareFaces.push({ name: lean, label: t('res.lean'), grp: grpOf(c, lean) });
+  for (const n of topArr) if (shareFaces.length < 2 && !(comp.verdict !== 'none' && n === lean)) shareFaces.push({ name: n, label: t('res.top'), grp: grpOf(c, n) });
+  if (!shareFaces.length && topArr.length) shareFaces.push({ name: topArr[0], label: t('res.top'), grp: grpOf(c, topArr[0]) });
   const shareNeg = topArr.length > 0 && comp.res.candidates.find(x => x.candidateId === topArr[0]).score < 0;
   const body = `
     <h1 class="mid">${esc(t('share.title'))}</h1>
@@ -913,7 +956,8 @@ async function viewShare(c){
         const my = ++gen;
         const info = { eyebrow: t('share.eyebrow', { race: raceLabel(c) }), a: t(`share.${kind}.a`), em: t(`share.${kind}.em`), b: t(`share.${kind}.b`),
           names: shareNames && top ? t(shareNeg ? 'share.nameLineNeg' : 'share.nameLine', { names: top }) : '',
-          foot: gs.guessed ? t('share.foot', { c: gs.correct, n: gs.guessed }) : '', url: siteLabel() };
+          foot: gs.guessed ? t('share.foot', { c: gs.correct, n: gs.guessed }) : '', url: siteLabel(),
+          faces: shareFaces.map(f => ({ label: f.label, name: shareNames ? f.name : '', ring: shareNames ? [...f.name][0] : '', grp: shareNames ? f.grp : null })) };
         info.sample = info.eyebrow + info.a + info.em + info.b + info.names + info.foot + info.url;
         await drawCard(cv, c, info);
         if (my !== gen || !alive) return;
@@ -940,7 +984,7 @@ async function coverageHtml(){
     const cands = rs[i].status === 'fulfilled' ? rs[i].value.candidates : [];
     const body = !cands.some(x => x.inPlay === true)
       ? `<p class="muted">${esc(t('cov.prep'))}</p>`
-      : `<table>${cands.map(x => `<tr><td style="white-space:nowrap;vertical-align:top">${esc(x.name)}</td><td>${x.inPlay === true ? esc(t('cov.in')) : `<span class="muted">${esc(t('cov.out'))}</span>`}</td></tr>`).join('')}</table>`;
+      : `<table>${cands.map(x => `<tr><td style="white-space:nowrap;vertical-align:top"><i class="pdot ${grpCls(x.group)}"></i> ${esc(x.name)}</td><td>${x.inPlay === true ? esc(t('cov.in')) : `<span class="muted">${esc(t('cov.out'))}</span>`}</td></tr>`).join('')}</table>`;
     return `<section id="cov-${k}" class="stack" style="gap:6px"><h2 ${h2}>${esc(t('city.' + k))}</h2>${body}</section>`;
   }).join('');
   return `<h2 ${h2}>${esc(t('cov.why'))}</h2><ul class="stack" style="padding-left:18px;margin:0;font-size:14px;gap:6px">${[1, 2, 3].map(i => `<li>${esc(t('cov.why' + i))}</li>`).join('')}</ul><div class="eyebrow">${esc(t('cov.title'))}</div>${sec}`;
@@ -1143,6 +1187,7 @@ root.addEventListener('click', async e => {
       if (i >= 0) c.st.important.splice(i, 1); else c.st.important.push(id);
       save(c); sfx('tap');
       el.classList.toggle('on', i < 0); el.setAttribute('aria-pressed', i < 0);
+      const hn = document.getElementById('handnote'); if (hn) hn.textContent = handNote(c);
       if (c.st.done && document.getElementById('resbody')) refreshResult(c);
       break;
     }

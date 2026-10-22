@@ -3,24 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="color-scheme" content="light dark">
-<title>蓋牌投票</title>
+<meta name="color-scheme" content="dark">
+<title>蓋牌投票箱</title>
 <meta name="description" content="遮住名字給政見打分，看看你傾向的人和你契合的人是不是同一個。">
 <link rel="canonical" href="https://games.csiesheep.com/covervote/">
 <!-- 連結預覽（#19）：LINE／Facebook 轉貼用。圖是靜態的 assets/og.jpg（只有品牌與標語，不放姓名、黨名）；網址要絕對。 -->
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="蓋牌投票">
-<meta property="og:title" content="蓋牌投票｜名字蓋起來，你會投給誰？">
+<meta property="og:site_name" content="蓋牌投票箱">
+<meta property="og:title" content="蓋牌投票箱｜名字蓋起來，你會投給誰？">
 <meta property="og:description" content="遮住名字給政見打分，看看你傾向的人和你契合的人是不是同一個。">
 <meta property="og:url" content="https://games.csiesheep.com/covervote/">
 <meta property="og:image" content="https://games.csiesheep.com/covervote/assets/og.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="蓋牌投票：名字蓋起來，你會投給誰？">
+<meta property="og:image:alt" content="蓋牌投票箱：名字蓋起來，你會投給誰？">
 <meta property="og:locale" content="zh_TW">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="蓋牌投票｜名字蓋起來，你會投給誰？">
+<meta name="twitter:title" content="蓋牌投票箱｜名字蓋起來，你會投給誰？">
 <meta name="twitter:description" content="遮住名字給政見打分，看看你傾向的人和你契合的人是不是同一個。">
 <meta name="twitter:image" content="https://games.csiesheep.com/covervote/assets/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,15 +29,15 @@
      1) 楷書小子集：只含固定字串（品牌、標語、各頁標題、縣市名、甲乙丙…），這支先載、先換。
         字從 site/lang/zh-Hant.js 的 brand、home.title、*.title、lean.q、tile.*、seats 取，再加 市縣長。語言檔改了這幾個鍵就要重算 text=。
      2) 完整楷書（動態標題：議題名、候選人名）＋ IBM Plex Mono：等 load 之後才升級成 stylesheet。 -->
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@700&display=swap&text=蓋牌投票名字起來，你會投給誰？還一選人嗎的政見在整理連江台北基隆桃園新竹市縣宜蘭苗栗中花蓮金門彰化南雲林嘉東澎湖高雄屏這次沒收錄目前比較傾向給誰甲乙丙丁戊己庚辛壬癸些只有位候提出哪議題對特別重要翻：玩過10天統計暫停顯示真遮住了分享圖卡契合數怎麼算資料源我們集什關於把局放進文章公民課用長" onload="this.onload=null;this.rel='stylesheet'">
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=IBM+Plex+Mono:wght@500;600&display=swap" onload="var l=this;l.onload=null;function g(){l.rel='stylesheet'}document.readyState==='complete'?setTimeout(g,0):addEventListener('load',g)">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&display=swap&text=蓋牌投票箱名字起來，你會投給誰？還一選人嗎的政見在整理連江台北基隆桃園新竹市縣宜蘭苗栗中花蓮金門彰化南雲林嘉東澎湖高雄屏這次沒收錄目前比較傾向給誰甲乙丙丁戊己庚辛壬癸些只有位候提出哪議題對特別重要翻：玩過10天統計暫停顯示真遮住了分享圖卡契合數怎麼算資料源我們集什關於把局放進文章公民課用長" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=IBM+Plex+Mono:wght@500;600&display=swap" onload="var l=this;l.onload=null;function g(){l.rel='stylesheet'}document.readyState==='complete'?setTimeout(g,0):addEventListener('load',g)">
 <noscript>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+TC:wght@400;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
 </noscript>
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
-<div class="app" id="root"><noscript><p style="padding:24px">蓋牌投票需要開啟 JavaScript。</p></noscript></div>
+<div class="app" id="root"><noscript><p style="padding:24px">蓋牌投票箱需要開啟 JavaScript。</p></noscript></div>
 <script type="module" src="app.js"></script>
 </body>
 </html>
