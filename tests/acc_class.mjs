@@ -7,7 +7,7 @@
 //   - 沒有帳號：班級代碼由老師的頁面在前端產生，6 碼，字元只用 A–Z 與 2–9（去掉 0、1、I、O 免得抄錯）。
 //   - 學生網址帶 ?class=<code>，POST /api/play、/api/guess 的 body 多一個 `class`。格式不對的代碼：全站照計、班級不計。
 //   - GET /covervote/api/class/<code>/<race> → { class, race, plays, guesses: { answers, correct }, verdicts? }
-//       verdicts（same/different/none）：班級局數 ≥ MIN_CLASS 且不在禁止期才有；禁止期規則與 #4 相同。
+//       verdicts（same/different/none/tie）：班級局數 ≥ MIN_CLASS 且不在禁止期才有；禁止期規則與 #4 相同。
 //       guesses 是全班猜作者的總答題數與答對數（媒體識讀的討論材料），禁止期照常。
 //   - internal=1 不計（全站與班級都不計）。不存個人欄位。
 //   - 全站的計數不受影響：帶 class 的局照樣算進 /api/stats 與 /api/health。
