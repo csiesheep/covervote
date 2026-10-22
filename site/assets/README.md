@@ -53,3 +53,14 @@ prompt／seed／尺寸如上，同一範本同一組參數會得到同一張。�
   標題字型 `C:\Windows\Fonts\NotoSerifTC-VF.ttf`（Noto Serif TC 可變字型，字重 900）；副標與網址 `NotoSansTC-VF.ttf`（Noto Sans TC，字重 500）。
   顏色奶油 #F4EFE4（網址 #D8CFBD），標題下一條朱紅短線，文字皆帶黑色偏移柔影。
 - 輸出：JPEG quality 86、progressive。檢查：藍色偏重的像素 0、綠色偏重的像素 10（JPEG 雜訊，肉眼無色）；圖中沒有人臉、政黨標誌，牌上無字。
+
+## favicon.svg／favicon-32.png／apple-touch-icon.png（#45）
+
+owner 2026-10-21 在三選一頁選 A（牌背）。`favicon.svg` 是 brief 提供的 SVG 原文，逐字使用、未重畫（335 bytes）。
+PNG 用 sharp（librsvg）由該 SVG 轉出，沒有用模型：
+
+- `favicon-32.png`：32×32，透明底（角落 alpha 0），571 bytes。
+- `apple-touch-icon.png`：180×180，不透明底 #2B241E（牌桌深棕，iOS 不吃透明）；同一張 SVG 放大到 150×150 置中，牌高約 126px，上下各留約 15%（左右約 28%，因為牌是直式）。3.4 KB。
+
+在亮（#F1F3F4）與暗（#202124）的分頁列底色上各看過一次：牌的灰描邊 #8C857B 讓深色牌身在暗底仍有輪廓，16px 縮小時朱紅菱形仍可辨。
+`<link rel="icon">` 與 `apple-touch-icon` 由 FE 在 #44 接上。
