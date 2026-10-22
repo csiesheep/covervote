@@ -162,6 +162,36 @@ export async function run(){
     return s.keys().length === 0 || `存了 ${s.keys().join(',')}`;
   });
 
+  // #33（orchestrator 裁決）：第四種 verdict 'tie'。期望值從 issue #33 的文字抄（四個鍵、舊值照收），數字是手排的局數。
+  await t('#33 POST 接受 tie、舊的 same／different／none 照收；stats 的 verdicts 正好四個鍵、各自的數字對', async () => {
+    const s = memStore();
+    const plan = { tie: 20, same: 15, different: 10, none: 5 };   // 共 50 局 = 門檻
+    const bad = [];
+    for (const [v, n] of Object.entries(plan)) for (let i = 0; i < n; i++){
+      const st = (await call(s, 'POST', 'play', { race, verdict: v })).status;
+      if (st !== 204) bad.push(`${v} ${st}`);
+    }
+    if (bad.length) return `應 204：${[...new Set(bad)].join('、')}`;
+    const j = await (await call(s, 'GET', 'stats/' + race)).json();
+    if (j.plays !== 50) return `plays 應 50，實際 ${j.plays}`;
+    const keys = Object.keys(j.verdicts || {}).sort().join(',');
+    if (keys !== 'different,none,same,tie') return `verdicts 的鍵應為 different,none,same,tie，實際 ${keys || '（沒有 verdicts）'}`;
+    const wrong = Object.entries(plan).filter(([v, n]) => j.verdicts[v] !== n).map(([v, n]) => `${v} 應 ${n} 實際 ${j.verdicts[v]}`);
+    return wrong.length ? wrong.join('；') : true;
+  });
+  await t('#33 班級的 verdicts 也有 tie；大小寫不對、近似字（TIE、tied）→ 400 且不計', async () => {
+    const s = memStore();
+    for (const v of ['tie', 'tie', 'tie', 'same', 'different']) await call(s, 'POST', 'play', { race, verdict: v, class: 'WXY234' });
+    const j = await (await classGet(s, 'WXY234')).json();
+    const want = { same: 1, different: 1, none: 0, tie: 3 };
+    const norm = o => o && JSON.stringify(Object.keys(o).sort().map(k => [k, o[k]]));
+    if (norm(j.verdicts) !== norm(want)) return `班級 verdicts 應 ${JSON.stringify(want)}，實際 ${JSON.stringify(j.verdicts)}`;
+    const s2 = memStore();
+    const got = [(await call(s2, 'POST', 'play', { race, verdict: 'TIE' })).status, (await call(s2, 'POST', 'play', { race, verdict: 'tied', class: 'WXY234' })).status];
+    if (got.join() !== '400,400') return `應 400/400，實際 ${got.join('/')}`;
+    return s2.keys().length === 0 || `存了 ${s2.keys().join(',')}`;
+  });
+
   return out;
 }
 
