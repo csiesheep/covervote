@@ -612,9 +612,8 @@ function resultBody(c, rv, comp){
   const sayRes = verdict === 'none' && !topNames.length ? t('speak.resNone', { msg: t('res.tooFew') + t('res.tooFewSub') })
     : verdict === 'same' || verdict === 'different' || verdict === 'tie' ? t('speak.resSame', { lean: st.lean, label: topLabel, top: topText, msg: msg + (allNeg ? t('res.negNote') : '') })
     : t('speak.resTop', { label: topLabel, top: topText, msg: msg + (allNeg ? t('res.negNote') : '') });
-  // 完全沒有段落的候選人（cands/ inPlay === false）不列進分數列表，改在列表下方用一行小字交代（#36，中立性：不提會像刻意漏人）。
+  // 完全沒有段落的候選人（cands/ inPlay === false）不列進分數列表（#36；owner #43：結果頁也不再加說明行，資料來源頁照舊列出）。
   // 有段落但這局全跳過的人仍列出（那是玩家的選擇）。傾向與最契合的人放大、排前面。
-  const noPolicy = c.data.candidates.filter(cd => cd.inPlay === false).map(cd => cd.name);
   const focus = new Set([...topNames, ...(typeof st.lean === 'string' ? [st.lean] : [])]);
   const rows = c.data.candidates.filter(cd => cd.inPlay !== false).map(cd => ({ name: cd.name, r: byName.get(cd.name) }))
     .sort((a, b) => (focus.has(b.name) - focus.has(a.name)) || (b.r?.score ?? -1e9) - (a.r?.score ?? -1e9) || c.order.indexOf(a.name) - c.order.indexOf(b.name));
@@ -625,8 +624,7 @@ function resultBody(c, rv, comp){
     }
     const s = r.score;
     const bar = s >= 0 ? `left:50%;width:${s / 2}%` : `left:${50 + s / 2}%;width:${-s / 2}%`;
-    const ci = `left:${50 + r.lo / 2}%;width:${Math.max(0.6, (r.hi - r.lo) / 2)}%`;
-    return `<div class="score${fc} ${grpOf(c, name)}"><span class="nm">${esc(name)}${r.lowConfidence ? `<br><span class="conf">${esc(t('res.low', { n: r.n }))}</span>` : ''}</span><div class="axis"><i class="b${s < 0 ? ' neg' : ''}" style="${bar}"></i><i class="ci" style="${ci}"></i></div><span class="num">${sgn(s)}</span></div>`;
+    return `<div class="score${fc} ${grpOf(c, name)}"><span class="nm">${esc(name)}${r.lowConfidence ? `<br><span class="conf">${esc(t('res.low', { n: r.n }))}</span>` : ''}</span><div class="axis"><i class="b${s < 0 ? ' neg' : ''}" style="${bar}"></i></div><span class="num">${sgn(s)}</span></div>`;
   }).join('');
   const gs = guessStats(c, rv);
   const guessHtml = gs.guessed
@@ -637,8 +635,7 @@ function resultBody(c, rv, comp){
     <div class="resfaces"><div class="eyebrow">${esc(t('res.eyebrow'))}</div>${vsHtml}<p class="muted" style="text-align:center">${esc(msg)}</p>${allNeg ? `<p class="muted" style="text-align:center">${esc(t('res.negNote'))}</p>` : ''}<div class="speakrow" style="text-align:center">${speakBtn(t('speak.result'), `data-text="${esc(sayRes)}"`)}</div></div>
     <div class="felt"><div class="eyebrow" style="margin-bottom:6px">${esc(t('res.scoreTitle'))}</div>
       <div class="stack" style="gap:8px">${scoreRows}<div class="scale-lbl"><span></span><span><span>−100</span><span>0</span><span>+100</span></span><span></span></div></div>
-      ${noPolicy.length ? `<p class="muted" style="margin-top:6px">${esc(noPolicy.includes(st.lean) ? t('res.noPolicyLean', { n: noPolicy.length, lean: st.lean }) : t('res.noPolicy', { n: noPolicy.length }))} <a href="#/info/sources/${esc(c.key)}">${esc(t('res.noPolicySrc'))}</a></p>` : ''}
-      <p class="muted" style="margin-top:6px">${esc(t('res.range'))}</p></div>
+      </div>
     ${guessHtml}
     <div id="natl-box" style="display:contents"></div>
     <details><summary class="muted">${esc(t('res.adjust'))}</summary><div id="imps" style="margin-top:6px">${impRows(c) || `<p class="muted">${esc(t('imp.none'))}</p>`}</div></details>

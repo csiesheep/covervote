@@ -153,7 +153,6 @@ details summary{cursor:pointer}
 .axis{position:relative;height:14px;background:linear-gradient(var(--rule),var(--rule)) center/1px 100% no-repeat}
 .axis .b{position:absolute;top:2px;height:10px;border-radius:2px;background:var(--ink)}
 .axis .b.neg{background:var(--ink-2)}
-.axis .ci{position:absolute;top:6px;height:2px;background:var(--stamp)}
 .conf{font-size:calc(11px*var(--fs));color:var(--warn)}
 .scale-lbl{display:grid;grid-template-columns:calc(72px*var(--fs)) 1fr calc(44px*var(--fs));gap:8px;font-family:var(--f-num);font-size:calc(10px*var(--fs));color:var(--ink-2)}
 .scale-lbl span:nth-child(2){display:flex;justify-content:space-between}
@@ -276,7 +275,6 @@ html[data-fs="l"] .home .btn{min-height:52px}
 .score.focus .num{font-size:calc(20px*var(--fs));text-align:right;font-family:var(--f-num)}
 .score.focus .axis{height:20px}
 .score.focus .axis .b{top:3px;height:14px}
-.score.focus .axis .ci{top:9px}
 .score.focus .conf{font-size:calc(11px*var(--fs));font-weight:400}
 
 /* ======== #39 C「牌桌」 ======== */
@@ -329,7 +327,8 @@ h1,h2,h3,.brand{font-weight:900}
 .pair .face{flex:0 0 calc(50% - 7px);max-width:210px}
 .pair.n1 .face{flex-basis:52%}
 .pair.n3 .face{flex:0 0 calc(33% - 10px)}
-.pair.n3 .face .nm{font-size:calc(13px*var(--fs))}
+.pair .face .nm{font-size:calc(27px*var(--fs));line-height:1.15;overflow-wrap:anywhere;padding:0 4%}   /* #43：結果頁牌上姓名放大（翻牌頁的 .flip .face 不受影響）*/
+.pair.n3 .face .nm{font-size:calc(17px*var(--fs))}
 .pair .face:nth-child(odd){transform:rotate(-3deg)}
 .pair .face:nth-child(even){transform:rotate(3deg)}
 .flip>div{border-radius:6px}
