@@ -90,7 +90,7 @@ const issueLabel = (c, id) => (has('issue.' + id) ? t('issue.' + id) : c.issues.
 // 政黨粗分組（cands/ 的 group：kmt／dpp／oth；#37）。只在名字已公開的頁面使用：選傾向、開票翻牌、結果、明細、資料來源、分享卡。
 const grpCls = g => (g === 'kmt' || g === 'dpp' ? g : 'oth');
 const grpOf = (c, name) => grpCls(c.byName.get(name)?.group);
-const faceHtml = (c, name, label, score) => `<div class="face ${grpOf(c, name)}"><span class="who">${esc(label)}</span><span class="ring">${esc([...name][0])}</span><span class="nm">${esc(name)}</span>${score === null || score === undefined ? '' : `<b class="sc num">${sgn(score)}</b>`}</div>`;
+const faceHtml = (c, name, label, score, dim) => `<div class="face ${grpOf(c, name)}${dim ? ' dim' : ''}"><span class="who">${esc(label)}</span><span class="ring">${esc([...name][0])}</span><span class="nm">${esc(name)}</span>${score === null || score === undefined ? '' : `<b class="sc num">${sgn(score)}</b>`}</div>`;
 const raceLabel = c => (has('race.' + c.key) ? t('race.' + c.key) : c.data.meta.label || c.key);
 const hasNumbers = c => c.data.candidates.every(x => Number.isInteger(x.number));
 const textMode = () => { try { return localStorage.getItem('covervote:text') === 'masked' ? 'masked' : 'plain'; } catch { return 'plain'; } };
@@ -601,7 +601,7 @@ function resultBody(c, rv, comp){
   } else if (verdict === 'same' || verdict === 'different' || verdict === 'tie'){
     const scoreOf = n => { const x = byName.get(n); return x && x.score !== null ? x.score : null; };
     const others = topNames.filter(n => n !== st.lean).slice(0, 3);
-    const cards = verdict === 'same' ? [faceHtml(c, st.lean, t('res.lean'), scoreOf(st.lean))] : [faceHtml(c, st.lean, t('res.lean'), scoreOf(st.lean)), ...others.map(n => faceHtml(c, n, topLabel + (verdict === 'tie' ? '（' + t('res.tie') + '）' : ''), scoreOf(n)))];
+    const cards = verdict === 'same' ? [faceHtml(c, st.lean, t('res.lean'), scoreOf(st.lean))] : [faceHtml(c, st.lean, t('res.lean'), scoreOf(st.lean), verdict === 'different'), ...others.map(n => faceHtml(c, n, topLabel + (verdict === 'tie' ? '（' + t('res.tie') + '）' : ''), scoreOf(n)))];
     vsHtml = `<div class="pair n${cards.length}" aria-label="${esc(t(verdict === 'same' ? 'res.eq' : verdict === 'tie' ? 'res.tie' : 'res.neq'))}">${cards.join('')}</div>`;
     msg = t(verdict === 'same' ? 'res.sameMsg' : verdict === 'tie' ? 'res.tieMsg' : 'res.diffMsg');
   } else {
@@ -858,7 +858,7 @@ async function viewClass(code, city){
 
 // ---------------- C4 分享 ----------------
 // 圖卡在瀏覽器用 canvas 畫成 1200×630 PNG：預覽就是會下載的那張。預設不放姓名（owner 裁決 2026-10-21），勾選才放。
-let shareNames = false;
+let shareNames = true;   // 預設放出姓名（owner 2026-10-21）；取消時牌背、不露名
 const OG_W = 1200, OG_H = 630;
 const gameUrl = c => location.origin + location.pathname + '#/' + c.key;
 const shareUrl = gameUrl;
@@ -866,7 +866,9 @@ const siteLabel = () => location.host + location.pathname.replace(/index\.html$/
 const loadImg = src => new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = src; });
 
 const GRP_COLOR = { kmt: '#2D5DB0', dpp: '#1F9149', oth: '#8C857B' };
-// 分享卡（C 牌桌）：深色木桌、奶油牌面。預設（沒勾姓名）牌上不放姓名、政黨色改成中性灰；勾了才放姓氏圈與政黨色（名字公開才有政黨色）。
+// 分享卡（#42）：左邊「名字蓋起來，／我契合的是／○○○（放大）」，右邊只有一張牌＝最契合的那張。
+// 沒勾姓名：第三行是一條遮住的色塊、右邊是牌背，沒有任何姓名或政黨色。勾了：第三行放姓名、右邊是翻開的牌（姓氏圈＋政黨色條）。
+// 並列（≥ 2 人）：第三行放所有姓名（可換行）、牌上列出姓名、色條中性灰。沒有任何計分（info.fit 為 false）：沿用 a／em／b 三行字、右邊牌背。傾向不上圖卡。
 async function drawCard(canvas, c, info){
   const ctx = canvas.getContext('2d');
   const fam = '"Noto Serif TC","Songti TC","STSong","Source Han Serif TC",serif', sans = '"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif', mono = '"IBM Plex Mono",ui-monospace,Consolas,monospace';
@@ -876,69 +878,97 @@ async function drawCard(canvas, c, info){
   try { const wood = await loadImg('assets/table_wood.webp'); ctx.fillStyle = ctx.createPattern(wood, 'repeat'); ctx.fillRect(0, 0, OG_W, OG_H); } catch {}
   const grad = ctx.createRadialGradient(OG_W / 2, 0, 40, OG_W / 2, 0, OG_W * 0.8); grad.addColorStop(0, 'rgba(70,56,44,.55)'); grad.addColorStop(1, 'rgba(43,36,30,0)');
   ctx.fillStyle = grad; ctx.fillRect(0, 0, OG_W, OG_H);
-  const X = 72, MAXW = 520, sp = lang() === 'en' ? ' ' : '';
-  ctx.textBaseline = 'alphabetic';
+  const X = 72, MAXW = 640, sp = lang() === 'en' ? ' ' : '';
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
   ctx.fillStyle = '#C9BBA6'; ctx.font = `400 28px ${sans}`;
-  ctx.fillText(info.eyebrow, X, 100);
-  const [a0, a1 = ''] = info.a.split('\n');
-  const lns = [[[a0, 0]], [[a1 ? a1 + sp : '', 0], [info.em + sp, 1]], [[info.b, 0]]];
-  const fit = size => { ctx.font = `900 ${size}px ${fam}`; return Math.max(...lns.map(l => l.reduce((w, [tx]) => w + ctx.measureText(tx).width, 0))); };
-  let size = 80; const w1 = fit(100); size = Math.min(80, Math.floor(100 * MAXW / w1));
-  ctx.font = `900 ${size}px ${fam}`;
-  let y = 100 + size * 1.55;
-  for (const l of lns){
-    let x = X;
-    for (const [tx, hot] of l){ ctx.fillStyle = hot ? '#F08A6E' : '#F4EFE4'; ctx.fillText(tx, x, y); x += ctx.measureText(tx).width; }
-    y += size * 1.3;
-  }
-  if (info.names){
-    ctx.fillStyle = '#F4EFE4'; ctx.font = `700 36px ${fam}`;
-    let nm = info.names; while (ctx.measureText(nm).width > MAXW && nm.length > 4) nm = nm.slice(0, -2) + '…';
-    ctx.fillText(nm, X, y - 24);
+  ctx.fillText(info.eyebrow, X, 90);
+  if (info.fit){
+    // 兩行標題 + 放大的姓名
+    const heads = [info.l1, info.l2];
+    let hs = 64; const hw = () => Math.max(...heads.map(h => ctx.measureText(h).width));
+    ctx.font = `900 ${hs}px ${fam}`; while (hw() > MAXW && hs > 36){ hs -= 2; ctx.font = `900 ${hs}px ${fam}`; }
+    ctx.fillStyle = '#F4EFE4';
+    let y = 90 + hs * 1.35;
+    for (const h of heads){ ctx.fillText(h, X, y); y += hs * 1.2; }
+    if (info.names){
+      // 姓名：單人一行、盡量大；並列時以頓號串起來，超過寬度就換行（不截字）
+      const list = info.names;
+      let size = list.length > 1 ? 84 : 140;
+      let lines;
+      for (;;){
+        ctx.font = `900 ${size}px ${fam}`;
+        lines = []; let cur = '';
+        for (const nm of list){
+          const t2 = cur ? cur + '、' + nm : nm;
+          if (cur && ctx.measureText(t2).width > MAXW){ lines.push(cur + '、'); cur = nm; } else cur = t2;
+        }
+        lines.push(cur);
+        const room = OG_H - 150 - y;
+        if ((Math.max(...lines.map(l => ctx.measureText(l).width)) <= MAXW && lines.length * size * 1.15 <= room) || size <= 36) break;
+        size -= 4;
+      }
+      ctx.fillStyle = '#F08A6E';
+      y += size * 0.95;
+      for (const l of lines){ ctx.fillText(l, X, y); y += size * 1.15; }
+    } else {
+      // 沒勾姓名：一條遮住名字的色塊
+      ctx.fillStyle = '#F4EFE4'; ctx.beginPath(); ctx.roundRect(X, y + 10, 360, 96, 14); ctx.fill();
+      ctx.fillStyle = '#2B241E'; ctx.font = `900 64px ${fam}`; ctx.textAlign = 'center'; ctx.fillText('？？？', X + 180, y + 82); ctx.textAlign = 'left';
+    }
+  } else {
+    const [a0, a1 = ''] = info.a.split('\n');
+    const lns = [[[a0, 0]], [[a1 ? a1 + sp : '', 0], [info.em + sp, 1]], [[info.b, 0]]];
+    const fit = size => { ctx.font = `900 ${size}px ${fam}`; return Math.max(...lns.map(l => l.reduce((w, [tx]) => w + ctx.measureText(tx).width, 0))); };
+    let size = 80; const w1 = fit(100); size = Math.min(80, Math.floor(100 * 520 / w1));
+    ctx.font = `900 ${size}px ${fam}`;
+    let y = 90 + size * 1.55;
+    for (const l of lns){
+      let x = X;
+      for (const [tx, hot] of l){ ctx.fillStyle = hot ? '#F08A6E' : '#F4EFE4'; ctx.fillText(tx, x, y); x += ctx.measureText(tx).width; }
+      y += size * 1.3;
+    }
   }
   ctx.fillStyle = '#C9BBA6'; ctx.font = `500 28px ${mono}`;
   ctx.fillText(info.url, X, OG_H - 48);
-  if (info.foot){ ctx.fillStyle = '#F4EFE4'; ctx.font = `500 30px ${mono}`; ctx.fillText(info.foot, X, OG_H - 96); }
-  // 右側的牌：翻開的牌（最多兩張）。沒有姓名時牌面空白、下緣灰條。
+  if (info.foot){ ctx.fillStyle = '#F4EFE4'; ctx.font = `500 30px ${mono}`; ctx.fillText(info.foot, X, OG_H - 92); }
+  // 右邊只有一張牌
   let face = null, back = null;
   try { face = await loadImg('assets/card_face.webp'); } catch {}
   try { back = await loadImg('assets/card_back.webp'); } catch {}
-  const faces = info.faces && info.faces.length ? info.faces.slice(0, 2) : [null];
-  const CW = 270, CH = Math.round(CW * 850 / 600);
-  const slots = faces.length === 1 ? [{ x: 860, y: 100, r: 0.03 }] : [{ x: 700, y: 120, r: -0.07 }, { x: 930, y: 90, r: 0.05 }];
-  if (back && faces.length === 1) { ctx.save(); ctx.translate(690, 140); ctx.rotate(-0.1); ctx.shadowColor = 'rgba(0,0,0,.45)'; ctx.shadowBlur = 24; ctx.drawImage(back, 0, 0, CW * 0.8, CH * 0.8); ctx.restore(); }
-  faces.forEach((f, i) => {
-    const sl = slots[i];
-    ctx.save(); ctx.translate(sl.x + CW / 2, sl.y + CH / 2); ctx.rotate(sl.r);
-    ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 28; ctx.shadowOffsetY = 10;
+  const CW = 300, CH = Math.round(CW * 850 / 600), cx = 960, cy = 315;
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(0.035);
+  ctx.shadowColor = 'rgba(0,0,0,.5)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 12;
+  const showFace = info.fit && info.names && info.card;
+  if (showFace){
     if (face) ctx.drawImage(face, -CW / 2, -CH / 2, CW, CH); else { ctx.fillStyle = '#F4EFE4'; ctx.fillRect(-CW / 2, -CH / 2, CW, CH); }
     ctx.shadowColor = 'transparent';
-    const col = f && f.grp ? GRP_COLOR[f.grp] : '#8C857B';
+    const col = info.card.grp ? GRP_COLOR[info.card.grp] : '#8C857B';
     ctx.fillStyle = col; ctx.beginPath(); ctx.roundRect(-CW * 0.4, CH * 0.36, CW * 0.8, 12, 6); ctx.fill();
-    if (f && f.ring){
-      ctx.strokeStyle = col; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(0, -20, 52, 0, Math.PI * 2); ctx.stroke();
-      ctx.fillStyle = col; ctx.font = `900 58px ${fam}`; ctx.textAlign = 'center'; ctx.fillText(f.ring, 0, 0);
-      ctx.fillStyle = '#1E1C1A'; ctx.font = `900 34px ${fam}`; ctx.fillText(f.name, 0, 96);
+    ctx.textAlign = 'center';
+    if (info.card.ring){
+      ctx.strokeStyle = col; ctx.lineWidth = 7; ctx.beginPath(); ctx.arc(0, -30, 56, 0, Math.PI * 2); ctx.stroke();
+      ctx.fillStyle = col; ctx.font = `900 62px ${fam}`; ctx.fillText(info.card.ring, 0, -9);
+      ctx.fillStyle = '#1E1C1A'; ctx.font = `900 38px ${fam}`; ctx.fillText(info.card.names[0], 0, 82);
+    } else {
+      ctx.fillStyle = '#1E1C1A'; ctx.font = `900 38px ${fam}`;
+      const n = info.card.names.length, step = 50, y0 = -((n - 1) * step) / 2 + 12;
+      info.card.names.slice(0, 5).forEach((nm, i) => ctx.fillText(nm, 0, y0 + i * step));
     }
-    if (f && f.label){ ctx.fillStyle = '#6E675D'; ctx.font = `500 22px ${sans}`; ctx.textAlign = 'center'; ctx.fillText(f.label, 0, -CH * 0.34); }
     ctx.textAlign = 'left';
-    ctx.restore();
-  });
+  } else if (back){
+    ctx.beginPath(); ctx.roundRect(-CW / 2, -CH / 2, CW, CH, 14); ctx.save(); ctx.clip(); ctx.drawImage(back, -CW / 2, -CH / 2, CW, CH); ctx.restore();
+  }
+  ctx.restore();
 }
 
 async function viewShare(c){
   let rv, comp;
   try { rv = await fetchReveal(c.data.raceId); comp = await compute(c, rv); } catch { return { html: page(bar(raceLabel(c), t('share.meta')), errorBox(t('err.engine'))) }; }
   const gs = guessStats(c, rv);
-  const kind = comp.verdict === 'same' ? 'same' : comp.verdict === 'different' ? 'diff' : comp.verdict === 'tie' ? 'tie' : 'none';
   const topArr = comp.res.top.filter(n => comp.res.candidates.find(x => x.candidateId === n)?.score !== null);
-  const top = topArr.join('、');
-  const lean = c.st.lean;
-  const shareFaces = [];
-  if (comp.verdict !== 'none' && typeof lean === 'string' && c.byName.has(lean)) shareFaces.push({ name: lean, label: t('res.lean'), grp: grpOf(c, lean) });
-  for (const n of topArr) if (shareFaces.length < 2 && !(comp.verdict !== 'none' && n === lean)) shareFaces.push({ name: n, label: t('res.top'), grp: grpOf(c, n) });
-  if (!shareFaces.length && topArr.length) shareFaces.push({ name: topArr[0], label: t('res.top'), grp: grpOf(c, topArr[0]) });
   const shareNeg = topArr.length > 0 && comp.res.candidates.find(x => x.candidateId === topArr[0]).score < 0;
+  const fitMode = topArr.length > 0;
+  const kind = 'none';   // 沒有任何計分的段落時，沿用舊的三行字（share.none.*）
   const body = `
     <h1 class="mid">${esc(t('share.title'))}</h1>
     <canvas id="ogcanvas" class="ogcanvas" width="${OG_W}" height="${OG_H}" role="img" aria-label="${esc(t('share.cardAlt'))}"></canvas>
@@ -954,11 +984,14 @@ async function viewShare(c){
       let blobUrl = '', gen = 0, alive = true;
       const redraw = async () => {
         const my = ++gen;
-        const info = { eyebrow: t('share.eyebrow', { race: raceLabel(c) }), a: t(`share.${kind}.a`), em: t(`share.${kind}.em`), b: t(`share.${kind}.b`),
-          names: shareNames && top ? t(shareNeg ? 'share.nameLineNeg' : 'share.nameLine', { names: top }) : '',
-          foot: gs.guessed ? t('share.foot', { c: gs.correct, n: gs.guessed }) : '', url: siteLabel(),
-          faces: shareFaces.map(f => ({ label: f.label, name: shareNames ? f.name : '', ring: shareNames ? [...f.name][0] : '', grp: shareNames ? f.grp : null })) };
-        info.sample = info.eyebrow + info.a + info.em + info.b + info.names + info.foot + info.url;
+        const tieNow = topArr.length > 1;
+        const info = { eyebrow: t('share.eyebrow', { race: raceLabel(c) }), fit: fitMode,
+          l1: t('share.fit.a'), l2: t(shareNeg ? 'share.fitNeg.b' : 'share.fit.b'),
+          a: t(`share.${kind}.a`), em: t(`share.${kind}.em`), b: t(`share.${kind}.b`),
+          names: shareNames && fitMode ? topArr : null,
+          card: shareNames && fitMode ? { names: topArr, ring: tieNow ? '' : [...topArr[0]][0], grp: tieNow ? null : grpOf(c, topArr[0]) } : null,
+          foot: gs.guessed ? t('share.foot', { c: gs.correct, n: gs.guessed }) : '', url: siteLabel() };
+        info.sample = info.eyebrow + info.l1 + info.l2 + info.a + info.em + info.b + (info.names || []).join('') + '？' + info.foot + info.url;
         await drawCard(cv, c, info);
         if (my !== gen || !alive) return;
         cv.toBlob(b => {
