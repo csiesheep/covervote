@@ -250,14 +250,20 @@ function logFailure(e, data){
   console.error(`covervote api: 例外，回 503 — ${kind}: ${msg}`);
 }
 
+// worker/index.js 也用這兩個：handleApi 之外（例：取 env 綁定）丟的例外，在 API 路徑上一樣回 503。
+export const isApiPath = pathname => pathname === PREFIX || pathname.startsWith(PREFIX + '/');
+export function unavailable(e, data){
+  logFailure(e, data);
+  return UNAVAILABLE();
+}
+
 export async function handleApi(request, ctx){
   const url = new URL(request.url);
-  if (url.pathname !== PREFIX && !url.pathname.startsWith(PREFIX + '/')) return null;
+  if (!isApiPath(url.pathname)) return null;
   try {
     return await dispatch(request, url, ctx);
   } catch (e){
-    logFailure(e, ctx?.data);
-    return UNAVAILABLE();
+    return unavailable(e, ctx?.data);
   }
 }
 

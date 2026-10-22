@@ -125,6 +125,18 @@ export async function run(){
     return s.keys().length === 0 || `寫了一半：${s.keys().join(',')}`;
   });
 
+  // ---- worker/index.js：handleApi 之外丟的例外（例：env 綁定取不到）也回 503；靜態檔路徑不受影響 ----
+  await t('index.js：/covervote/api/* 在 handleApi 之前就丟錯（env.DB 取不到）→ 503 JSON、log 一行；靜態檔照常交給 ASSETS', async () => {
+    const worker = (await import('./index.js')).default;
+    let assets = 0;
+    const env = { get DB(){ throw new D1Error(`binding gone ${IP}`); }, ASSETS: { fetch: async () => { assets++; return new Response('asset'); } } };
+    const { r, printed } = await capture(() => worker.fetch(reqs['GET stats'](), env));
+    const a = await check503(r); if (a !== true) return a;
+    if (printed.error.length !== 1 || !printed.error[0].includes('D1Error') || printed.error[0].includes(IP)) return `log：${JSON.stringify(printed.error)}`;
+    const s = await worker.fetch(new Request('https://games.csiesheep.com/covervote/'), { ASSETS: env.ASSETS });   // 不展開 env：展開會呼叫丟錯的 getter
+    return (assets === 1 && (await s.text()) === 'asset') || `靜態檔路徑：ASSETS 被呼叫 ${assets} 次`;
+  });
+
   return out;
 }
 
