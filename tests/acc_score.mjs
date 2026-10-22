@@ -11,7 +11,7 @@
 //      所有分數相同時 lo = hi = score；亂數用傳入的 rng（預設 Math.random），同一個 rng 序列結果相同。
 //   7. top = 分數最高的候選人（並列全收），null 不算。
 //   8. verdict(lean, result)：lean 為 null／'undecided'／'private' → 'none'；top 是空的 → 'none'
-//      （orchestrator 裁決 #1：沒有任何計分段落時說「不同」是錯的結論）；lean 在 top 裡 → 'same'；否則 'different'。
+//      （orchestrator 裁決 #1：沒有任何計分段落時說「不同」是錯的結論）；lean 在 top 裡 → 'same'（#33：top ≥ 2 人且含 lean → 'tie'）；否則 'different'。
 //   候選人的鍵是姓名（orchestrator 裁決 #1：cands/ 與 reveal/ 都不帶 id，號次抽籤前是 null 會撞），傾向也存姓名。
 //
 // API（issue #1 定的介面）：
@@ -132,13 +132,19 @@ check('分數超出 −2..2 或不是整數會丟錯', () => {
   return missed.length ? `沒有丟錯：${missed.map(v => JSON.stringify(v)).join('、')}` : ok(true, `${bad.length} 種壞分數都丟錯`);
 });
 
-check('verdict：same / different / none，並列時傾向在 top 裡算 same', () => {
+// #33（orchestrator 裁決）：並列且傾向在 top 裡 → 'tie'（不再算 same，否則全體統計把「平手」灌進 same）。並列但傾向不在 top → 'different'。
+const STRICT_33 = false;   // #33 land 時翻
+check('verdict：same / different / none；並列且傾向在 top 裡 → tie（#33）', () => {
   const t = need(); if (t) return t;
   const r = run(BASE);                                    // top = [A]
   const tie = run({ p1: 2, p3: -1, p2: 0, p4: 1 });       // top = [A, B]
   const empty = run({ p8: 2 });                           // 只打了加分題 → top 是空的
   if (empty.top.length) return `只打加分題時 top 應為空，實際 ${JSON.stringify(empty.top)}`;
-  const cases = [['A', r, 'same'], ['B', r, 'different'], [null, r, 'none'], ['undecided', r, 'none'], ['private', r, 'none'], ['B', tie, 'same'], ['A', empty, 'none']];
+  const cases = [['A', r, 'same'], ['B', r, 'different'], [null, r, 'none'], ['undecided', r, 'none'], ['private', r, 'none'], ['C', tie, 'different'], ['A', empty, 'none']];
   const errs = cases.map(([lean, res, want]) => eq(mod.verdict(lean, res), want, `verdict(${JSON.stringify(lean)})`)).filter(x => x !== true);
-  return errs.length ? errs.join('；') : ok(true, `${cases.length} 個案例都對`);
+  if (errs.length) return errs.join('；');
+  // 並列且含傾向：A、B 都是 +25。錯實作（舊規則）回 'same'。
+  const tv = [mod.verdict('A', tie), mod.verdict('B', tie)];
+  if (tv.some(v => v !== 'tie')) return (STRICT_33 ? '' : 'TODO: ') + `並列（A、B 都 +25）且傾向在 top 裡應回 tie，實際 ${tv.join('、')}`;
+  return ok(true, `${cases.length + 2} 個案例都對（含並列 tie 2 例）`);
 });
