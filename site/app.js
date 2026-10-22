@@ -5,7 +5,7 @@
 //  - 傾向、分數、猜作者只存本機（store.js）。不載入錄製腳本；Google Analytics 只在 analytics.js 的條件下載入，事件不帶任何政治資料（#21）。
 //  - 分數一律呼叫 engine/score.mjs，FE 不自己算。候選人的鍵是姓名。
 import { t, initLang, lang, has } from './i18n.js';
-import { raceIdOf, MIN_CLASS, TILES, METRO_KEYS, METRO_ETA, CEC_URL, FULL_URL } from './config.js';
+import { raceIdOf, cityKey, MIN_CLASS, TILES, METRO_KEYS, METRO_ETA, CEC_URL, FULL_URL } from './config.js';
 import { initInternal, initClass, initFontSize, fontSize, setFontSize, FS_SIZES, classCode, newClassCode, loadClasses, saveClasses, CLASS_RE, isEmbed, loadState, saveState, freshState, hasProgress } from './store.js';
 import { initSound, isSoundOn, setSound, sfx } from './sound.js';
 import { hasVoice, syncSpeak, toggleSpeak, stopSpeaking } from './speech.js';
@@ -99,8 +99,8 @@ function renderText(s){
 // ---------------- 路由 ----------------
 function parse(){
   const h = location.hash.replace(/^#\/?/, '');
-  const seg = h.split('/').filter(Boolean).map(decodeURIComponent);
-  return seg;
+  try { return h.split('/').filter(Boolean).map(decodeURIComponent); }
+  catch { return []; }   // 壞的百分比編碼：當成首頁（#31）
 }
 const go = hash => { location.hash = hash; };
 let renderSeq = 0, cleanup = null, lastPv = null;
@@ -129,8 +129,9 @@ async function route(seg){
   if (seg.length === 0) return viewHome();
   if (seg[0] === 'info') return viewInfo(seg[1] || 'method', seg[2] || '');
   if (seg[0] === 'embed') return viewMedia();
-  if (seg[0] === 'class') return viewClass(seg[1] || '', seg[2] || '');
-  const key = seg[0], sub = seg[1] || '';
+  if (seg[0] === 'class') return viewClass(seg[1] || '', cityKey(seg[2]) || '');
+  const key = cityKey(seg[0]), sub = seg[1] || '';
+  if (!key) return viewMissing(null);   // 不在 TILES 的鍵一律走「未收錄」，不碰抓檔也不進樣板
   let c;
   try { c = await getCtx(key); }
   catch (e) {
@@ -142,9 +143,9 @@ async function route(seg){
     case '': return viewEntry(c);
     case 'health': return viewHealth(c);
     case 'lean': return viewLean(c);
-    case 'play': return viewRound(c, parseInt(seg[2] || '1', 10));
-    case 'bonus': return viewBonus(c);
-    case 'important': return viewImportant(c);
+    case 'play': return c.st.done ? redirect(`#/${key}/result`) : viewRound(c, parseInt(seg[2] || '1', 10));
+    case 'bonus': return c.st.done ? redirect(`#/${key}/result`) : viewBonus(c);
+    case 'important': return c.st.done ? redirect(`#/${key}/result`) : viewImportant(c);
     case 'reveal': return c.st.done ? viewReveal(c) : redirect(`#/${key}`);
     case 'result': return c.st.done ? viewResult(c) : redirect(`#/${key}`);
     case 'detail': return c.st.done ? viewDetail(c) : redirect(`#/${key}`);
@@ -178,9 +179,9 @@ async function viewHome(){
   if (homePick === null && last && ready.has(last)) homePick = last;
   const tiles = TILES.map(tl => {
     const name = esc(t('tile.' + tl.key));
-    if (ready.has(tl.key)) return `<button class="tile live${homePick === tl.key ? ' pick' : ''}" style="grid-area:${tl.area}" data-act="pick" data-key="${tl.key}" aria-pressed="${homePick === tl.key}">${name}</button>`;
-    if (tl.metro) return `<a class="tile soon" style="grid-area:${tl.area}" href="#/${tl.key}" aria-label="${esc(t('tile.' + tl.key) + ' ' + t('home.soon'))}"><span>${name}<small>${esc(t('home.soon'))}</small></span></a>`;
-    return `<a class="tile" style="grid-area:${tl.area}" href="#/${tl.key}">${name}</a>`;
+    if (ready.has(tl.key)) return `<button class="tile live${homePick === tl.key ? ' pick' : ''}" style="grid-area:${tl.area}" data-act="pick" data-key="${esc(tl.key)}" aria-pressed="${homePick === tl.key}">${name}</button>`;
+    if (tl.metro) return `<a class="tile soon" style="grid-area:${tl.area}" href="#/${esc(tl.key)}" aria-label="${esc(t('tile.' + tl.key) + ' ' + t('home.soon'))}"><span>${name}<small>${esc(t('home.soon'))}</small></span></a>`;
+    return `<a class="tile" style="grid-area:${tl.area}" href="#/${esc(tl.key)}">${name}</a>`;
   }).join('');
   const body = `
     <img class="illo hero" src="assets/hero.webp" alt="${esc(t('home.heroAlt'))}" width="1152" height="384" fetchpriority="high" decoding="async">
@@ -233,13 +234,17 @@ function fillPlays(ready){
 const startLabel = () => homePick ? t('home.startAt', { city: t('tile.' + homePick) }) : t('home.pick');
 
 // 倒數：只在 race payload 有 voteDate 才顯示
+// 今天（臺灣時間）的 UTC 零點毫秒；不用裝置時區（#31）
+function taipeiToday(){
+  const p = Object.fromEntries(new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(new Date()).map(x => [x.type, x.value]));
+  return Date.UTC(+p.year, +p.month - 1, +p.day);
+}
 function fillCountdown(ready){
   for (const d of ready.values()){
     const vd = d.meta.voteDate;
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(vd || ''); if (!m) continue;
     const md = `${+m[2]}/${+m[3]}`;
-    const today = new Date(); today.setHours(0, 0, 0, 0);
-    const days = Math.round((new Date(+m[1], +m[2] - 1, +m[3]) - today) / 86400000);
+    const days = Math.round((Date.UTC(+m[1], +m[2] - 1, +m[3]) - taipeiToday()) / 86400000);
     const el = document.getElementById('homecount'); if (!el) return;
     el.textContent = days > 0 ? t('home.meta.vote', { md, d: days }) : days === 0 ? t('home.meta.today', { md }) : t('home.meta.over');
     return;
@@ -248,7 +253,7 @@ function fillCountdown(ready){
 
 // ---------------- A2 入口 / A3 未收錄 / 六都整理中 ----------------
 async function viewMissing(key){
-  const known = TILES.find(x => x.key === key);
+  const known = key && TILES.find(x => x.key === key);
   const city = known ? t('city.' + key) : t('city.unknown');
   if (known && known.metro){
     // 六都，但還沒有資料：不說「沒收錄」，說在整理、什麼時候公開，並指向已有資料的縣市
@@ -258,7 +263,7 @@ async function viewMissing(key){
       <img class="illo" src="assets/empty_state.webp" alt="" width="768" height="768" style="width:180px">
       <h1 class="mid">${esc(t('soon.title', { city }))}</h1>
       <p class="muted">${esc(t('soon.body', { md: METRO_ETA }))}</p>
-      ${first ? `<a class="btn" href="#/${first}">${esc(t('soon.playOther', { city: t('tile.' + first) }))}</a>` : ''}
+      ${first ? `<a class="btn" href="#/${esc(first)}">${esc(t('soon.playOther', { city: t('tile.' + first) }))}</a>` : ''}
       <a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`;
     return { html: page(bar(t('brand'), t('entry.change')), `<div class="stack center" style="gap:14px;align-items:center">${body}</div>`, footer()) };
   }
@@ -287,15 +292,15 @@ function viewEntry(c){
     <h1 class="big">${esc(raceLabel(c))}</h1>
     <div class="deck" aria-hidden="true"><div class="cardback"></div><div class="cardback"></div><div class="cardback"></div></div>
     <table>
-      <tr><th>${esc(t('entry.candidates'))}</th><td class="num"><a href="#/info/sources/${c.key}">${esc(t('entry.nCandsIn', { n: c.data.candidates.length, k: c.data.candidates.filter(x => x.inPlay === true).length }))}</a></td></tr>
+      <tr><th>${esc(t('entry.candidates'))}</th><td class="num"><a href="#/info/sources/${esc(c.key)}">${esc(t('entry.nCandsIn', { n: c.data.candidates.length, k: c.data.candidates.filter(x => x.inPlay === true).length }))}</a></td></tr>
       <tr><th>${esc(t('entry.topicsTh'))}</th><td class="num">${esc(topics)}</td></tr>
       <tr><th>${esc(t('entry.passages'))}</th><td class="num">${esc(t('entry.passagesVal', { n: ps.length, avg }))}</td></tr>
       ${meta.join('')}
-      <tr><th>${esc(t('entry.health'))}</th><td><a href="#/${c.key}/health">${esc(t('entry.healthVal'))}</a></td></tr>
+      <tr><th>${esc(t('entry.health'))}</th><td><a href="#/${esc(c.key)}/health">${esc(t('entry.healthVal'))}</a></td></tr>
     </table>
-    ${prog && !c.st.done ? `<a class="btn" href="#/${c.key}/play" data-act="resume">${esc(t('entry.resume'))}</a><button class="btn ghost" data-act="restart">${esc(t('entry.restart'))}</button>`
-      : c.st.done ? `<a class="btn" href="#/${c.key}/result">${esc(t('res.meta'))}</a><button class="btn ghost" data-act="restart">${esc(t('res.again'))}</button>`
-      : `<a class="btn" href="#/${c.key}/lean">${esc(t('entry.start'))}</a>`}
+    ${prog && !c.st.done ? `<a class="btn" href="#/${esc(c.key)}/play" data-act="resume">${esc(t('entry.resume'))}</a><button class="btn ghost" data-act="restart">${esc(t('entry.restart'))}</button>`
+      : c.st.done ? `<a class="btn" href="#/${esc(c.key)}/result">${esc(t('res.meta'))}</a><button class="btn ghost" data-act="restart">${esc(t('res.again'))}</button>`
+      : `<a class="btn" href="#/${esc(c.key)}/lean">${esc(t('entry.start'))}</a>`}
     <details><summary class="muted">${esc(t('entry.how'))}</summary>
       <ol class="muted" style="padding-left:18px;margin:8px 0 0"><li>${esc(t('entry.how1'))}</li><li>${esc(t('entry.how2'))}</li><li>${esc(t('entry.how3'))}</li><li>${esc(t('entry.how4'))}</li></ol></details>`;
   return { html: page(bar(t('brand'), t('entry.change')), body, footer(c.key)) };
@@ -321,7 +326,7 @@ function viewLean(c){
       <div class="row"><button class="chip${c.st.lean === 'undecided' ? ' on' : ''}" data-act="lean" data-v="undecided" aria-pressed="${c.st.lean === 'undecided'}">${esc(t('lean.undecided'))}</button><button class="chip${c.st.lean === 'private' ? ' on' : ''}" data-act="lean" data-v="private" aria-pressed="${c.st.lean === 'private'}">${esc(t('lean.private'))}</button></div>
     </div>
     <div class="lock"><span aria-hidden="true">🔒</span><span>${esc(t('lean.lock'))}</span></div>
-    <a class="btn" href="#/${c.key}/play/1" data-act="lean-next">${esc(t('lean.next'))}</a>`;
+    <a class="btn" href="#/${esc(c.key)}/play/1" data-act="lean-next">${esc(t('lean.next'))}</a>`;
   return { html: page(bar(raceLabel(c), t('lean.meta')), body) };
 }
 
@@ -377,12 +382,12 @@ function viewRound(c, n){
     ${roundSteps(c, n - 1)}
     <div class="issuerow"><h1 class="mid">${esc(issueLabel(c, r.issueId))}</h1>${toggleHtml()}</div>
     ${r.cards.map((p, i) => cardHtml(c, p, i, { guess: true })).join('')}
-    <div class="btns"><a class="btn ghost" href="${n > 1 ? `#/${c.key}/play/${n - 1}` : `#/${c.key}/lean`}" style="flex:0 0 38%">${esc(t('play.back'))}</a><a class="btn" id="nextbtn" data-act="next-round" data-n="${n}" href="${nextHash(c, n)}" ${roundDone(c, r) ? '' : 'aria-disabled="true"'}>${esc(last ? t('play.nextLast') : t('play.next'))}</a></div>
+    <div class="btns"><a class="btn ghost" href="${n > 1 ? `#/${esc(c.key)}/play/${n - 1}` : `#/${esc(c.key)}/lean`}" style="flex:0 0 38%">${esc(t('play.back'))}</a><a class="btn" id="nextbtn" data-act="next-round" data-n="${n}" href="${nextHash(c, n)}" ${roundDone(c, r) ? '' : 'aria-disabled="true"'}>${esc(last ? t('play.nextLast') : t('play.next'))}</a></div>
     <p class="muted" style="text-align:center" id="roundhint">${roundDone(c, r) ? '' : esc(t('play.hint')) + ' · '}<button class="linkbtn" data-act="skip-round" data-n="${n}">${esc(t('play.skip'))}</button></p>`;
   return { html: page(bar(raceLabel(c), `${n} / ${c.plan.steps}`), body), mount: () => { sfx('card_deal'); } };
 }
 const roundDone = (c, r) => r.cards.every(p => c.st.ratings[p.id] !== undefined);
-const nextHash = (c, n) => n < c.plan.rounds.length ? `#/${c.key}/play/${n + 1}` : c.plan.bonus.length ? `#/${c.key}/bonus` : `#/${c.key}/important`;
+const nextHash = (c, n) => n < c.plan.rounds.length ? `#/${esc(c.key)}/play/${n + 1}` : c.plan.bonus.length ? `#/${esc(c.key)}/bonus` : `#/${esc(c.key)}/important`;
 
 // ---------------- B3 加分題 ----------------
 function viewBonus(c){
@@ -394,7 +399,7 @@ function viewBonus(c){
     <h1 class="mid">${esc(t('bonus.title'))}</h1>
     <p class="muted">${esc(t('bonus.sub'))}</p>
     ${c.plan.bonus.map((p, i) => cardHtml(c, p, c.plan.rounds.length ? i + off : i, { guess: false, tag: issueLabel(c, p.issueId) })).join('')}
-    <div class="btns"><a class="btn ghost" href="#/${c.key}/play/${Math.max(1, c.plan.rounds.length)}" style="flex:0 0 38%">${esc(t('play.back'))}</a><a class="btn" href="#/${c.key}/important">${esc(t('play.nextLast'))}</a></div>`;
+    <div class="btns"><a class="btn ghost" href="#/${esc(c.key)}/play/${Math.max(1, c.plan.rounds.length)}" style="flex:0 0 38%">${esc(t('play.back'))}</a><a class="btn" href="#/${esc(c.key)}/important">${esc(t('play.nextLast'))}</a></div>`;
   return { html: page(bar(raceLabel(c), `${c.plan.steps} / ${c.plan.steps}`), body), mount: () => { sfx('card_deal'); } };
 }
 
@@ -412,20 +417,21 @@ function viewImportant(c){
     <div id="imps">${impRows(c) || `<p class="muted">${esc(t('imp.none'))}</p>`}</div>
     <div id="revealerr"></div>
     <button class="btn" id="revealbtn" data-act="reveal">${esc(t('imp.reveal'))}</button>
-    <a class="btn ghost" href="${c.plan.bonus.length ? `#/${c.key}/bonus` : `#/${c.key}/play/${Math.max(1, c.plan.rounds.length)}`}">${esc(t('play.back'))}</a>`;
+    <a class="btn ghost" href="${c.plan.bonus.length ? `#/${esc(c.key)}/bonus` : `#/${esc(c.key)}/play/${Math.max(1, c.plan.rounds.length)}`}">${esc(t('play.back'))}</a>`;
   return { html: page(bar(raceLabel(c), t('imp.meta')), body) };
 }
 
 // 猜作者：只送「有猜名字」的段落（'unknown' 不送）。同一局只送一次（st.sent.guess）。失敗不擋開票。
 // 一定要在 fetchReveal 之前：先看答案再送「猜測」會灌高猜中率，遮蔽健康度就失真了。
+// 一局只試送一次（成功、失敗、逾時都算）；看過答案的人（st.seen / st.done）一律不送。失敗也不在看過答案之後補送（#31）。
 async function sendGuesses(c){
-  if (c.st.sent.guess) return;
+  if (c.st.sent.guess || c.st.done || c.st.seen){ c.st.sent.guess = true; save(c); return; }
+  c.st.sent.guess = true; save(c);
   const known = new Set(c.data.passages.map(p => p.id));
   const guesses = Object.entries(c.st.guesses).filter(([id, v]) => known.has(id) && v !== 'unknown').map(([passage, name]) => ({ passage, name }));
   if (guesses.length){
-    try { await postGuess(c.data.raceId, guesses); } catch { return; }
+    try { await postGuess(c.data.raceId, guesses); } catch {}
   }
-  c.st.sent.guess = true; save(c);
 }
 
 // 唯一會 fetch reveal/ 的地方：玩家按下「開票」。
@@ -439,7 +445,7 @@ async function revealNow(c, btn){
     document.getElementById('revealerr').innerHTML = errorBox(t('imp.err'), 'reveal');
     return;
   }
-  c.st.done = true; save(c);
+  c.st.done = true; c.st.seen = true; save(c);
   track('reveal', c.key);
   go(`#/${c.key}/reveal`);
 }
@@ -459,7 +465,7 @@ async function viewReveal(c){
   const body = `
     <h1 class="mid" style="text-align:center">${esc(t('reveal.title'))}</h1>
     <div class="flipgrid" id="flipgrid">${cardsHtml}</div>
-    <a class="btn ghost" id="flipbtn" href="#/${c.key}/result">${esc(t('reveal.skip'))}</a>
+    <a class="btn ghost" id="flipbtn" href="#/${esc(c.key)}/result">${esc(t('reveal.skip'))}</a>
     <p class="muted" style="text-align:center">${esc(t('reveal.hint'))}</p>`;
   return {
     html: page(bar(raceLabel(c), t('reveal.meta')), body),
@@ -522,7 +528,7 @@ function natlHtml(c){
     const reopen = m ? t('blackout.reopen', { md: +m[1] + '/' + +m[2] }) : t('blackout.reopenNoDate');
     return {
       banner: `<div class="banner"><b>${esc(t('blackout.title'))}</b><span>${esc(t('blackout.body'))}</span></div>`,
-      box: `<div class="verdict"><div class="eyebrow">${esc(title)}</div><div class="stack center" style="align-items:center;gap:6px;padding:10px 0"><img class="illo" src="assets/empty_state.webp" alt="" width="768" height="768" style="width:120px"><span class="muted">${esc(reopen)}</span></div></div><p class="muted">${esc(t('blackout.health'))} <a href="#/${c.key}/health">${esc(t('foot.health'))}</a></p>`,
+      box: `<div class="verdict"><div class="eyebrow">${esc(title)}</div><div class="stack center" style="align-items:center;gap:6px;padding:10px 0"><img class="illo" src="assets/empty_state.webp" alt="" width="768" height="768" style="width:120px"><span class="muted">${esc(reopen)}</span></div></div><p class="muted">${esc(t('blackout.health'))} <a href="#/${esc(c.key)}/health">${esc(t('foot.health'))}</a></p>`,
     };
   }
   const v = st.verdicts;
@@ -541,7 +547,8 @@ function fillNatl(c){
 async function afterResult(c, comp){
   if (!c.st.sent.play && !c.playBusy && hasTop(comp)){
     c.playBusy = true;
-    try { await postPlay(c.data.raceId, comp.verdict); c.st.sent.play = true; save(c); } catch {}
+    c.st.sent.play = true; save(c);   // 先記下再送：逾時也算送過，不重送（#31）
+    try { await postPlay(c.data.raceId, comp.verdict); } catch {}
     c.playBusy = false;
   }
   try { c.stats = await getStats(c.data.raceId); } catch { c.stats = null; }
@@ -593,8 +600,8 @@ function resultBody(c, rv, comp){
     ${guessHtml}
     <div id="natl-box" style="display:contents"></div>
     <details><summary class="muted">${esc(t('res.adjust'))}</summary><div id="imps" style="margin-top:6px">${impRows(c) || `<p class="muted">${esc(t('imp.none'))}</p>`}</div></details>
-    <div class="btns">${EMBED ? `<a class="btn" href="${esc(gameUrl(c))}" target="_blank" rel="noopener">${esc(t('embed.openResult'))}</a>` : `<a class="btn" href="#/${c.key}/share">${esc(t('res.share'))}</a>`}<button class="btn ghost" data-act="again">${esc(t('res.again'))}</button></div>
-    <a class="btn line" href="#/${c.key}/detail">${esc(t('res.detail'))}</a>
+    <div class="btns">${EMBED ? `<a class="btn" href="${esc(gameUrl(c))}" target="_blank" rel="noopener">${esc(t('embed.openResult'))}</a>` : `<a class="btn" href="#/${esc(c.key)}/share">${esc(t('res.share'))}</a>`}<button class="btn ghost" data-act="again">${esc(t('res.again'))}</button></div>
+    <a class="btn line" href="#/${esc(c.key)}/detail">${esc(t('res.detail'))}</a>
     <p class="muted">${esc(t('res.disclaimer'))}</p>`;
 }
 
@@ -603,6 +610,7 @@ async function viewResult(c){
   try { rv = await fetchReveal(c.data.raceId); } catch { return { html: page(bar(raceLabel(c), t('res.meta')), errorBox(t('imp.err'))) }; }
   try { comp = await compute(c, rv); } catch (e) { console.error(e); return { html: page(bar(raceLabel(c), t('res.meta')), errorBox(t('err.engine'))) }; }
   c.lastComp = { rv, comp };
+  c.stats = null;   // 不拿舊的匯總先畫（可能已跨過 11/18）；mount 後重抓
   return { html: page(bar(raceLabel(c), t('res.meta')), `<div id="resbody" style="display:contents">${resultBody(c, rv, comp)}</div>`), mount: () => { fillNatl(c); afterResult(c, comp); } };
 }
 async function refreshResult(c){
@@ -612,6 +620,7 @@ async function refreshResult(c){
   const open = el.querySelector('details')?.open;
   el.innerHTML = resultBody(c, rv, comp);
   if (open) el.querySelector('details').open = true;
+  try { c.stats = await getStats(c.data.raceId); } catch { c.stats = null; }   // 每次重畫都以最新的匯總為準（#31）
   fillNatl(c);
 }
 
@@ -646,7 +655,7 @@ async function viewDetail(c){
     return `<section data-issue="${esc(r.issueId)}" class="stack" style="gap:10px"><h2 class="mid">${esc(issueLabel(c, r.issueId))}</h2>${r.cards.map((p, i) => det(p, i)).join('')}${absent.length ? `<p class="muted">${esc(t('det.noPassage', { names: absent.join('、') }))}</p>` : ''}</section>`;
   }).join('');
   const bonus = c.plan.bonus.length ? `<section data-issue="__bonus" class="stack" style="gap:10px"><div class="hr"></div><div class="eyebrow">${esc(t('det.bonus'))}</div>${c.plan.bonus.map((p, i) => det(p, i, issueLabel(c, p.issueId))).join('')}</section>` : '';
-  const body = `<div class="row">${chips}</div>${sections}${bonus}<a class="btn line" href="#/${c.key}/result">${esc(t('det.back'))}</a>`;
+  const body = `<div class="row">${chips}</div>${sections}${bonus}<a class="btn line" href="#/${esc(c.key)}/result">${esc(t('det.back'))}</a>`;
   return {
     html: page(bar(raceLabel(c), t('det.meta')), body),
     mount(el){
@@ -674,7 +683,7 @@ function hostOf(u){ try { return new URL(u).hostname; } catch { return u; } }
 const HEALTH_MIN = 30;   // 少於這麼多人作答：寫「樣本還不夠」，不畫條
 async function viewHealth(c){
   const barHtml = bar(raceLabel(c), t('health.meta'));
-  const back = `<a class="btn ghost" href="#/${c.key}">${esc(t('common.back'))}</a>`;
+  const back = `<a class="btn ghost" href="#/${esc(c.key)}">${esc(t('common.back'))}</a>`;
   let h;
   try { h = await getHealth(c.data.raceId); } catch { return { html: page(barHtml, errorBox(t('health.err')) + back, footer(c.key)) }; }
   const byId = new Map((h.passages || []).map(p => [p.id, p]));
@@ -716,7 +725,7 @@ async function viewClass(code, city){
   const home = `<a class="btn ghost" href="#/">${esc(t('common.home'))}</a>`;
   if (!code){
     const list = loadClasses();
-    const rows = list.map(x => `<div class="clsrow"><a class="clscode num" href="#/class/${x.code}">${x.code}</a><span class="muted">${esc(t('class.made', { d: new Date(x.at || Date.now()).toLocaleDateString(lang() === 'en' ? 'en-US' : 'zh-TW') }))}</span><button class="linkbtn" data-act="class-del" data-code="${x.code}">${esc(t('class.remove'))}</button></div>`).join('');
+    const rows = list.map(x => `<div class="clsrow"><a class="clscode num" href="#/class/${esc(x.code)}">${esc(x.code)}</a><span class="muted">${esc(t('class.made', { d: new Date(x.at || Date.now()).toLocaleDateString(lang() === 'en' ? 'en-US' : 'zh-TW') }))}</span><button class="linkbtn" data-act="class-del" data-code="${x.code}">${esc(t('class.remove'))}</button></div>`).join('');
     const body = `
       <h1 class="mid">${esc(t('class.title'))}</h1>
       <p>${esc(t('class.lead'))}</p>
@@ -731,7 +740,7 @@ async function viewClass(code, city){
   }
   if (!city){
     const ready = await readyMetros();
-    const chips = [...ready.keys()].map(k => `<a class="chip" href="#/class/${code}/${k}">${esc(t('city.' + k))}</a>`).join('');
+    const chips = [...ready.keys()].map(k => `<a class="chip" href="#/class/${esc(code)}/${esc(k)}">${esc(t('city.' + k))}</a>`).join('');
     const body = `
       <div class="eyebrow">${esc(t('class.codeLabel'))}</div>
       <div class="clsbig num" id="clscode" aria-label="${esc(code.split('').join(' '))}">${code}</div>
@@ -757,7 +766,7 @@ async function viewClass(code, city){
     <div class="eyebrow">${esc(t('class.discuss'))}</div>
     <ol class="qs"><li>${esc(t('class.q1'))}</li><li>${esc(t('class.q2'))}</li><li>${esc(t('class.q3'))}</li></ol>
     <p class="muted" id="clsupd"></p>
-    <a class="btn ghost" href="#/class/${code}">${esc(t('common.back'))}</a>`;
+    <a class="btn ghost" href="#/class/${esc(code)}">${esc(t('common.back'))}</a>`;
   return {
     html: page(barHtml, body, footer()),
     mount(){
@@ -857,9 +866,9 @@ async function viewShare(c){
     <h1 class="mid">${esc(t('share.title'))}</h1>
     <canvas id="ogcanvas" class="ogcanvas" width="${OG_W}" height="${OG_H}" role="img" aria-label="${esc(t('share.cardAlt'))}"></canvas>
     <label class="opt" style="cursor:pointer"><input type="checkbox" id="showNames" ${shareNames ? 'checked' : ''}> <span>${esc(t('share.names'))}<small>${esc(t('share.namesSub'))}</small></span></label>
-    <a class="btn" data-act="download" id="dlbtn" download="covervote.png" href="#/${c.key}/share" aria-disabled="true">${esc(t('share.download'))}</a>
-    <div class="btns"><a class="btn ghost" data-act="line" id="linebtn" href="#/${c.key}/share" target="_blank" rel="noopener noreferrer">${esc(t('share.line'))}</a><button class="btn ghost" data-act="copy">${esc(t('share.copy'))}</button></div>
-    <a class="btn line" href="#/${c.key}/result">${esc(t('det.back'))}</a>`;
+    <a class="btn" data-act="download" id="dlbtn" download="covervote.png" href="#/${esc(c.key)}/share" aria-disabled="true">${esc(t('share.download'))}</a>
+    <div class="btns"><a class="btn ghost" data-act="line" id="linebtn" href="#/${esc(c.key)}/share" target="_blank" rel="noopener noreferrer">${esc(t('share.line'))}</a><button class="btn ghost" data-act="copy">${esc(t('share.copy'))}</button></div>
+    <a class="btn line" href="#/${esc(c.key)}/result">${esc(t('det.back'))}</a>`;
   return {
     html: page(bar(raceLabel(c), t('share.meta')), body),
     mount(el){
@@ -979,7 +988,7 @@ function reportHeight(){
 }
 
 // ---------------- 事件 ----------------
-function curCtx(){ const seg = parse(); return seg[0] ? ctxs.get(seg[0]) : null; }
+function curCtx(){ const k = cityKey(parse()[0]); return k ? ctxs.get(k) : null; }
 function setPressed(btns, pred){ btns.forEach(b => { const on = pred(b); b.classList.toggle('on', on); if (b.hasAttribute('aria-pressed')) b.setAttribute('aria-pressed', on); if (b.getAttribute('role') === 'radio') b.setAttribute('aria-checked', on); }); }
 
 function refreshRound(c){
@@ -1043,7 +1052,7 @@ root.addEventListener('click', async e => {
     }
     case 'mask': toast(t('play.maskInfo', { n: el.dataset.n })); break;
     case 'reload': e.preventDefault(); render(); break;
-    case 'restart': if (c){ const keep = c.st.menuOrder; Object.assign(c.st, freshState()); c.st.menuOrder = keep; save(c); rebuild(c); go(`#/${c.key}/lean`); } break;
+    case 'restart': if (c){ const keep = c.st.menuOrder, seen = c.st.seen; Object.assign(c.st, freshState()); c.st.menuOrder = keep; c.st.seen = seen; save(c); rebuild(c); go(`#/${c.key}/lean`); } break;
     case 'lean': {
       if (!c) break;
       const v = el.dataset.v; c.st.lean = c.st.lean === v ? null : v; save(c); sfx('tap');
@@ -1077,7 +1086,7 @@ root.addEventListener('click', async e => {
       break;
     }
     case 'guess': {
-      if (!c) break;
+      if (!c || c.st.done) break;   // 開票後鎖住（#31）
       const pid = el.dataset.pid, v = el.dataset.v;
       if (c.st.guesses[pid] === v) delete c.st.guesses[pid]; else c.st.guesses[pid] = v;
       save(c); sfx('tap');
@@ -1107,8 +1116,8 @@ root.addEventListener('click', async e => {
     case 'reveal': if (c) await revealNow(c, document.getElementById('revealbtn')); break;
     case 'again': {
       if (!c) break;
-      const keep = c.st.menuOrder, lean = c.st.lean;
-      const s = freshState(); Object.assign(c.st, s); c.st.menuOrder = keep; c.st.lean = lean;
+      const keep = c.st.menuOrder, lean = c.st.lean, seen = c.st.seen;
+      const s = freshState(); Object.assign(c.st, s); c.st.menuOrder = keep; c.st.lean = lean; c.st.seen = seen;
       save(c); rebuild(c); go(`#/${c.key}/lean`); break;
     }
     case 'dfilter': detailFilter = el.dataset.v; applyFilter(root); sfx('tap'); break;
