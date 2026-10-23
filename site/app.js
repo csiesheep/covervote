@@ -195,7 +195,7 @@ async function viewHome(){
   if (homePick === null && last && ready.has(last)) homePick = last;
   const tiles = TILES.map(tl => {
     const name = esc(tileText(tl.key));
-    if (ready.has(tl.key)) return `<button class="tile live${homePick === tl.key ? ' pick' : ''}" style="grid-area:${tl.area}" data-act="pick" data-key="${esc(tl.key)}" aria-pressed="${homePick === tl.key}">${name}</button>`;
+    if (ready.has(tl.key)) return `<button class="tile live" style="grid-area:${tl.area}" data-act="pick" data-key="${esc(tl.key)}" aria-pressed="${homePick === tl.key}">${name}</button>`;
     if (tl.metro) return `<a class="tile soon" style="grid-area:${tl.area}" href="#/${esc(tl.key)}" aria-label="${esc(t('tile.' + tl.key) + ' ' + t('home.soon'))}"><span>${name}<small>${esc(t('home.soon'))}</small></span></a>`;
     return `<a class="tile" style="grid-area:${tl.area}" href="#/${esc(tl.key)}">${name}</a>`;
   }).join('');

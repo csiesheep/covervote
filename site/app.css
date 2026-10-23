@@ -70,7 +70,6 @@ button{font:inherit;color:inherit;cursor:pointer}
 .tile small{display:block;font-size:calc(9px*var(--fs));font-weight:400;color:var(--ink-2);margin-top:1px}
 .tile.soon{border-style:dashed}
 .tile.live{border:1.5px solid var(--ink);background:var(--paper);color:var(--ink);font-weight:700;font-size:calc(12.5px*var(--fs))}
-.tile.pick{background:var(--ink);color:var(--paper)}
 .legend{display:flex;gap:14px;font-size:calc(12px*var(--fs));color:var(--ink-2);flex-wrap:wrap}
 .legend span{display:inline-flex;gap:6px;align-items:center}
 .sw{width:14px;height:12px;border-radius:3px;border:1.5px solid var(--ink);display:inline-block}
@@ -289,7 +288,7 @@ h1,h2,h3,.brand{font-weight:900}
 .chip.on,.toggle button.on{border-color:var(--ink)}
 .tile{border-color:var(--ink-2)}
 .tile.live{border-color:#F4EFE4}
-.tile.live.pick,.tile.live[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#F4EFE4}
+.tile.live[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:#F4EFE4}
 .home .tile small{color:#F08A6E}
 
 /* 牌面：奶油色、深色字（變數在這個範圍內反轉，裡面的元件不用改） */
